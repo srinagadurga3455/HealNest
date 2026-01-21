@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HealNest - Journal</title>
+    <link rel="shortcut icon" type="image/png" href="calm_clarity/assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="calm_clarity/assets/css/styles.min.css" />
+    <style>
+        .journal-entry-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #5D87FF;
+        }
+        .journal-entry-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .mood-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .mood-excellent { background: #28a745; }
+        .mood-good { background: #20c997; }
+        .mood-neutral { background: #ffc107; }
+        .mood-challenging { background: #dc3545; }
+        .journal-prompt {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        .entry-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        .character-count {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+    <!--  Body Wrapper -->
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
+        <!-- Sidebar Start -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a href="./dashboard.html" class="text-nowrap logo-img d-flex align-items-center gap-2">
+                        <h1 class="mb-0 fw-900 text-primary" style="font-size: 1.8rem; letter-spacing: 1px;">HealNest</h1>
+                    </a>
+                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8"></i>
+                    </div>
+                </div>
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <li class="nav-small-cap">
+                            <span class="hide-menu">HOME</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./dashboard.html">
+                                <i class="ti ti-layout-dashboard"></i>
+                                <span class="hide-menu">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./assessment.html">
+                                <i class="ti ti-clipboard-check"></i>
+                                <span class="hide-menu">Assessment</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./program.html">
+                                <i class="ti ti-target"></i>
+                                <span class="hide-menu">Programs</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link active" href="./journal.html">
+                                <i class="ti ti-edit"></i>
+                                <span class="hide-menu">Journal</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./mood.html">
+                                <i class="ti ti-mood-happy"></i>
+                                <span class="hide-menu">Mood Tracker</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <span class="hide-menu">ACCOUNT</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./profile.html">
+                                <i class="ti ti-user"></i>
+                                <span class="hide-menu">Profile</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./landing.html">
+                                <i class="ti ti-home"></i>
+                                <span class="hide-menu">Home</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <!--  Main wrapper -->
+        <div class="body-wrapper">
+            <!--  Header Start -->
+            <header class="app-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                            <li class="nav-item">
+                                <span class="text-muted me-3">Welcome back, Alex!</span>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown">
+                                    <img src="calm_clarity/assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                    <div class="message-body">
+                                        <a href="./profile.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-user fs-6"></i>
+                                            <p class="mb-0 fs-3">My Profile</p>
+                                        </a>
+                                        <a href="./dashboard.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-layout-dashboard fs-6"></i>
+                                            <p class="mb-0 fs-3">Dashboard</p>
+                                        </a>
+                                        <a href="./landing.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-home fs-6"></i>
+                                            <p class="mb-0 fs-3">Home</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--  Header End -->
+            <div class="container-fluid">
+                <!-- Journal Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="journal-prompt">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h2 class="mb-2">Daily Journal 📝</h2>
+                                    <p class="mb-0 fs-5">Reflect on your day, express your thoughts, and track your emotional journey.</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="fs-1 mb-2">✨</div>
+                                    <p class="mb-0">Today's Prompt:</p>
+                                    <p class="fw-bold">"What made you smile today?"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Entry Form -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="entry-form">
+                            <h5 class="mb-3">Write New Entry</h5>
+                            <form id="journal-form">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">How are you feeling today?</label>
+                                        <select class="form-select" id="entry-mood" required>
+                                            <option value="">Select your mood...</option>
+                                            <option value="excellent">😊 Excellent</option>
+                                            <option value="good">🙂 Good</option>
+                                            <option value="neutral">😐 Neutral</option>
+                                            <option value="challenging">😔 Challenging</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Entry Title</label>
+                                        <input type="text" class="form-control" id="entry-title" placeholder="Give your entry a title..." required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Your Thoughts</label>
+                                    <textarea class="form-control" id="entry-content" rows="6" placeholder="What's on your mind today? Share your experiences, feelings, or reflections..." required></textarea>
+                                    <div class="character-count mt-1">
+                                        <span id="char-count">0</span> characters
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="ti ti-device-floppy me-1"></i>Save Entry
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">
+                                        <i class="ti ti-x me-1"></i>Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Journal Entries -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center justify-content-between">
+                                    <span><i class="ti ti-book me-2 text-primary"></i>Your Journal Entries</span>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary active" onclick="filterEntries('all')">All</button>
+                                        <button type="button" class="btn btn-sm btn-outline-success" onclick="filterEntries('excellent')">Excellent</button>
+                                        <button type="button" class="btn btn-sm btn-outline-info" onclick="filterEntries('good')">Good</button>
+                                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="filterEntries('neutral')">Neutral</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="filterEntries('challenging')">Challenging</button>
+                                    </div>
+                                </h5>
+
+                                <div id="entries-container">
+                                    <!-- Sample entries will be loaded here -->
+                                    <div class="journal-entry-card card mb-3" data-mood="excellent">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="card-title mb-0">A Beautiful Morning Walk</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="mood-indicator mood-excellent"></span>
+                                                    <small class="text-muted">Today, 2:30 PM</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text">Today I took a long walk in the park and it was absolutely refreshing. The sun was shining, birds were singing, and I felt completely at peace. I noticed how the simple act of being present in nature can change your entire outlook on the day.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Mood: Excellent</small>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
+                                                        <i class="ti ti-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="journal-entry-card card mb-3" data-mood="good">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="card-title mb-0">Productive Work Session</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="mood-indicator mood-good"></span>
+                                                    <small class="text-muted">Yesterday, 6:45 PM</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text">Had a really productive afternoon at work. Managed to complete all my tasks ahead of schedule and even helped a colleague with their project. It's amazing how helping others can boost your own motivation and sense of accomplishment.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Mood: Good</small>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
+                                                        <i class="ti ti-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="journal-entry-card card mb-3" data-mood="neutral">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="card-title mb-0">A Quiet Day</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="mood-indicator mood-neutral"></span>
+                                                    <small class="text-muted">2 days ago, 8:20 PM</small>
+                                                </div>
+                                            </div>
+                                            <p class="card-text">Today was pretty uneventful. Got through my routine tasks but didn't feel particularly excited or down about anything. Sometimes these neutral days are important too - they give us a chance to recharge and prepare for more challenging or exciting times ahead.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Mood: Neutral</small>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
+                                                        <i class="ti ti-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <button class="btn btn-outline-primary" onclick="loadMoreEntries()">
+                                        <i class="ti ti-chevron-down me-1"></i>Load More Entries
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="calm_clarity/assets/js/sidebarmenu.js"></script>
+    <script src="calm_clarity/assets/js/app.min.js"></script>
+
+    <script>
+        // Character count for textarea
+        document.getElementById('entry-content').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('char-count').textContent = count;
+        });
+
+        // Form submission
+        document.getElementById('journal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const mood = document.getElementById('entry-mood').value;
+            const title = document.getElementById('entry-title').value;
+            const content = document.getElementById('entry-content').value;
+
+            // Create new entry card
+            const entryCard = document.createElement('div');
+            entryCard.className = 'journal-entry-card card mb-3';
+            entryCard.setAttribute('data-mood', mood);
+
+            const now = new Date();
+            const timeString = now.toLocaleDateString() + ', ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            entryCard.innerHTML = `
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title mb-0">${title}</h6>
+                        <div class="d-flex align-items-center">
+                            <span class="mood-indicator mood-${mood}"></span>
+                            <small class="text-muted">${timeString}</small>
+                        </div>
+                    </div>
+                    <p class="card-text">${content}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Mood: ${mood.charAt(0).toUpperCase() + mood.slice(1)}</small>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
+                                <i class="ti ti-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add to entries container at the top
+            const container = document.getElementById('entries-container');
+            container.insertBefore(entryCard, container.firstChild);
+
+            // Clear form
+            clearForm();
+
+            // Show success message
+            alert('Journal entry saved successfully!');
+        });
+
+        // Clear form function
+        function clearForm() {
+            document.getElementById('journal-form').reset();
+            document.getElementById('char-count').textContent = '0';
+        }
+
+        // Filter entries by mood
+        function filterEntries(mood) {
+            const entries = document.querySelectorAll('.journal-entry-card');
+            const filterButtons = document.querySelectorAll('.btn-group .btn');
+
+            // Update button states
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            entries.forEach(entry => {
+                if (mood === 'all' || entry.getAttribute('data-mood') === mood) {
+                    entry.style.display = 'block';
+                } else {
+                    entry.style.display = 'none';
+                }
+            });
+        }
+
+        // Edit entry (placeholder)
+        function editEntry(button) {
+            alert('Edit functionality would open the entry in the form above for editing.');
+        }
+
+        // Delete entry
+        function deleteEntry(button) {
+            if (confirm('Are you sure you want to delete this journal entry?')) {
+                button.closest('.journal-entry-card').remove();
+            }
+        }
+
+        // Load more entries (placeholder)
+        function loadMoreEntries() {
+            alert('In a real application, this would load more entries from the database or local storage.');
+        }
+
+        // Initialize character count
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('char-count').textContent = '0';
+        });
+    </script>
+</body>
+</html>

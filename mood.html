@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HealNest - Mood Tracker</title>
+    <link rel="shortcut icon" type="image/png" href="calm_clarity/assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="calm_clarity/assets/css/styles.min.css" />
+    <style>
+        .mood-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .mood-day {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+        }
+        .mood-day:hover {
+            transform: scale(1.1);
+        }
+        .mood-day.empty {
+            background: #f8f9fa;
+            color: #dee2e6;
+        }
+        .mood-day.excellent {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        .mood-day.good {
+            background: linear-gradient(135deg, #20c997, #17a2b8);
+            color: white;
+        }
+        .mood-day.neutral {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: white;
+        }
+        .mood-day.challenging {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+            color: white;
+        }
+        .mood-stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .trend-up { background: rgba(40, 167, 69, 0.2); color: #28a745; }
+        .trend-down { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
+        .trend-stable { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .mood-insight {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #5D87FF;
+        }
+        .weekly-overview {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .week-day {
+            text-align: center;
+            flex: 1;
+        }
+        .week-day .day-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        .week-day .mood-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!--  Body Wrapper -->
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
+        <!-- Sidebar Start -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a href="./dashboard.html" class="text-nowrap logo-img d-flex align-items-center gap-2">
+                        <h1 class="mb-0 fw-900 text-primary" style="font-size: 1.8rem; letter-spacing: 1px;">HealNest</h1>
+                    </a>
+                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8"></i>
+                    </div>
+                </div>
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <li class="nav-small-cap">
+                            <span class="hide-menu">HOME</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./dashboard.html">
+                                <i class="ti ti-layout-dashboard"></i>
+                                <span class="hide-menu">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./assessment.html">
+                                <i class="ti ti-clipboard-check"></i>
+                                <span class="hide-menu">Assessment</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./program.html">
+                                <i class="ti ti-target"></i>
+                                <span class="hide-menu">Programs</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./journal.html">
+                                <i class="ti ti-edit"></i>
+                                <span class="hide-menu">Journal</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link active" href="./mood.html">
+                                <i class="ti ti-mood-happy"></i>
+                                <span class="hide-menu">Mood Tracker</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <span class="hide-menu">ACCOUNT</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./profile.html">
+                                <i class="ti ti-user"></i>
+                                <span class="hide-menu">Profile</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./landing.html">
+                                <i class="ti ti-home"></i>
+                                <span class="hide-menu">Home</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <!--  Main wrapper -->
+        <div class="body-wrapper">
+            <!--  Header Start -->
+            <header class="app-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                            <li class="nav-item">
+                                <span class="text-muted me-3">Welcome back, Alex!</span>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown">
+                                    <img src="calm_clarity/assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                    <div class="message-body">
+                                        <a href="./profile.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-user fs-6"></i>
+                                            <p class="mb-0 fs-3">My Profile</p>
+                                        </a>
+                                        <a href="./dashboard.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-layout-dashboard fs-6"></i>
+                                            <p class="mb-0 fs-3">Dashboard</p>
+                                        </a>
+                                        <a href="./landing.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-home fs-6"></i>
+                                            <p class="mb-0 fs-3">Home</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--  Header End -->
+            <div class="container-fluid">
+                <!-- Mood Stats Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="mood-stats">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h2 class="mb-2">Mood Tracker 📊</h2>
+                                    <p class="mb-0 fs-5">Track your emotional patterns and discover insights about your mental wellness journey.</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="fs-1 mb-2">🎯</div>
+                                    <p class="mb-1">This Week's Average</p>
+                                    <h3 class="mb-0">Good</h3>
+                                    <span class="trend-indicator trend-up">
+                                        <i class="ti ti-trending-up"></i>
+                                        +15% vs last week
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Overview -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">This Week's Mood Overview</h5>
+                                <div class="weekly-overview">
+                                    <div class="week-day">
+                                        <div class="day-label">Mon</div>
+                                        <div class="mood-circle excellent">😊</div>
+                                    </div>
+                                    <div class="week-day">
+                                        <div class="day-label">Tue</div>
+                                        <div class="mood-circle good">🙂</div>
+                                    </div>
+                                    <div class="week-day">
+                                        <div class="day-label">Wed</div>
+                                        <div class="mood-circle neutral">😐</div>
+                                    </div>
+                                    <div class="week-day">
+                                        <div class="day-label">Thu</div>
+                                        <div class="mood-circle good">🙂</div>
+                                    </div>
+                                    <div class="week-day">
+                                        <div class="day-label">Fri</div>
+                                        <div class="mood-circle excellent">😊</div>
+                                    </div>
+                                    <div class="week-day">
+                                        <div class="day-label">Sat</div>
+                                        <div class="mood-circle excellent">😊</div>
+                                    </div>
+                                    <div class="week-day">
+                                        <div class="day-label">Sun</div>
+                                        <div class="mood-circle good">🙂</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mood Calendar and Insights -->
+                <div class="row">
+                    <!-- Monthly Calendar -->
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center justify-content-between">
+                                    <span><i class="ti ti-calendar me-2 text-primary"></i>January 2026 Mood Calendar</span>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="previousMonth()">
+                                            <i class="ti ti-chevron-left"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="nextMonth()">
+                                            <i class="ti ti-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </h5>
+
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="fw-bold">S</span>
+                                    <span class="fw-bold">M</span>
+                                    <span class="fw-bold">T</span>
+                                    <span class="fw-bold">W</span>
+                                    <span class="fw-bold">T</span>
+                                    <span class="fw-bold">F</span>
+                                    <span class="fw-bold">S</span>
+                                </div>
+
+                                <div class="mood-calendar" id="mood-calendar">
+                                    <!-- Calendar days will be populated by JavaScript -->
+                                </div>
+
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <span class="d-inline-block me-3">
+                                            <span class="mood-day excellent" style="width: 15px; height: 15px; display: inline-block; margin-right: 5px;"></span>
+                                            Excellent
+                                        </span>
+                                        <span class="d-inline-block me-3">
+                                            <span class="mood-day good" style="width: 15px; height: 15px; display: inline-block; margin-right: 5px;"></span>
+                                            Good
+                                        </span>
+                                        <span class="d-inline-block me-3">
+                                            <span class="mood-day neutral" style="width: 15px; height: 15px; display: inline-block; margin-right: 5px;"></span>
+                                            Neutral
+                                        </span>
+                                        <span class="d-inline-block">
+                                            <span class="mood-day challenging" style="width: 15px; height: 15px; display: inline-block; margin-right: 5px;"></span>
+                                            Challenging
+                                        </span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mood Insights -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="ti ti-bulb me-2 text-warning"></i>
+                                    Mood Insights
+                                </h5>
+
+                                <div class="mood-insight">
+                                    <h6 class="text-primary mb-2">📈 Positive Trend</h6>
+                                    <p class="mb-0">Your mood has been trending upward this week. Keep up the great work with your wellness practices!</p>
+                                </div>
+
+                                <div class="mood-insight">
+                                    <h6 class="text-success mb-2">🎯 Consistency</h6>
+                                    <p class="mb-0">You've been tracking your mood consistently for 7 days. Regular tracking helps identify patterns and triggers.</p>
+                                </div>
+
+                                <div class="mood-insight">
+                                    <h6 class="text-info mb-2">💡 Suggestion</h6>
+                                    <p class="mb-0">Consider adding evening reflection to your routine. Journaling before bed can help process the day's emotions.</p>
+                                </div>
+
+                                <div class="mood-insight">
+                                    <h6 class="text-warning mb-2">⚡ Energy Pattern</h6>
+                                    <p class="mb-0">Your best moods seem to occur on weekends. Plan more enjoyable activities during the workweek.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Quick Stats</h6>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="fs-3 fw-bold text-success">6</div>
+                                        <small class="text-muted">Excellent Days</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="fs-3 fw-bold text-info">1</div>
+                                        <small class="text-muted">Neutral Days</small>
+                                    </div>
+                                    <div class="col-3 mt-3">
+                                        <div class="fs-4 fw-bold text-primary">85%</div>
+                                        <small class="text-muted">Positive</small>
+                                    </div>
+                                    <div class="col-3 mt-3">
+                                        <div class="fs-4 fw-bold text-warning">15%</div>
+                                        <small class="text-muted">Neutral</small>
+                                    </div>
+                                    <div class="col-6 mt-3">
+                                        <div class="fs-4 fw-bold text-danger">0%</div>
+                                        <small class="text-muted">Challenging</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mood History -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Recent Mood History</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Mood</th>
+                                                <th>Notes</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="mood-history">
+                                            <tr>
+                                                <td>Jan 20, 2026</td>
+                                                <td><span class="badge bg-success">Excellent</span></td>
+                                                <td>Had a productive day and great workout</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewMoodDetails('Jan 20, 2026')">
+                                                        <i class="ti ti-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jan 19, 2026</td>
+                                                <td><span class="badge bg-info">Good</span></td>
+                                                <td>Good progress on personal projects</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewMoodDetails('Jan 19, 2026')">
+                                                        <i class="ti ti-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jan 18, 2026</td>
+                                                <td><span class="badge bg-warning">Neutral</span></td>
+                                                <td>Busy day at work, feeling tired</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewMoodDetails('Jan 18, 2026')">
+                                                        <i class="ti ti-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="calm_clarity/assets/js/sidebarmenu.js"></script>
+    <script src="calm_clarity/assets/js/app.min.js"></script>
+
+    <script>
+        // Sample mood data for the calendar
+        const moodData = {
+            1: 'excellent',
+            2: 'good',
+            3: 'neutral',
+            4: 'good',
+            5: 'excellent',
+            6: 'excellent',
+            7: 'good',
+            8: 'excellent',
+            9: 'good',
+            10: 'excellent',
+            11: 'good',
+            12: 'neutral',
+            13: 'good',
+            14: 'excellent',
+            15: 'excellent',
+            16: 'good',
+            17: 'excellent',
+            18: 'good',
+            19: 'excellent',
+            20: 'excellent',
+            21: 'good',
+            22: 'excellent',
+            23: 'good',
+            24: 'excellent',
+            25: 'excellent',
+            26: 'good',
+            27: 'excellent',
+            28: 'good',
+            29: 'excellent',
+            30: 'excellent',
+            31: 'good'
+        };
+
+        // Generate calendar
+        function generateCalendar() {
+            const calendar = document.getElementById('mood-calendar');
+            calendar.innerHTML = '';
+
+            // Add empty cells for days before the 1st
+            for (let i = 0; i < 3; i++) { // January 1st is a Wednesday in this example
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'mood-day empty';
+                calendar.appendChild(emptyDay);
+            }
+
+            // Add days 1-31
+            for (let day = 1; day <= 31; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = `mood-day ${moodData[day] || 'empty'}`;
+                dayElement.textContent = day;
+                dayElement.onclick = () => selectMoodDay(day);
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Select mood day
+        function selectMoodDay(day) {
+            const mood = moodData[day];
+            if (mood) {
+                alert(`On January ${day}, you were feeling: ${mood.charAt(0).toUpperCase() + mood.slice(1)}`);
+            } else {
+                alert(`No mood data for January ${day}`);
+            }
+        }
+
+        // Navigation functions (placeholders)
+        function previousMonth() {
+            alert('Previous month functionality would navigate to December 2025');
+        }
+
+        function nextMonth() {
+            alert('Next month functionality would navigate to February 2026');
+        }
+
+        // View mood details
+        function viewMoodDetails(date) {
+            alert(`Viewing detailed mood information for ${date}`);
+        }
+
+        // Initialize calendar on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar();
+        });
+    </script>
+</body>
+</html>

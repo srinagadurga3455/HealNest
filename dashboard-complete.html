@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HealNest - Complete Dashboard</title>
+    <link rel="shortcut icon" type="image/png" href="calm_clarity/assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="calm_clarity/assets/css/styles.min.css" />
+    <style>
+        .stats-card {
+            transition: transform 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#5D87FF 0% 85%, #e9ecef 85% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        .progress-text {
+            background: white;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .mood-tracker {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+        .mood-option {
+            text-align: center;
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .mood-option:hover {
+            background: #f8f9fa;
+            transform: scale(1.05);
+        }
+        .mood-option.selected {
+            background: #5D87FF;
+            color: white;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .task-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .task-checkbox {
+            margin-right: 1rem;
+            transform: scale(1.2);
+        }
+        .journal-entry {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        .quick-action-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .calendar-day {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .calendar-day:hover {
+            background: #5D87FF;
+            color: white;
+        }
+        .calendar-day.active {
+            background: #5D87FF;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!--  Body Wrapper -->
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
+        <!-- Sidebar Start -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a href="./dashboard.html" class="text-nowrap logo-img d-flex align-items-center gap-2">
+                        <h1 class="mb-0 fw-900 text-primary" style="font-size: 1.8rem; letter-spacing: 1px;">HealNest</h1>
+                    </a>
+                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8"></i>
+                    </div>
+                </div>
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <li class="nav-small-cap">
+                            <span class="hide-menu">HOME</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link active" href="./dashboard.html">
+                                <i class="ti ti-layout-dashboard"></i>
+                                <span class="hide-menu">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./assessment.html">
+                                <i class="ti ti-clipboard-check"></i>
+                                <span class="hide-menu">Assessment</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./program.html">
+                                <i class="ti ti-target"></i>
+                                <span class="hide-menu">Programs</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./journal.html">
+                                <i class="ti ti-edit"></i>
+                                <span class="hide-menu">Journal</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./mood.html">
+                                <i class="ti ti-mood-happy"></i>
+                                <span class="hide-menu">Mood Tracker</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <span class="hide-menu">ACCOUNT</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./profile.html">
+                                <i class="ti ti-user"></i>
+                                <span class="hide-menu">Profile</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./landing.html">
+                                <i class="ti ti-home"></i>
+                                <span class="hide-menu">Home</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <!--  Main wrapper -->
+        <div class="body-wrapper">
+            <!--  Header Start -->
+            <header class="app-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                            <li class="nav-item">
+                                <span class="text-muted me-3">Welcome back, Alex!</span>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown">
+                                    <img src="calm_clarity/assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                    <div class="message-body">
+                                        <a href="./profile.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-user fs-6"></i>
+                                            <p class="mb-0 fs-3">My Profile</p>
+                                        </a>
+                                        <a href="./journal.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-edit fs-6"></i>
+                                            <p class="mb-0 fs-3">Journal</p>
+                                        </a>
+                                        <a href="./landing.html" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-home fs-6"></i>
+                                            <p class="mb-0 fs-3">Home</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--  Header End -->
+            <div class="container-fluid">
+                <!-- Welcome Section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="journal-entry">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h2 class="mb-2">Welcome to HealNest! 🌟</h2>
+                                    <p class="mb-0 fs-5">Your personal mental wellness companion. Track your mood, complete assessments, and grow on your wellness journey.</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="progress-circle">
+                                        <div class="progress-text">85%</div>
+                                    </div>
+                                    <p class="mt-2 mb-0">Wellness Score</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Quick Actions</h5>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <a href="./assessment.html" class="quick-action-btn bg-primary text-white">
+                                        <i class="ti ti-clipboard-check me-2"></i>Take Assessment
+                                    </a>
+                                    <a href="./journal.html" class="quick-action-btn bg-success text-white">
+                                        <i class="ti ti-edit me-2"></i>Write Journal
+                                    </a>
+                                    <a href="./mood.html" class="quick-action-btn bg-info text-white">
+                                        <i class="ti ti-mood-happy me-2"></i>Track Mood
+                                    </a>
+                                    <a href="./program.html" class="quick-action-btn bg-warning text-white">
+                                        <i class="ti ti-target me-2"></i>View Programs
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="row mb-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="ti ti-heart text-danger" style="font-size: 2rem;"></i>
+                                </div>
+                                <h4 class="text-danger fw-bold">85%</h4>
+                                <p class="text-muted mb-0">Wellness Score</p>
+                                <small class="text-success">+5% from last week</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="ti ti-check-circle text-success" style="font-size: 2rem;"></i>
+                                </div>
+                                <h4 class="text-success fw-bold">24</h4>
+                                <p class="text-muted mb-0">Tasks Completed</p>
+                                <small class="text-success">+3 this week</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="ti ti-calendar text-primary" style="font-size: 2rem;"></i>
+                                </div>
+                                <h4 class="text-primary fw-bold">12</h4>
+                                <p class="text-muted mb-0">Journal Entries</p>
+                                <small class="text-success">+2 this week</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="ti ti-trending-up text-info" style="font-size: 2rem;"></i>
+                                </div>
+                                <h4 class="text-info fw-bold">7</h4>
+                                <p class="text-muted mb-0">Day Streak</p>
+                                <small class="text-success">Keep it up!</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Row -->
+                <div class="row">
+                    <!-- Today's Tasks -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center">
+                                    <i class="ti ti-list-check me-2 text-primary"></i>
+                                    Today's Tasks
+                                </h5>
+                                <div id="tasks-list">
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox" id="task1">
+                                        <div class="flex-grow-1">
+                                            <label for="task1" class="mb-0 fw-semibold">Morning Meditation</label>
+                                            <small class="text-muted d-block">10 minutes of mindfulness practice</small>
+                                        </div>
+                                        <small class="text-success">Completed</small>
+                                    </div>
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox" id="task2">
+                                        <div class="flex-grow-1">
+                                            <label for="task2" class="mb-0 fw-semibold">Gratitude Journal</label>
+                                            <small class="text-muted d-block">Write 3 things you're grateful for</small>
+                                        </div>
+                                        <small class="text-warning">Pending</small>
+                                    </div>
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox" id="task3">
+                                        <div class="flex-grow-1">
+                                            <label for="task3" class="mb-0 fw-semibold">Evening Walk</label>
+                                            <small class="text-muted d-block">20-minute walk in nature</small>
+                                        </div>
+                                        <small class="text-warning">Pending</small>
+                                    </div>
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox" id="task4">
+                                        <div class="flex-grow-1">
+                                            <label for="task4" class="mb-0 fw-semibold">Sleep Check</label>
+                                            <small class="text-muted d-block">Ensure 7-8 hours of quality sleep</small>
+                                        </div>
+                                        <small class="text-warning">Pending</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-primary mt-3" onclick="addNewTask()">
+                                    <i class="ti ti-plus me-1"></i>Add New Task
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mood Tracker & Calendar -->
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center">
+                                    <i class="ti ti-mood-happy me-2 text-success"></i>
+                                    How are you feeling today?
+                                </h5>
+                                <div class="mood-tracker">
+                                    <div class="mood-option" data-mood="excellent">
+                                        <i class="ti ti-mood-happy" style="font-size: 2rem;"></i>
+                                        <div>Excellent</div>
+                                    </div>
+                                    <div class="mood-option" data-mood="good">
+                                        <i class="ti ti-mood-smile" style="font-size: 2rem;"></i>
+                                        <div>Good</div>
+                                    </div>
+                                    <div class="mood-option" data-mood="neutral">
+                                        <i class="ti ti-mood-neutral" style="font-size: 2rem;"></i>
+                                        <div>Neutral</div>
+                                    </div>
+                                    <div class="mood-option" data-mood="challenging">
+                                        <i class="ti ti-mood-sad" style="font-size: 2rem;"></i>
+                                        <div>Challenging</div>
+                                    </div>
+                                </div>
+                                <div id="mood-feedback" class="mt-3 text-center" style="display: none;">
+                                    <p class="mb-0">Thanks for sharing! Your mood has been recorded.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mini Calendar -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center">
+                                    <i class="ti ti-calendar me-2 text-info"></i>
+                                    January 2026
+                                </h5>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                                </div>
+                                <div class="d-flex flex-wrap gap-1">
+                                    <div class="calendar-day">1</div>
+                                    <div class="calendar-day">2</div>
+                                    <div class="calendar-day">3</div>
+                                    <div class="calendar-day">4</div>
+                                    <div class="calendar-day">5</div>
+                                    <div class="calendar-day">6</div>
+                                    <div class="calendar-day">7</div>
+                                    <div class="calendar-day">8</div>
+                                    <div class="calendar-day">9</div>
+                                    <div class="calendar-day">10</div>
+                                    <div class="calendar-day">11</div>
+                                    <div class="calendar-day">12</div>
+                                    <div class="calendar-day">13</div>
+                                    <div class="calendar-day">14</div>
+                                    <div class="calendar-day">15</div>
+                                    <div class="calendar-day">16</div>
+                                    <div class="calendar-day">17</div>
+                                    <div class="calendar-day">18</div>
+                                    <div class="calendar-day">19</div>
+                                    <div class="calendar-day active">20</div>
+                                    <div class="calendar-day">21</div>
+                                    <div class="calendar-day">22</div>
+                                    <div class="calendar-day">23</div>
+                                    <div class="calendar-day">24</div>
+                                    <div class="calendar-day">25</div>
+                                    <div class="calendar-day">26</div>
+                                    <div class="calendar-day">27</div>
+                                    <div class="calendar-day">28</div>
+                                    <div class="calendar-day">29</div>
+                                    <div class="calendar-day">30</div>
+                                    <div class="calendar-day">31</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wellness Programs Preview -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center justify-content-between">
+                                    <span><i class="ti ti-target me-2 text-primary"></i>Your Wellness Programs</span>
+                                    <a href="./program.html" class="btn btn-sm btn-outline-primary">View All</a>
+                                </span>
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100 border-primary">
+                                            <div class="card-body text-center">
+                                                <i class="ti ti-brain text-primary mb-2" style="font-size: 2rem;"></i>
+                                                <h6>Mindfulness</h6>
+                                                <div class="progress mb-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-primary" style="width: 75%"></div>
+                                                </div>
+                                                <small class="text-muted">75% Complete</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100 border-success">
+                                            <div class="card-body text-center">
+                                                <i class="ti ti-heart text-success mb-2" style="font-size: 2rem;"></i>
+                                                <h6>Emotional Balance</h6>
+                                                <div class="progress mb-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-success" style="width: 60%"></div>
+                                                </div>
+                                                <small class="text-muted">60% Complete</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100 border-info">
+                                            <div class="card-body text-center">
+                                                <i class="ti ti-moon text-info mb-2" style="font-size: 2rem;"></i>
+                                                <h6>Sleep Wellness</h6>
+                                                <div class="progress mb-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-info" style="width: 45%"></div>
+                                                </div>
+                                                <small class="text-muted">45% Complete</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100 border-warning">
+                                            <div class="card-body text-center">
+                                                <i class="ti ti-users text-warning mb-2" style="font-size: 2rem;"></i>
+                                                <h6>Social Connection</h6>
+                                                <div class="progress mb-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-warning" style="width: 30%"></div>
+                                                </div>
+                                                <small class="text-muted">30% Complete</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="calm_clarity/assets/js/sidebarmenu.js"></script>
+    <script src="calm_clarity/assets/js/app.min.js"></script>
+
+    <script>
+        // Mood Tracker Functionality
+        document.querySelectorAll('.mood-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+
+                const mood = this.dataset.mood;
+                document.getElementById('mood-feedback').style.display = 'block';
+
+                // In a real app, this would save to localStorage or database
+                console.log('Mood recorded:', mood);
+            });
+        });
+
+        // Task Completion Functionality
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const taskItem = this.closest('.task-item');
+                const statusElement = taskItem.querySelector('small:last-child');
+
+                if (this.checked) {
+                    statusElement.textContent = 'Completed';
+                    statusElement.className = 'text-success';
+                    taskItem.style.opacity = '0.7';
+                } else {
+                    statusElement.textContent = 'Pending';
+                    statusElement.className = 'text-warning';
+                    taskItem.style.opacity = '1';
+                }
+            });
+        });
+
+        // Add New Task Functionality
+        function addNewTask() {
+            const taskName = prompt('Enter new task name:');
+            if (taskName) {
+                const taskList = document.getElementById('tasks-list');
+                const newTask = document.createElement('div');
+                newTask.className = 'task-item';
+                newTask.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" id="task${Date.now()}">
+                    <div class="flex-grow-1">
+                        <label for="task${Date.now()}" class="mb-0 fw-semibold">${taskName}</label>
+                        <small class="text-muted d-block">Custom task</small>
+                    </div>
+                    <small class="text-warning">Pending</small>
+                `;
+                taskList.appendChild(newTask);
+
+                // Add event listener to new checkbox
+                const newCheckbox = newTask.querySelector('.task-checkbox');
+                newCheckbox.addEventListener('change', function() {
+                    const taskItem = this.closest('.task-item');
+                    const statusElement = taskItem.querySelector('small:last-child');
+
+                    if (this.checked) {
+                        statusElement.textContent = 'Completed';
+                        statusElement.className = 'text-success';
+                        taskItem.style.opacity = '0.7';
+                    } else {
+                        statusElement.textContent = 'Pending';
+                        statusElement.className = 'text-warning';
+                        taskItem.style.opacity = '1';
+                    }
+                });
+            }
+        }
+
+        // Calendar Day Selection
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            day.addEventListener('click', function() {
+                document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+                console.log('Selected day:', this.textContent);
+            });
+        });
+
+        // Initialize today's date as active
+        const today = new Date().getDate();
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            if (parseInt(day.textContent) === today) {
+                day.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

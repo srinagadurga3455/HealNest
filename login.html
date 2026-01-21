@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HealNest - Sign In</title>
+    <link rel="shortcut icon" type="image/png" href="calm_clarity/assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="calm_clarity/assets/css/styles.min.css" />
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .auth-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+        }
+        .auth-header {
+            background: linear-gradient(135deg, #5D87FF 0%, #3B7BFF 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .auth-body {
+            padding: 2rem;
+        }
+        .form-control:focus {
+            border-color: #5D87FF;
+            box-shadow: 0 0 0 0.2rem rgba(93, 135, 255, 0.25);
+        }
+        .btn-auth {
+            background: linear-gradient(135deg, #5D87FF 0%, #3B7BFF 100%);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(93, 135, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2 class="mb-2">Welcome Back</h2>
+                <p class="mb-0">Sign in to your HealNest account</p>
+            </div>
+            <div class="auth-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-auth">Sign In</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <p class="mb-2">Don't have an account?</p>
+                    <a href="./register.html" class="text-decoration-none">Create Account</a>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="./landing.html" class="text-decoration-none text-muted">
+                        <i class="ti ti-arrow-left me-1"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Simple authentication (in a real app, this would validate against a database)
+            if (email && password) {
+                // Store login state
+                const userData = {
+                    email: email,
+                    name: email.split('@')[0], // Simple name extraction
+                    loggedIn: true,
+                    loginTime: new Date().toISOString()
+                };
+
+                localStorage.setItem('healNestUser', JSON.stringify(userData));
+
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
+                }
+
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Please enter both email and password');
+            }
+        });
+
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = localStorage.getItem('healNestUser');
+            if (userData) {
+                const user = JSON.parse(userData);
+                if (user.loggedIn) {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

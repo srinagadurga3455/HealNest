@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - MindRoutine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .card-header h2 {
+            color: #495057;
+            font-size: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .profile-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-image {
+            flex: 0 0 200px;
+            text-align: center;
+        }
+
+        .profile-image img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #e9ecef;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .info-value {
+            color: #495057;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        @media (max-width: 768px) {
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .info-label {
+                font-weight: normal;
+                color: #6c757d;
+            }
+
+            .info-value:before {
+                content: ": ";
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>My Profile</h1>
+            <p>Manage your personal information and account details</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>Profile Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="profile-section">
+                    <div class="profile-image">
+                        <img src="https://via.placeholder.com/150x150/667eea/white?text=Profile" alt="Profile Picture">
+                        <h3>John Doe</h3>
+                        <p style="color: #6c757d;">Active Member</p>
+                    </div>
+                    <div class="profile-info">
+                        <div class="info-grid">
+                            <div class="info-label">Full Name:</div>
+                            <div class="info-value">John Doe</div>
+
+                            <div class="info-label">Email Address:</div>
+                            <div class="info-value">john.doe@example.com</div>
+
+                            <div class="info-label">Phone Number:</div>
+                            <div class="info-value">+1 (555) 123-4567</div>
+
+                            <div class="info-label">Date of Birth:</div>
+                            <div class="info-value">January 15, 1990</div>
+
+                            <div class="info-label">Member Since:</div>
+                            <div class="info-value">January 2024</div>
+
+                            <div class="info-label">Account Status:</div>
+                            <div class="info-value">
+                                <span class="status-badge status-active">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Account Preferences</h2>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-label">Email Notifications:</div>
+                    <div class="info-value">Enabled</div>
+
+                    <div class="info-label">Two-Factor Authentication:</div>
+                    <div class="info-value">Disabled</div>
+
+                    <div class="info-label">Language:</div>
+                    <div class="info-value">English</div>
+
+                    <div class="info-label">Timezone:</div>
+                    <div class="info-value">UTC-5 (Eastern Time)</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="#" class="btn btn-primary" style="margin-right: 1rem;">Edit Profile</a>
+            <a href="#" class="btn btn-secondary">Change Password</a>
+        </div>
+    </div>
+</body>
+</html>
