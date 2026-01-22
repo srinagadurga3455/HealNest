@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>HealNest - Sign In</title>
-    <link rel="shortcut icon" type="image/png" href="calm_clarity/assets/images/logos/favicon.png" />
-    <link rel="stylesheet" href="calm_clarity/assets/css/styles.min.css" />
+    <link rel="shortcut icon" type="image/png" href="../calm_clarity/assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="../calm_clarity/assets/css/styles.min.css" />
+    <link rel="stylesheet" href="../css/main.css" />
     <style>
         .auth-container {
             min-height: 100vh;
@@ -92,8 +93,9 @@
         </div>
     </div>
 
-    <script src="calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -120,7 +122,7 @@
                 }
 
                 // Redirect to dashboard
-                window.location.href = 'dashboard.html';
+                window.location.href = './dashboard.html';
             } else {
                 alert('Please enter both email and password');
             }
@@ -132,7 +134,7 @@
             if (userData) {
                 const user = JSON.parse(userData);
                 if (user.loggedIn) {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = './dashboard.html';
                 }
             }
         });
