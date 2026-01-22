@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - HealNest</title>
+    <link rel="stylesheet" href="../redesign/styles.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="./dashboard.html" class="logo" style="display: block; padding: 0 24px; margin-bottom: 32px;">HealNest</a>
+            
+            <a href="./dashboard.html" class="sidebar-item">Dashboard</a>
+            <a href="./program.html" class="sidebar-item">Today's Task</a>
+            <a href="./profile.html" class="sidebar-item active">Profile</a>
+            
+            <a href="#" class="sidebar-item logout" data-logout>Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container">
+                <h1>Profile</h1>
+                
+                <div class="grid-2" style="margin-bottom: 32px;">
+                    <div class="card">
+                        <h3 id="userName">Loading...</h3>
+                        <p class="text-muted" id="userEmail">email@example.com</p>
+                        <p class="text-muted" id="joinDate">Joined recently</p>
+                    </div>
+                    <div class="card">
+                        <h3>Current Program</h3>
+                        <p id="activeProgram">Loading...</p>
+                        <p class="text-muted" style="margin: 0;">Personalized for your wellness</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="stat-box">
+                        <div class="stat-number" id="currentStreakProfile">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalStreakProfile">0</div>
+                        <div class="stat-label">Total Days Completed</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 32px;">
+                    <h3>Account Info</h3>
+                    <div style="padding: 16px 0;">
+                        <p><strong>Email:</strong> <span id="emailDisplay">email@example.com</span></p>
+                        <p><strong>Member Since:</strong> <span id="memberSince">Loading...</span></p>
+                        <p><strong>Assessment Score:</strong> <span id="assessmentScore">—</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../redesign/app.js"></script>
+    <script>
+        // Check if user is logged in
+        const currentUser = localStorage.getItem('healNestCurrentUser');
+        if (!currentUser) {
+            window.location.href = './login.html';
+        }
+
+        const user = JSON.parse(currentUser);
+
+        // Populate user info
+        document.getElementById('userName').textContent = user.fullName;
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('emailDisplay').textContent = user.email;
+        document.getElementById('activeProgram').textContent = user.activeProgram || 'No program';
+        document.getElementById('currentStreakProfile').textContent = user.currentStreak || 0;
+        document.getElementById('totalStreakProfile').textContent = user.totalStreak || 0;
+
+        // Format join date
+        const joinDate = new Date(user.createdAt);
+        document.getElementById('memberSince').textContent = joinDate.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        // Assessment score
+        if (user.assessmentScore) {
+            document.getElementById('assessmentScore').textContent = user.assessmentScore + ' / 25';
+        }
+
+        // Join date in header
+        document.getElementById('joinDate').textContent = 'Joined ' + joinDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    </script>
+</body>
+</html>

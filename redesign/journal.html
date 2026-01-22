@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal - HealNest</title>
+    <link rel="stylesheet" href="../redesign/styles.css">
+</head>
+<body>
+    <div class="small-container" style="padding: 48px 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+            <h1>Journal</h1>
+            <button class="btn btn-primary" onclick="showNewEntryForm()">+ New Entry</button>
+        </div>
+
+        <!-- New Entry Form (hidden by default) -->
+        <div id="newEntryForm" class="card hidden" style="margin-bottom: 32px;">
+            <form id="journalForm">
+                <label>Write your thoughts</label>
+                <textarea id="journalText" name="text" required placeholder="What's on your mind? Write freely..."></textarea>
+                
+                <div style="display: flex; gap: 12px;">
+                    <button type="submit" class="btn btn-primary">Save Entry</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideNewEntryForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Entries List -->
+        <div id="entriesList">
+            <p style="color: #999; text-align: center; padding: 48px 24px;">No entries yet. Write your first one!</p>
+        </div>
+    </div>
+
+    <script src="../redesign/app.js"></script>
+    <script>
+        // Check if user is logged in
+        const currentUser = localStorage.getItem('healNestCurrentUser');
+        if (!currentUser) {
+            window.location.href = './login.html';
+        }
+
+        const user = JSON.parse(currentUser);
+
+        function showNewEntryForm() {
+            document.getElementById('newEntryForm').classList.remove('hidden');
+            document.getElementById('journalText').focus();
+        }
+
+        function hideNewEntryForm() {
+            document.getElementById('newEntryForm').classList.add('hidden');
+            document.getElementById('journalText').value = '';
+        }
+
+        function loadEntries() {
+            const entries = JSON.parse(localStorage.getItem('healNestJournal') || '[]');
+            const userEntries = entries.filter(e => e.userId === user.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const list = document.getElementById('entriesList');
+            
+            if (userEntries.length === 0) {
+                list.innerHTML = '<p style="color: #999; text-align: center; padding: 48px 24px;">No entries yet. Write your first one!</p>';
+                return;
+            }
+
+            list.innerHTML = userEntries.map(entry => `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">${new Date(entry.date).toLocaleDateString('en-US', {
+                                weekday: 'long',
+                                month: 'long',
+                                day: 'numeric'
+                            })}</h3>
+                            <p class="text-muted" style="margin: 0;">${new Date(entry.date).toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit'
+                            })}</p>
+                        </div>
+                        <button class="btn btn-secondary btn-small" onclick="deleteEntry(${entry.id})">Delete</button>
+                    </div>
+                    <p>${entry.text.replace(/\n/g, '<br>')}</p>
+                </div>
+            `).join('');
+        }
+
+        function deleteEntry(id) {
+            if (confirm('Delete this entry?')) {
+                const entries = JSON.parse(localStorage.getItem('healNestJournal') || '[]');
+                const filtered = entries.filter(e => e.id !== id);
+                localStorage.setItem('healNestJournal', JSON.stringify(filtered));
+                loadEntries();
+            }
+        }
+
+        document.getElementById('journalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const text = document.getElementById('journalText').value;
+            const entries = JSON.parse(localStorage.getItem('healNestJournal') || '[]');
+
+            entries.push({
+                id: Date.now(),
+                userId: user.id,
+                text,
+                date: new Date().toISOString()
+            });
+
+            localStorage.setItem('healNestJournal', JSON.stringify(entries));
+            hideNewEntryForm();
+            loadEntries();
+        });
+
+        loadEntries();
+    </script>
+</body>
+</html>

@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>HealNest - Sign Up</title>
-    <link rel="shortcut icon" type="image/png" href="calm_clarity/assets/images/logos/favicon.png" />
-    <link rel="stylesheet" href="calm_clarity/assets/css/styles.min.css" />
+    <link rel="shortcut icon" type="image/png" href="../calm_clarity/assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="../calm_clarity/assets/css/styles.min.css" />
+    <link rel="stylesheet" href="../css/main.css" />
     <style>
         .auth-container {
             min-height: 100vh;
@@ -48,6 +49,28 @@
         .btn-auth:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(93, 135, 255, 0.3);
+            color: white;
+        }
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            border-radius: 2px;
+            background: #e9ecef;
+            overflow: hidden;
+        }
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+        .strength-weak { background: #FA5252; }
+        .strength-fair { background: #FFD666; }
+        .strength-good { background: #49BEFF; }
+        .strength-strong { background: #20c997; }
+        .strength-text {
+            font-size: 12px;
+            margin-top: 0.25rem;
+            display: block;
         }
     </style>
 </head>
@@ -72,6 +95,10 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" placeholder="Create a password" required>
+                        <div class="password-strength">
+                            <div class="strength-bar" id="strengthBar"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText">Password strength: Weak</span>
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Confirm Password</label>
@@ -100,10 +127,35 @@
         </div>
     </div>
 
-    <script src="calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
 
     <script>
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            let strength = 0;
+
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            const widths = ['25%', '50%', '75%', '100%'];
+            const levels = ['Weak', 'Fair', 'Good', 'Strong'];
+            const classes = ['strength-weak', 'strength-fair', 'strength-good', 'strength-strong'];
+
+            if (strength > 0) {
+                strengthBar.style.width = widths[strength - 1];
+                strengthBar.className = 'strength-bar ' + classes[strength - 1];
+                strengthText.textContent = 'Password strength: ' + levels[strength - 1];
+                strengthText.className = 'strength-text text-' + classes[strength - 1];
+            }
+        });
+
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -135,7 +187,7 @@
                 localStorage.setItem('healNestUser', JSON.stringify(userData));
 
                 alert('Account created successfully! You can now sign in.');
-                window.location.href = 'login.html';
+                window.location.href = './login.html';
             } else {
                 alert('Please fill in all fields');
             }
