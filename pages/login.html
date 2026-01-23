@@ -1,141 +1,537 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HealNest - Sign In</title>
-    <link rel="shortcut icon" type="image/png" href="../calm_clarity/assets/images/logos/favicon.png" />
-    <link rel="stylesheet" href="../calm_clarity/assets/css/styles.min.css" />
-    <link rel="stylesheet" href="../css/main.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - HealNest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .auth-container {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            position: relative;
         }
-        .auth-card {
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+
+        .auth-container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            max-width: 400px;
+            border-radius: 20px;
+            padding: 3rem;
             width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
-        .auth-header {
-            background: linear-gradient(135deg, #5D87FF 0%, #3B7BFF 100%);
-            color: white;
-            padding: 2rem;
+
+        .logo {
             text-align: center;
+            margin-bottom: 2rem;
         }
-        .auth-body {
-            padding: 2rem;
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #5D87FF;
+            margin-bottom: 0.5rem;
         }
-        .form-control:focus {
-            border-color: #5D87FF;
-            box-shadow: 0 0 0 0.2rem rgba(93, 135, 255, 0.25);
+
+        .logo p {
+            color: #6c757d;
+            font-size: 0.9rem;
         }
-        .btn-auth {
-            background: linear-gradient(135deg, #5D87FF 0%, #3B7BFF 100%);
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2A3547;
+        }
+
+        .form-control {
             width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #5D87FF;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(93, 135, 255, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .auth-footer p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #5D87FF;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .forgot-password a {
+            color: #5D87FF;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: all 0.3s ease;
         }
-        .btn-auth:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(93, 135, 255, 0.3);
+
+        .back-link:hover {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .back-link {
+                position: relative;
+                top: 0;
+                left: 0;
+                color: #6c757d;
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
-
 <body>
+    <a href="./landing.html" class="back-link">← Back to Home</a>
+    
     <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h2 class="mb-2">Welcome Back</h2>
-                <p class="mb-0">Sign in to your HealNest account</p>
-            </div>
-            <div class="auth-body">
-                <form id="loginForm">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">
-                            Remember me
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-auth">Sign In</button>
-                </form>
+        <div class="logo">
+            <h1>🌟 HealNest</h1>
+            <p>Welcome back! Sign in to continue your wellness journey</p>
+        </div>
 
-                <div class="text-center mt-3">
-                    <p class="mb-2">Don't have an account?</p>
-                    <a href="./register.html" class="text-decoration-none">Create Account</a>
-                </div>
+        <div id="alertDiv" class="alert hidden"></div>
 
-                <div class="text-center mt-3">
-                    <a href="./landing.html" class="text-decoration-none text-muted">
-                        <i class="ti ti-arrow-left me-1"></i>Back to Home
-                    </a>
-                </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
             </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#">Forgot your password?</a>
+            </div>
+
+            <button type="submit" id="loginBtn" class="btn">Sign In</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="./register.html">Sign up here</a></p>
         </div>
     </div>
 
-    <script src="../calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="../calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/main.js"></script>
-
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const alertDiv = document.getElementById('alertDiv');
+
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const email = document.getElementById('email').value;
+            
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
 
-            // Simple authentication (in a real app, this would validate against a database)
-            if (email && password) {
-                // Store login state
-                const userData = {
-                    email: email,
-                    name: email.split('@')[0], // Simple name extraction
-                    loggedIn: true,
-                    loginTime: new Date().toISOString()
-                };
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
 
-                localStorage.setItem('healNestUser', JSON.stringify(userData));
+            if (!isValidEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
 
-                if (rememberMe) {
-                    localStorage.setItem('rememberMe', 'true');
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing In...';
+
+            setTimeout(() => {
+                try {
+                    // In a real app, this would make an API call
+                    const user = Auth.login(email, password);
+                    
+                    showAlert('Login successful!', 'success');
+                    
+                    setTimeout(() => {
+                        // Check if user has program assigned
+                        const user = Auth.getCurrentUser();
+                        const hasCompletedAssessment = localStorage.getItem('healNestAssessmentCompleted');
+                        
+                        if (user.assigned_program_id || hasCompletedAssessment) {
+                            // User has program or completed assessment, go to dashboard
+                            window.location.href = './dashboard.html';
+                        } else {
+                            // No program assigned, redirect to assessment
+                            window.location.href = './assessment.html';
+                        }
+                    }, 1000);
+                    
+                } catch (error) {
+                    showAlert('Invalid email or password', 'error');
+                    resetButton();
                 }
-
-                // Redirect to dashboard
-                window.location.href = './dashboard.html';
-            } else {
-                alert('Please enter both email and password');
+            }, 1000);
+            
+            function showAlert(message, type) {
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.textContent = message;
+                alertDiv.classList.remove('hidden');
+            }
+            
+            function resetButton() {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
             }
         });
 
-        // Check if user is already logged in
-        document.addEventListener('DOMContentLoaded', function() {
-            const userData = localStorage.getItem('healNestUser');
-            if (userData) {
-                const user = JSON.parse(userData);
-                if (user.loggedIn) {
-                    window.location.href = './dashboard.html';
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showAlert(message, type) {
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #1a1a1a;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .auth-footer {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .auth-footer p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .auth-footer a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <h1>HealNest</h1>
+            <p>Sign in to continue</p>
+        </div>
+
+        <div id="alert" class="alert hidden"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn-primary" id="loginBtn">
+                <span id="btnText">Sign In</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="./register.html">Sign up</a></p>
+            <a href="./landing.html" class="back-link">← Back to home</a>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const alertDiv = document.getElementById('alert');
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('btnText');
+            
+            // Clear previous alerts
+            alertDiv.classList.add('hidden');
+            
+            // Basic validation
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.classList.add('loading');
+            btnText.textContent = 'Signing in...';
+            
+            // Simulate login process
+            setTimeout(() => {
+                try {
+                    // In a real app, this would make an API call
+                    const user = Auth.login(email, password);
+                    
+                    showAlert('Login successful!', 'success');
+                    
+                    setTimeout(() => {
+                        // Check if user has program assigned
+                        const user = Auth.getCurrentUser();
+                        const hasCompletedAssessment = localStorage.getItem('healNestAssessmentCompleted');
+                        
+                        if (user.assigned_program_id || hasCompletedAssessment) {
+                            // User has program or completed assessment, go to dashboard
+                            window.location.href = './dashboard.html';
+                        } else {
+                            // No program assigned, redirect to assessment
+                            window.location.href = './assessment.html';
+                        }
+                    }, 1000);
+                    
+                } catch (error) {
+                    showAlert('Invalid email or password', 'error');
+                    resetButton();
                 }
+            }, 1000);
+            
+            function showAlert(message, type) {
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.textContent = message;
+                alertDiv.classList.remove('hidden');
+            }
+            
+            function resetButton() {
+                loginBtn.disabled = false;
+                loginBtn.classList.remove('loading');
+                btnText.textContent = 'Sign In';
+            }
+            
+            function isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             }
         });
     </script>

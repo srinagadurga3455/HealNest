@@ -3,13 +3,1890 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealNest - Youth Empowerment Platform</title>
-    <script>
-        // Redirect to landing page
-        window.location.href = 'pages/landing.html';
-    </script>
+    <title>HealNest - Mental Wellness Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #5D87FF;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #5D87FF;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #5D87FF;
+            border: 2px solid #5D87FF;
+        }
+
+        .btn-outline:hover {
+            background: #5D87FF;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(93, 135, 255, 0.4);
+        }
+
+        /* Landing Page */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wellness-circle {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            font-size: 4rem;
+        }
+
+        /* Auth Pages */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .auth-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+            margin: 2rem;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #5D87FF;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-logo p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2A3547;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #5D87FF;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.1);
+        }
+
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .auth-footer p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #5D87FF;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Assessment Page */
+        .assessment-page {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding: 2rem;
+        }
+
+        .assessment-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+
+        .assessment-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar-custom {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .answer-option {
+            padding: 1rem 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .answer-option:hover {
+            border-color: #5D87FF;
+            background: rgba(93, 135, 255, 0.05);
+        }
+
+        .answer-option.selected {
+            border-color: #5D87FF;
+            background: rgba(93, 135, 255, 0.1);
+            color: #5D87FF;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn-nav {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-prev {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            color: white;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #13DEB9 0%, #20c997 100%);
+            color: white;
+        }
+
+        /* Dashboard */
+        .dashboard-page {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e9ecef;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .sidebar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #5D87FF;
+            text-decoration: none;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #5D87FF;
+        }
+
+        .nav-link.active {
+            background: rgba(93, 135, 255, 0.1);
+            color: #5D87FF;
+            border-right: 4px solid #5D87FF;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 2rem;
+            background: #f8f9fa;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .program-card {
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .program-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #5D87FF;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mood-tracker {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+
+        .mood-option {
+            text-align: center;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            flex: 1;
+            margin: 0 0.25rem;
+        }
+
+        .mood-option:hover {
+            background: rgba(93, 135, 255, 0.1);
+        }
+
+        .mood-option.selected {
+            background: #5D87FF;
+            color: white;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .task-checkbox {
+            margin-right: 1rem;
+            transform: scale(1.2);
+            accent-color: #5D87FF;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 0.25rem;
+        }
+
+        .task-description {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-    <p>Loading HealNest...</p>
+    <!-- Landing Page -->
+    <div id="landingPage" class="page active">
+        <header class="header">
+            <nav class="nav">
+                <div class="logo" onclick="showPage('landingPage')">🌟 HealNest</div>
+                <ul class="nav-links">
+                    <li><a onclick="scrollToFeatures()">Features</a></li>
+                    <li><a onclick="scrollToAbout()">About</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" onclick="showPage('loginPage')">Sign In</button>
+                    <button class="btn btn-primary" onclick="showPage('registerPage')">Get Started</button>
+                </div>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Your Mental Wellness Journey Starts Here</h1>
+                    <p>HealNest is your personal mental health companion. Take assessments, get personalized programs, track your mood, and build healthy habits for a better you.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="showPage('registerPage')">Start Your Journey</button>
+                        <button class="btn btn-outline" onclick="showPage('loginPage')">Sign In</button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="wellness-circle">🌟</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Register Page -->
+    <div id="registerPage" class="page">
+        <div class="auth-page">
+            <div class="back-link" onclick="showPage('landingPage')">← Back to Home</div>
+            
+            <div class="auth-container">
+                <div class="auth-logo">
+                    <h1>🌟 HealNest</h1>
+                    <p>Create your account to start your wellness journey</p>
+                </div>
+
+                <div id="registerAlert" class="alert hidden"></div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="regFullName">Full Name</label>
+                        <input type="text" id="regFullName" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" class="form-control" placeholder="Create a strong password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a onclick="showPage('loginPage')">Sign in here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page">
+        <div class="auth-page">
+            <div class="back-link" onclick="showPage('landingPage')">← Back to Home</div>
+            
+            <div class="auth-container">
+                <div class="auth-logo">
+                    <h1>🌟 HealNest</h1>
+                    <p>Welcome back! Sign in to continue your wellness journey</p>
+                </div>
+
+                <div id="loginAlert" class="alert hidden"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a onclick="showPage('registerPage')">Sign up here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment Page -->
+    <div id="assessmentPage" class="page">
+        <div class="assessment-page">
+            <div class="assessment-container">
+                <div class="assessment-header">
+                    <h1>Mental Health Assessment</h1>
+                    <p>This assessment will help us understand your current mental wellness and provide personalized recommendations.</p>
+                </div>
+
+                <div class="progress-container">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Progress</span>
+                        <span><span id="currentQuestion">1</span> of 5</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+                    </div>
+                </div>
+
+                <div id="assessmentQuestions">
+                    <div class="question-card">
+                        <div class="question-text" id="questionText">Over the past two weeks, how often have you felt down, depressed, or hopeless?</div>
+                        <div class="answer-options" id="answerOptions">
+                            <div class="answer-option" data-value="0">Not at all</div>
+                            <div class="answer-option" data-value="1">Several days</div>
+                            <div class="answer-option" data-value="2">More than half the days</div>
+                            <div class="answer-option" data-value="3">Nearly every day</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn-nav btn-prev" id="prevBtn" onclick="previousQuestion()" style="display: none;">Previous</button>
+                    <button class="btn-nav btn-next" id="nextBtn" onclick="nextQuestion()">Next</button>
+                    <button class="btn-nav btn-submit" id="submitBtn" onclick="submitAssessment()" style="display: none;">Complete Assessment</button>
+                </div>
+
+                <div id="resultsSection" class="hidden">
+                    <div class="question-card" style="text-align: center;">
+                        <h2>Assessment Complete!</h2>
+                        <div id="programAssignment"></div>
+                        <button class="btn btn-primary" onclick="goToDashboard()">Continue to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="page">
+        <div class="dashboard-page">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-brand">🌟 HealNest</div>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <div class="nav-item">
+                        <div class="nav-link active" onclick="showDashboardSection('dashboard')">
+                            <span>🏠</span> Dashboard
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-link" onclick="showDashboardSection('program')">
+                            <span>🎯</span> My Program
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-link" onclick="showDashboardSection('tasks')">
+                            <span>✅</span> Today's Tasks
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-link" onclick="showDashboardSection('profile')">
+                            <span>👤</span> Profile
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <div class="main-content">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="dashboard-section active">
+                    <div class="welcome-section">
+                        <div class="welcome-content">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: center;">
+                                <div>
+                                    <h2><span id="greeting">Good morning</span>, <span id="userName">User</span>! 🌟</h2>
+                                    <p>Welcome to your wellness dashboard. Track your progress and continue your mental health journey.</p>
+                                    <div style="margin-top: 1rem;">
+                                        <small style="opacity: 0.9;">Today's Performance: <span id="todayPerformance">0%</span> | Streak: <span id="streakDisplay">0</span> days</small>
+                                    </div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div class="wellness-circle" style="width: 120px; height: 120px; font-size: 1.5rem; font-weight: 700;">75%</div>
+                                    <p style="margin-top: 0.5rem; margin-bottom: 0; opacity: 0.9;">Wellness Score</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-number" id="currentStreak">5</div>
+                            <div class="stat-label">Current Streak</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-number" id="maxStreak">12</div>
+                            <div class="stat-label">Max Streak</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-number" id="programDays">15</div>
+                            <div class="stat-label">Program Days</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">📝</div>
+                            <div class="stat-number" id="journalCount">8</div>
+                            <div class="stat-label">Journal Entries</div>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div class="left-column">
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <span>😊</span> How are you feeling today?
+                                </h3>
+                                
+                                <div class="mood-tracker">
+                                    <div class="mood-option" data-mood="excellent">
+                                        <div style="font-size: 1.5rem;">😄</div>
+                                        <div style="font-size: 0.7rem; font-weight: 600;">Excellent</div>
+                                    </div>
+                                    <div class="mood-option" data-mood="good">
+                                        <div style="font-size: 1.5rem;">😊</div>
+                                        <div style="font-size: 0.7rem; font-weight: 600;">Good</div>
+                                    </div>
+                                    <div class="mood-option" data-mood="neutral">
+                                        <div style="font-size: 1.5rem;">😐</div>
+                                        <div style="font-size: 0.7rem; font-weight: 600;">Neutral</div>
+                                    </div>
+                                    <div class="mood-option" data-mood="challenging">
+                                        <div style="font-size: 1.5rem;">😔</div>
+                                        <div style="font-size: 0.7rem; font-weight: 600;">Challenging</div>
+                                    </div>
+                                </div>
+                                
+                                <div id="moodFeedback" class="hidden" style="text-align: center; margin-top: 1rem; color: #28a745;">
+                                    <p>Thanks for sharing! Your mood has been recorded.</p>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <span>📔</span> Recent Journal Entries
+                                </h3>
+                                
+                                <div id="journalEntries">
+                                    <div style="text-align: center; padding: 2rem; color: #6c757d;">
+                                        <div style="font-size: 2rem; margin-bottom: 1rem;">📔</div>
+                                        <p>No journal entries yet</p>
+                                        <button class="btn btn-primary" style="margin-top: 1rem;">Write Your First Entry</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="right-column">
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <span>🎯</span> Quick Actions
+                                </h3>
+                                
+                                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                    <button class="btn btn-primary" onclick="showDashboardSection('tasks')">
+                                        ✅ Complete Today's Tasks
+                                    </button>
+                                    <button class="btn btn-outline" onclick="showDashboardSection('program')">
+                                        🎯 View My Program
+                                    </button>
+                                    <button class="btn btn-outline" onclick="showDashboardSection('profile')">
+                                        👤 Update Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Program Section -->
+                <div id="programSection" class="dashboard-section">
+                    <div class="program-card">
+                        <div style="position: relative; z-index: 2;">
+                            <h2 id="programName">Your Wellness Program</h2>
+                            <p id="programDescription">Loading your personalized program...</p>
+                            <small id="programReason" style="opacity: 0.9;">Based on your assessment results</small>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h3 class="card-title">
+                            <span>📊</span> Program Progress
+                        </h3>
+                        
+                        <div class="stats-grid" style="margin-bottom: 0;">
+                            <div class="stat-card">
+                                <div class="stat-icon">📅</div>
+                                <div class="stat-number" id="programDaysDetail">15</div>
+                                <div class="stat-label">Days Active</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">✅</div>
+                                <div class="stat-number" id="totalTasksCompleted">42</div>
+                                <div class="stat-label">Tasks Completed</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">🔥</div>
+                                <div class="stat-number" id="programStreak">5</div>
+                                <div class="stat-label">Current Streak</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-number" id="programCompletion">68%</div>
+                                <div class="stat-label">Completion Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h3 class="card-title">
+                            <span>🎯</span> Program Details
+                        </h3>
+                        
+                        <div id="programDetails">
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem;">
+                                <h4 style="color: #5D87FF; margin-bottom: 0.5rem;">Why This Program?</h4>
+                                <p id="programReasonDetail" style="margin: 0; color: #6c757d;">Based on your assessment results</p>
+                            </div>
+                            
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px;">
+                                <h4 style="color: #5D87FF; margin-bottom: 0.5rem;">Daily Tasks Overview</h4>
+                                <ul id="programTasksList" style="margin: 0; padding-left: 1.5rem; color: #6c757d;">
+                                    <!-- Tasks will be loaded here -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks Section -->
+                <div id="tasksSection" class="dashboard-section">
+                    <div class="welcome-section" style="background: linear-gradient(135deg, #13DEB9 0%, #20c997 100%);">
+                        <div class="welcome-content">
+                            <h2>Today's Tasks 📝</h2>
+                            <p>Complete your daily wellness tasks to maintain your streak and improve your mental health.</p>
+                            <div style="margin-top: 1rem;">
+                                <small style="opacity: 0.9;">Today's Progress: <span id="taskProgress">0/3</span> completed</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h3 class="card-title">
+                            <span>✅</span> Daily Tasks
+                        </h3>
+                        
+                        <ul class="task-list" id="todaysTasks">
+                            <!-- Tasks will be loaded here -->
+                        </ul>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h3 class="card-title">
+                            <span>💡</span> Today's Wellness Tip
+                        </h3>
+                        
+                        <div id="wellnessTip" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">🌟</div>
+                            <p style="margin: 0; font-size: 1.1rem; font-weight: 500;">Take a moment to breathe deeply and appreciate the progress you've made today.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profileSection" class="dashboard-section">
+                    <div class="welcome-section" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);">
+                        <div class="welcome-content">
+                            <h2>Your Profile 👤</h2>
+                            <p>Manage your account settings and view your wellness journey statistics.</p>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div class="left-column">
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <span>👤</span> Personal Information
+                                </h3>
+                                
+                                <form id="profileForm">
+                                    <div class="form-group">
+                                        <label for="profileName">Full Name</label>
+                                        <input type="text" id="profileName" class="form-control" placeholder="Enter your full name">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="profileEmail">Email Address</label>
+                                        <input type="email" id="profileEmail" class="form-control" placeholder="Enter your email" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="profileAge">Age</label>
+                                        <input type="number" id="profileAge" class="form-control" placeholder="Enter your age" min="13" max="120">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="profileGoals">Wellness Goals</label>
+                                        <textarea id="profileGoals" class="form-control" rows="3" placeholder="What are your wellness goals?"></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="right-column">
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <span>📊</span> Your Statistics
+                                </h3>
+                                
+                                <div class="stats-grid" style="margin-bottom: 1rem;">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">📅</div>
+                                        <div class="stat-number" id="profileDays">15</div>
+                                        <div class="stat-label">Days on HealNest</div>
+                                    </div>
+                                    
+                                    <div class="stat-card">
+                                        <div class="stat-icon">🏆</div>
+                                        <div class="stat-number" id="profileAchievements">3</div>
+                                        <div class="stat-label">Achievements</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <span>🏆</span> Achievements
+                                </h3>
+                                
+                                <div id="achievementsList">
+                                    <div style="display: flex; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 10px; margin-bottom: 0.5rem;">
+                                        <div style="font-size: 1.5rem; margin-right: 1rem;">🌟</div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #2A3547;">First Steps</div>
+                                            <div style="font-size: 0.8rem; color: #6c757d;">Completed your first assessment</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 10px; margin-bottom: 0.5rem;">
+                                        <div style="font-size: 1.5rem; margin-right: 1rem;">🔥</div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #2A3547;">Streak Starter</div>
+                                            <div style="font-size: 0.8rem; color: #6c757d;">Maintained a 3-day streak</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                                        <div style="font-size: 1.5rem; margin-right: 1rem;">📝</div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #2A3547;">Task Master</div>
+                                            <div style="font-size: 0.8rem; color: #6c757d;">Completed 10 daily tasks</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let currentQuestionIndex = 0;
+        let assessmentAnswers = {};
+        let assignedProgram = null;
+
+        // Assessment Questions
+        const questions = [
+            {
+                text: "Over the past two weeks, how often have you felt down, depressed, or hopeless?",
+                options: [
+                    { text: "Not at all", value: 0 },
+                    { text: "Several days", value: 1 },
+                    { text: "More than half the days", value: 2 },
+                    { text: "Nearly every day", value: 3 }
+                ]
+            },
+            {
+                text: "How often do you feel nervous, anxious, or on edge?",
+                options: [
+                    { text: "Not at all", value: 0 },
+                    { text: "Several days", value: 1 },
+                    { text: "More than half the days", value: 2 },
+                    { text: "Nearly every day", value: 3 }
+                ]
+            },
+            {
+                text: "How often do you feel overwhelmed by daily responsibilities?",
+                options: [
+                    { text: "Never", value: 0 },
+                    { text: "Sometimes", value: 1 },
+                    { text: "Often", value: 2 },
+                    { text: "Always", value: 3 }
+                ]
+            },
+            {
+                text: "How would you rate your sleep quality over the past month?",
+                options: [
+                    { text: "Very good", value: 0 },
+                    { text: "Fairly good", value: 1 },
+                    { text: "Fairly bad", value: 2 },
+                    { text: "Very bad", value: 3 }
+                ]
+            },
+            {
+                text: "Overall, how would you rate your current mental wellness?",
+                options: [
+                    { text: "Excellent", value: 0 },
+                    { text: "Good", value: 1 },
+                    { text: "Fair", value: 2 },
+                    { text: "Poor", value: 3 }
+                ]
+            }
+        ];
+
+        // Programs
+        const programs = {
+            1: {
+                name: 'Mindfulness & Stress Relief',
+                description: 'Daily meditation and stress management techniques to help you find inner peace and reduce anxiety.',
+                reason: 'Your assessment shows elevated stress levels. This program will help you develop coping strategies.',
+                tasks: [
+                    { id: 1, title: 'Morning Meditation', description: '10 minutes of guided mindfulness meditation' },
+                    { id: 2, title: 'Breathing Exercise', description: '5-minute deep breathing for stress relief' },
+                    { id: 3, title: 'Stress Level Check', description: 'Rate and reflect on your stress level (1-10)' }
+                ]
+            },
+            2: {
+                name: 'Emotional Balance & Resilience',
+                description: 'Build emotional intelligence and resilience through targeted exercises and journaling.',
+                reason: 'Your responses indicate mood fluctuations. This program focuses on emotional stability.',
+                tasks: [
+                    { id: 1, title: 'Emotion Check-in', description: 'Identify and name your current emotions' },
+                    { id: 2, title: 'Gratitude Journal', description: 'Write 3 things you are grateful for today' },
+                    { id: 3, title: 'Positive Affirmations', description: 'Recite 5 positive affirmations about yourself' }
+                ]
+            },
+            3: {
+                name: 'Sleep Optimization & Recovery',
+                description: 'Improve sleep quality and establish healthy sleep habits for better energy and wellness.',
+                reason: 'Your assessment shows sleep-related concerns. Better sleep will improve your overall wellness.',
+                tasks: [
+                    { id: 1, title: 'Sleep Schedule Check', description: 'Go to bed at your target time' },
+                    { id: 2, title: 'Screen Time Limit', description: 'No screens 1 hour before bedtime' },
+                    { id: 3, title: 'Relaxation Routine', description: 'Practice your bedtime relaxation routine' }
+                ]
+            },
+            4: {
+                name: 'Anxiety Management & Coping',
+                description: 'Learn evidence-based techniques to manage anxiety and build confidence in daily situations.',
+                reason: 'Your responses suggest anxiety symptoms. This program provides practical coping tools.',
+                tasks: [
+                    { id: 1, title: 'Anxiety Breathing', description: '4-7-8 breathing technique for anxiety relief' },
+                    { id: 2, title: 'Grounding Exercise', description: '5-4-3-2-1 grounding technique when feeling anxious' },
+                    { id: 3, title: 'Worry Time', description: 'Dedicated 10 minutes to process worries constructively' }
+                ]
+            },
+            5: {
+                name: 'Self-Confidence & Personal Growth',
+                description: 'Build self-esteem and develop leadership skills through daily challenges and goal-setting.',
+                reason: 'Your assessment indicates potential for growth. This program will boost your confidence.',
+                tasks: [
+                    { id: 1, title: 'Goal Review', description: 'Review and update your daily goals' },
+                    { id: 2, title: 'Confidence Building', description: 'Complete one task outside your comfort zone' },
+                    { id: 3, title: 'Self-Reflection', description: 'Reflect on your progress and learnings' }
+                ]
+            }
+        };
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Authentication
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('regFullName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            if (!fullName || !email || !password) {
+                showAlert('registerAlert', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            currentUser = {
+                fullName: fullName,
+                email: email,
+                createdAt: new Date().toISOString()
+            };
+
+            showAlert('registerAlert', 'Account created successfully!', 'success');
+            
+            setTimeout(() => {
+                showPage('assessmentPage');
+                loadQuestion(0);
+            }, 1500);
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showAlert('loginAlert', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            currentUser = {
+                fullName: email.split('@')[0],
+                email: email,
+                loginTime: new Date().toISOString()
+            };
+
+            showAlert('loginAlert', 'Login successful!', 'success');
+            
+            setTimeout(() => {
+                if (assignedProgram) {
+                    showPage('dashboardPage');
+                    loadDashboard();
+                } else {
+                    showPage('assessmentPage');
+                    loadQuestion(0);
+                }
+            }, 1500);
+        });
+
+        // Assessment
+        function loadQuestion(index) {
+            const question = questions[index];
+            document.getElementById('questionText').textContent = question.text;
+            document.getElementById('currentQuestion').textContent = index + 1;
+            
+            const progress = ((index + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            const optionsContainer = document.getElementById('answerOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'answer-option';
+                optionDiv.dataset.value = option.value;
+                optionDiv.textContent = option.text;
+                optionDiv.onclick = () => selectAnswer(optionDiv);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = index > 0 ? 'block' : 'none';
+            
+            if (index === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function selectAnswer(element) {
+            document.querySelectorAll('.answer-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            assessmentAnswers[currentQuestionIndex] = parseInt(element.dataset.value);
+        }
+
+        function nextQuestion() {
+            if (assessmentAnswers[currentQuestionIndex] === undefined) {
+                alert('Please select an answer before continuing.');
+                return;
+            }
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitAssessment() {
+            if (assessmentAnswers[currentQuestionIndex] === undefined) {
+                alert('Please select an answer before submitting.');
+                return;
+            }
+
+            // Calculate results and assign program
+            const totalScore = Object.values(assessmentAnswers).reduce((sum, value) => sum + value, 0);
+            
+            // Assign program based on answers
+            let programId = 1; // Default
+            
+            if (assessmentAnswers[1] >= 2) programId = 4; // High anxiety -> Anxiety Management
+            else if (assessmentAnswers[3] >= 2) programId = 3; // Poor sleep -> Sleep Optimization  
+            else if (assessmentAnswers[0] >= 2) programId = 2; // Depression/mood -> Emotional Balance
+            else if (assessmentAnswers[2] >= 2) programId = 1; // High stress -> Mindfulness
+            else if (totalScore <= 5) programId = 5; // Low total score -> Personal Growth
+            
+            assignedProgram = programs[programId];
+
+            // Show results
+            document.getElementById('assessmentQuestions').style.display = 'none';
+            document.querySelector('.navigation-buttons').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            
+            document.getElementById('programAssignment').innerHTML = `
+                <div style="background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%); color: white; padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+                    <h3>🎯 ${assignedProgram.name}</h3>
+                    <p>${assignedProgram.description}</p>
+                    <small style="opacity: 0.9;"><strong>Why this program:</strong> ${assignedProgram.reason}</small>
+                </div>
+            `;
+            
+            document.getElementById('resultsSection').classList.remove('hidden');
+        }
+
+        function goToDashboard() {
+            showPage('dashboardPage');
+            loadDashboard();
+        }
+
+        // Dashboard Section Navigation
+        function showDashboardSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId + 'Section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update sidebar navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Find and activate the corresponding nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.textContent.toLowerCase().includes(sectionId.toLowerCase()) || 
+                    (sectionId === 'dashboard' && link.textContent.includes('Dashboard'))) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Dashboard
+        function loadDashboard() {
+            if (!currentUser) return;
+
+            // Update user info
+            const greeting = getGreeting();
+            document.getElementById('greeting').textContent = greeting;
+            document.getElementById('userName').textContent = currentUser.fullName || currentUser.email.split('@')[0];
+
+            // Update program info
+            if (assignedProgram) {
+                document.getElementById('programName').textContent = assignedProgram.name;
+                document.getElementById('programDescription').textContent = assignedProgram.description;
+                document.getElementById('programReason').textContent = assignedProgram.reason;
+                
+                // Update program details section
+                document.getElementById('programReasonDetail').textContent = assignedProgram.reason;
+                
+                // Load program tasks list
+                const tasksList = document.getElementById('programTasksList');
+                if (tasksList) {
+                    tasksList.innerHTML = '';
+                    assignedProgram.tasks.forEach(task => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${task.title}:</strong> ${task.description}`;
+                        tasksList.appendChild(li);
+                    });
+                }
+                
+                // Load tasks
+                loadTasks();
+                
+                // Calculate and update performance stats
+                updatePerformanceStats();
+            }
+
+            // Setup mood tracker
+            setupMoodTracker();
+            
+            // Load profile data
+            loadProfile();
+            
+            // Show dashboard section by default
+            showDashboardSection('dashboard');
+        }
+
+        function loadTasks() {
+            if (!assignedProgram) return;
+
+            const tasksContainer = document.getElementById('todaysTasks');
+            tasksContainer.innerHTML = '';
+
+            // Get today's completed tasks from localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+            const todayCompleted = completedTasks[today] || [];
+
+            assignedProgram.tasks.forEach((task, index) => {
+                const isCompleted = todayCompleted.includes(task.id);
+                
+                const taskItem = document.createElement('li');
+                taskItem.className = 'task-item';
+                taskItem.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" ${isCompleted ? 'checked' : ''} 
+                           data-task-id="${task.id}" onchange="toggleTask(this)">
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-description">${task.description}</div>
+                    </div>
+                    <small class="${isCompleted ? 'text-success' : 'text-warning'}" style="font-weight: 600;">
+                        ${isCompleted ? 'Completed' : 'Pending'}
+                    </small>
+                `;
+                
+                if (isCompleted) {
+                    taskItem.style.opacity = '0.7';
+                }
+                
+                tasksContainer.appendChild(taskItem);
+            });
+            
+            // Update task progress display
+            updateTaskProgress();
+            
+            // Load wellness tip
+            loadWellnessTip();
+        }
+
+        function updateTaskProgress() {
+            const today = new Date().toISOString().split('T')[0];
+            const completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+            const todayCompleted = completedTasks[today] || [];
+            const totalTasks = assignedProgram ? assignedProgram.tasks.length : 3;
+            
+            const progressElement = document.getElementById('taskProgress');
+            if (progressElement) {
+                progressElement.textContent = `${todayCompleted.length}/${totalTasks}`;
+            }
+        }
+
+        function loadWellnessTip() {
+            const tips = [
+                "Take a moment to breathe deeply and appreciate the progress you've made today.",
+                "Remember: small steps lead to big changes. Every task completed is a victory.",
+                "Your mental health journey is unique. Be patient and kind with yourself.",
+                "Consistency is key. Even on difficult days, small actions make a difference.",
+                "Celebrate your wins, no matter how small. You're doing great!",
+                "Progress isn't always linear. Some days are harder than others, and that's okay.",
+                "Take time to connect with yourself. Your feelings and thoughts are valid.",
+                "Remember why you started this journey. Your future self will thank you."
+            ];
+            
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            const tipElement = document.getElementById('wellnessTip');
+            if (tipElement) {
+                tipElement.querySelector('p').textContent = randomTip;
+            }
+        }
+
+        function toggleTask(checkbox) {
+            const taskId = parseInt(checkbox.dataset.taskId);
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Get current completed tasks
+            let completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+            if (!completedTasks[today]) {
+                completedTasks[today] = [];
+            }
+            
+            const taskItem = checkbox.closest('.task-item');
+            const statusElement = taskItem.querySelector('small');
+            
+            if (checkbox.checked) {
+                // Mark as completed
+                if (!completedTasks[today].includes(taskId)) {
+                    completedTasks[today].push(taskId);
+                }
+                taskItem.style.opacity = '0.7';
+                statusElement.textContent = 'Completed';
+                statusElement.className = 'text-success';
+            } else {
+                // Mark as pending
+                completedTasks[today] = completedTasks[today].filter(id => id !== taskId);
+                taskItem.style.opacity = '1';
+                statusElement.textContent = 'Pending';
+                statusElement.className = 'text-warning';
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+            
+            // Update task progress display
+            updateTaskProgress();
+            
+            // Update performance stats immediately
+            updatePerformanceStats();
+        }
+
+        function updatePerformanceStats() {
+            if (!assignedProgram) return;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+            
+            // Calculate today's performance
+            const todayCompleted = completedTasks[today] || [];
+            const totalTasks = assignedProgram.tasks.length;
+            const completedCount = todayCompleted.length;
+            const completionPercentage = Math.round((completedCount / totalTasks) * 100);
+            
+            // Calculate current streak
+            const currentStreak = calculateCurrentStreak(completedTasks);
+            
+            // Calculate max streak
+            let maxStreak = parseInt(localStorage.getItem('maxStreak') || '0');
+            if (currentStreak > maxStreak) {
+                maxStreak = currentStreak;
+                localStorage.setItem('maxStreak', maxStreak.toString());
+            }
+            
+            // Calculate program days (days since assignment)
+            const programStartDate = localStorage.getItem('programStartDate') || today;
+            const startDate = new Date(programStartDate);
+            const currentDate = new Date(today);
+            const programDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            
+            // Calculate total tasks completed across all days
+            let totalTasksCompleted = 0;
+            Object.values(completedTasks).forEach(dayTasks => {
+                totalTasksCompleted += dayTasks.length;
+            });
+            
+            // Calculate overall completion rate
+            const totalPossibleTasks = programDays * totalTasks;
+            const overallCompletionRate = Math.round((totalTasksCompleted / totalPossibleTasks) * 100);
+            
+            // Calculate total journal entries (mock data)
+            const journalCount = Math.floor(programDays * 0.6); // Simulate journal entries
+            
+            // Update dashboard stats display
+            document.getElementById('currentStreak').textContent = currentStreak;
+            document.getElementById('maxStreak').textContent = maxStreak;
+            document.getElementById('programDays').textContent = programDays;
+            document.getElementById('journalCount').textContent = journalCount;
+            
+            // Update program section stats
+            const programDaysDetail = document.getElementById('programDaysDetail');
+            const totalTasksCompletedEl = document.getElementById('totalTasksCompleted');
+            const programStreakEl = document.getElementById('programStreak');
+            const programCompletionEl = document.getElementById('programCompletion');
+            
+            if (programDaysDetail) programDaysDetail.textContent = programDays;
+            if (totalTasksCompletedEl) totalTasksCompletedEl.textContent = totalTasksCompleted;
+            if (programStreakEl) programStreakEl.textContent = currentStreak;
+            if (programCompletionEl) programCompletionEl.textContent = overallCompletionRate + '%';
+            
+            // Update today's performance display
+            const todayPerfElement = document.getElementById('todayPerformance');
+            const streakDisplayElement = document.getElementById('streakDisplay');
+            if (todayPerfElement) todayPerfElement.textContent = completionPercentage + '%';
+            if (streakDisplayElement) streakDisplayElement.textContent = currentStreak;
+            
+            // Update profile stats
+            const profileDaysEl = document.getElementById('profileDays');
+            if (profileDaysEl) profileDaysEl.textContent = programDays;
+            
+            // Store program start date if not exists
+            if (!localStorage.getItem('programStartDate')) {
+                localStorage.setItem('programStartDate', today);
+            }
+            
+            // Update wellness score based on performance
+            updateWellnessScore(completionPercentage, currentStreak);
+        }
+
+        function calculateCurrentStreak(completedTasks) {
+            let streak = 0;
+            const today = new Date();
+            
+            // Check each day backwards from today
+            for (let i = 0; i < 30; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(checkDate.getDate() - i);
+                const dateString = checkDate.toISOString().split('T')[0];
+                
+                const dayCompleted = completedTasks[dateString] || [];
+                const totalTasks = assignedProgram ? assignedProgram.tasks.length : 3;
+                
+                // Consider day complete if at least 2 out of 3 tasks are done
+                if (dayCompleted.length >= Math.ceil(totalTasks * 0.67)) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        function updateWellnessScore(todayPerformance, streak) {
+            // Base score from assessment (70-90)
+            let baseScore = 75;
+            
+            // Bonus for today's performance (0-10 points)
+            const performanceBonus = Math.floor(todayPerformance * 0.1);
+            
+            // Bonus for streak (0-15 points)
+            const streakBonus = Math.min(streak * 2, 15);
+            
+            // Calculate final wellness score
+            const wellnessScore = Math.min(baseScore + performanceBonus + streakBonus, 100);
+            
+            // Update display if element exists
+            const scoreElement = document.querySelector('.wellness-circle');
+            if (scoreElement) {
+                scoreElement.textContent = wellnessScore + '%';
+            }
+            
+            return wellnessScore;
+        }
+
+        function setupMoodTracker() {
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    document.getElementById('moodFeedback').classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        document.getElementById('moodFeedback').classList.add('hidden');
+                    }, 3000);
+                });
+            });
+        }
+
+        // Utility functions
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'Good morning';
+            if (hour < 18) return 'Good afternoon';
+            return 'Good evening';
+        }
+
+        function showAlert(alertId, message, type) {
+            const alertDiv = document.getElementById(alertId);
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.classList.remove('hidden');
+        }
+
+        // Profile Management
+        function loadProfile() {
+            if (!currentUser) return;
+            
+            // Load saved profile data
+            const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
+            
+            // Populate form fields
+            document.getElementById('profileName').value = profileData.fullName || currentUser.fullName || '';
+            document.getElementById('profileEmail').value = currentUser.email || '';
+            document.getElementById('profileAge').value = profileData.age || '';
+            document.getElementById('profileGoals').value = profileData.goals || '';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('landingPage');
+            
+            // Setup profile form handler
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const profileData = {
+                        fullName: document.getElementById('profileName').value,
+                        age: document.getElementById('profileAge').value,
+                        goals: document.getElementById('profileGoals').value,
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    // Save to localStorage
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+                    
+                    // Update current user
+                    if (currentUser) {
+                        currentUser.fullName = profileData.fullName;
+                    }
+                    
+                    // Update display
+                    document.getElementById('userName').textContent = profileData.fullName || currentUser.email.split('@')[0];
+                    
+                    // Show success message
+                    alert('Profile updated successfully!');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

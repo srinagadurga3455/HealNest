@@ -3,250 +3,525 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HealNest - My Profile</title>
+    <title>HealNest - User Profile</title>
     <link rel="shortcut icon" type="image/png" href="../calm_clarity/assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="../calm_clarity/assets/css/styles.min.css" />
     <link rel="stylesheet" href="../css/main.css" />
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #5D87FF;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid white;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-email {
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .stat-label {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+        
+        .profile-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .profile-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2A3547;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        
+        .achievement-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .achievement-item.earned {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .achievement-item.locked {
+            background: #f8f9fa;
+            color: #6c757d;
+            opacity: 0.6;
+        }
+        
+        .achievement-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .achievement-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-info {
+            flex: 1;
+        }
+        
+        .progress-title {
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 0.25rem;
+        }
+        
+        .progress-subtitle {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .progress-bar-container {
+            width: 100px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: 1rem;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            transition: width 0.6s ease;
+            border-radius: 10px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .activity-mood { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .activity-journal { background: rgba(102, 126, 234, 0.2); color: #667eea; }
+        .activity-assessment { background: rgba(40, 167, 69, 0.2); color: #28a745; }
+        .activity-program { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .wellness-score {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .score-label {
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .back-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 1rem;
+            }
+            
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stats {
+                gap: 1.5rem;
+            }
+            
+            .achievement-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .back-btn {
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!--  Body Wrapper -->
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-        data-sidebar-position="fixed" data-header-position="fixed">
-        <!-- Sidebar Start -->
-        <aside class="left-sidebar">
-            <!-- Sidebar scroll-->
-            <div>
-                <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a href="./dashboard.html" class="text-nowrap logo-img d-flex align-items-center gap-2">
-                        <h1 class="mb-0 fw-900 text-primary" style="font-size: 1.8rem; letter-spacing: 1px;">HealNest</h1>
-                    </a>
-                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                        <i class="ti ti-x fs-8"></i>
-                    </div>
+    <button class="back-btn" onclick="window.location.href='./dashboard.html'">
+        <i class="ti ti-arrow-left"></i>
+    </button>
+
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+                <span id="avatarDisplay">👤</span>
+                <div class="avatar-upload">
+                    <i class="ti ti-camera"></i>
                 </div>
-                <!-- Sidebar navigation-->
-                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-                    <ul id="sidebarnav">
-                        <li class="nav-small-cap">
-                            <span class="hide-menu">HOME</span>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./dashboard.html">
-                                <i class="ti ti-layout-dashboard"></i>
-                                <span class="hide-menu">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./assessment.html">
-                                <i class="ti ti-clipboard-check"></i>
-                                <span class="hide-menu">Assessment</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./program.html">
-                                <i class="ti ti-target"></i>
-                                <span class="hide-menu">Programs</span>
-                            </a>
-                        </li>
-                        <li class="nav-small-cap">
-                            <span class="hide-menu">ACCOUNT</span>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link active" href="./profile.html">
-                                <i class="ti ti-user"></i>
-                                <span class="hide-menu">Profile</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./landing.html">
-                                <i class="ti ti-home"></i>
-                                <span class="hide-menu">Home</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
-        </aside>
-        <!--  Main wrapper -->
-        <div class="body-wrapper">
-            <!--  Header Start -->
-            <header class="app-header">
-                <nav class="navbar navbar-expand-lg navbar-light">
-                    <ul class="navbar-nav">
-                        <li class="nav-item d-block d-xl-none">
-                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
-                                <i class="ti ti-menu-2"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown">
-                                    <img src="calm_clarity/assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
-                                    <div class="message-body">
-                                        <a href="./profile.html" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-user fs-6"></i>
-                                            <p class="mb-0 fs-3">My Profile</p>
-                                        </a>
-                                        <a href="./landing.html" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-home fs-6"></i>
-                                            <p class="mb-0 fs-3">Home</p>
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </header>
-            <!--  Header End -->
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-4 d-flex align-items-stretch">
-                        <div class="card w-100">
-                            <div class="card-body">
-                                <div class="text-center">
-                                    <img src="calm_clarity/assets/images/profile/user-1.jpg" alt="Profile" class="rounded-circle mb-3" width="120" height="120">
-                                    <h4 class="card-title">John Doe</h4>
-                                    <p class="text-muted">@johndoe</p>
-                                    <div class="d-flex justify-content-center gap-2 mb-3">
-                                        <span class="badge bg-primary">Youth Member</span>
-                                        <span class="badge bg-success">Active</span>
-                                    </div>
-                                </div>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+            
+            <div class="profile-name" id="profileName">Loading...</div>
+            <div class="profile-email" id="profileEmail">Loading...</div>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="daysActive">0</span>
+                    <span class="stat-label">Days Active</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="journalEntries">0</span>
+                    <span class="stat-label">Journal Entries</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="programsEnrolled">0</span>
+                    <span class="stat-label">Programs</span>
+                </div>
+            </div>
+        </div>
 
-                                <div class="row text-center mt-4">
-                                    <div class="col-4">
-                                        <h4 class="text-primary">85%</h4>
-                                        <small class="text-muted">Wellness Score</small>
-                                    </div>
-                                    <div class="col-4">
-                                        <h4 class="text-success">12</h4>
-                                        <small class="text-muted">Tasks Done</small>
-                                    </div>
-                                    <div class="col-4">
-                                        <h4 class="text-info">5</h4>
-                                        <small class="text-muted">Programs</small>
-                                    </div>
-                                </div>
-                            </div>
+        <div class="profile-content">
+            <!-- Main Content -->
+            <div class="profile-main">
+                <!-- Personal Information -->
+                <div class="profile-card">
+                    <h3 class="card-title">
+                        <i class="ti ti-user"></i>
+                        Personal Information
+                    </h3>
+                    
+                    <form id="profileForm" onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" id="fullName" class="form-control" required>
                         </div>
-                    </div>
-
-                    <div class="col-lg-8 d-flex align-items-stretch">
-                        <div class="card w-100">
-                            <div class="card-body">
-                                <h4 class="card-title">Profile Information</h4>
-                                <p class="card-subtitle mb-4">Manage your personal information and preferences.</p>
-
-                                <form>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="firstName" class="form-label">First Name</label>
-                                            <input type="text" class="form-control" id="firstName" value="John" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label">Last Name</label>
-                                            <input type="text" class="form-control" id="lastName" value="Doe" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="username" value="johndoe" readonly>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" value="john.doe@example.com" readonly>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="age" class="form-label">Age</label>
-                                            <input type="number" class="form-control" id="age" value="22" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="location" class="form-label">Location</label>
-                                            <input type="text" class="form-control" id="location" value="New York, NY" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="bio" class="form-label">Bio</label>
-                                        <textarea class="form-control" id="bio" rows="3" readonly>Passionate about mental health awareness and youth empowerment. Currently working on personal growth and helping others on their wellness journey.</textarea>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Interests</label>
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <span class="badge bg-primary">Mental Health</span>
-                                            <span class="badge bg-success">Meditation</span>
-                                            <span class="badge bg-info">Fitness</span>
-                                            <span class="badge bg-warning">Art</span>
-                                            <span class="badge bg-danger">Music</span>
-                                        </div>
-                                    </div>
-
-                                    <button type="button" class="btn btn-primary" onclick="editProfile()">Edit Profile</button>
-                                </form>
-                            </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" class="form-control" required>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="birthDate" class="form-label">Date of Birth</label>
+                            <input type="date" id="birthDate" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bio" class="form-label">Bio</label>
+                            <textarea id="bio" class="form-control" rows="3" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="ti ti-device-floppy me-2"></i>Update Profile
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Achievements -->
+                <div class="profile-card">
+                    <h3 class="card-title">
+                        <i class="ti ti-trophy"></i>
+                        Achievements
+                    </h3>
+                    
+                    <div class="achievement-grid" id="achievementsGrid">
+                        <!-- Achievements will be loaded here -->
                     </div>
                 </div>
 
-                <!-- Achievement Section -->
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Achievements & Milestones</h4>
-                                <p class="card-subtitle mb-4">Your progress and accomplishments in the HealNest program.</p>
+                <!-- Progress Tracking -->
+                <div class="profile-card">
+                    <h3 class="card-title">
+                        <i class="ti ti-chart-line"></i>
+                        Progress Tracking
+                    </h3>
+                    
+                    <div id="progressList">
+                        <!-- Progress items will be loaded here -->
+                    </div>
+                </div>
+            </div>
 
-                                <div class="row">
-                                    <div class="col-md-3 mb-3">
-                                        <div class="card bg-light text-center h-100">
-                                            <div class="card-body">
-                                                <i class="ti ti-trophy text-warning" style="font-size: 2rem;"></i>
-                                                <h5 class="mt-2">First Assessment</h5>
-                                                <small class="text-muted">Completed your first mental health assessment</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="card bg-light text-center h-100">
-                                            <div class="card-body">
-                                                <i class="ti ti-target text-success" style="font-size: 2rem;"></i>
-                                                <h5 class="mt-2">Goal Setter</h5>
-                                                <small class="text-muted">Set and achieved 5 personal goals</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="card bg-light text-center h-100">
-                                            <div class="card-body">
-                                                <i class="ti ti-heart text-danger" style="font-size: 2rem;"></i>
-                                                <h5 class="mt-2">Mindful Warrior</h5>
-                                                <small class="text-muted">Completed 30 days of meditation</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="card bg-light text-center h-100">
-                                            <div class="card-body">
-                                                <i class="ti ti-users text-info" style="font-size: 2rem;"></i>
-                                                <h5 class="mt-2">Community Builder</h5>
-                                                <small class="text-muted">Helped 3 fellow members</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Sidebar -->
+            <div class="profile-sidebar">
+                <!-- Wellness Score -->
+                <div class="wellness-score">
+                    <div class="score-circle">
+                        <div class="score-number" id="wellnessScore">85</div>
+                    </div>
+                    <div class="score-label">Wellness Score</div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="profile-card">
+                    <h4 class="card-title">
+                        <i class="ti ti-activity"></i>
+                        Recent Activity
+                    </h4>
+                    
+                    <div id="recentActivity">
+                        <!-- Recent activities will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="profile-card">
+                    <h4 class="card-title">
+                        <i class="ti ti-zap"></i>
+                        Quick Actions
+                    </h4>
+                    
+                    <div class="d-flex flex-column gap-2">
+                        <button class="btn-primary" onclick="window.location.href='./mood.html'">
+                            <i class="ti ti-mood-happy me-2"></i>Track Mood
+                        </button>
+                        <button class="btn-primary" onclick="window.location.href='./journal.html'">
+                            <i class="ti ti-edit me-2"></i>Write Journal
+                        </button>
+                        <button class="btn-primary" onclick="window.location.href='./assessment.html'">
+                            <i class="ti ti-clipboard-check me-2"></i>Take Assessment
+                        </button>
                     </div>
                 </div>
             </div>
@@ -255,13 +530,298 @@
 
     <script src="../calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../calm_clarity/assets/js/sidebarmenu.js"></script>
-    <script src="../calm_clarity/assets/js/app.min.js"></script>
     <script src="../js/main.js"></script>
-
+    
     <script>
-        function editProfile() {
-            alert('Edit profile functionality would be implemented here. For now, this is a static demo.');
+        // Achievements data
+        const achievements = [
+            { id: 'first_entry', title: 'First Entry', icon: '📝', description: 'Write your first journal entry', condition: 'journal_entries >= 1' },
+            { id: 'mood_tracker', title: 'Mood Tracker', icon: '😊', description: 'Track your mood for 7 days', condition: 'mood_days >= 7' },
+            { id: 'assessment_complete', title: 'Self Aware', icon: '🧠', description: 'Complete your first assessment', condition: 'assessments >= 1' },
+            { id: 'program_starter', title: 'Program Starter', icon: '🎯', description: 'Enroll in your first program', condition: 'programs >= 1' },
+            { id: 'consistent_writer', title: 'Consistent Writer', icon: '✍️', description: 'Write 10 journal entries', condition: 'journal_entries >= 10' },
+            { id: 'mood_master', title: 'Mood Master', icon: '🌟', description: 'Track mood for 30 days', condition: 'mood_days >= 30' },
+            { id: 'program_graduate', title: 'Program Graduate', icon: '🎓', description: 'Complete your first program', condition: 'completed_programs >= 1' },
+            { id: 'wellness_warrior', title: 'Wellness Warrior', icon: '⚡', description: 'Maintain 90+ wellness score', condition: 'wellness_score >= 90' },
+            { id: 'reflection_master', title: 'Reflection Master', icon: '🔍', description: 'Write 25 journal entries', condition: 'journal_entries >= 25' }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+            loadUserStats();
+            loadAchievements();
+            loadProgressTracking();
+            loadRecentActivity();
+            loadWellnessScore();
+        });
+
+        function loadUserProfile() {
+            const user = Auth.getCurrentUser();
+            if (!user) {
+                window.location.href = './login.html';
+                return;
+            }
+
+            // Load saved profile data
+            const profileData = JSON.parse(localStorage.getItem('healNestProfileData') || '{}');
+            
+            document.getElementById('profileName').textContent = user.fullName || user.name || 'User';
+            document.getElementById('profileEmail').textContent = user.email || '';
+            
+            // Populate form fields
+            document.getElementById('fullName').value = profileData.fullName || user.fullName || user.name || '';
+            document.getElementById('email').value = profileData.email || user.email || '';
+            document.getElementById('phone').value = profileData.phone || '';
+            document.getElementById('birthDate').value = profileData.birthDate || '';
+            document.getElementById('bio').value = profileData.bio || '';
+            
+            // Load avatar
+            const savedAvatar = localStorage.getItem('healNestUserAvatar');
+            if (savedAvatar) {
+                document.getElementById('avatarDisplay').innerHTML = `<img src="${savedAvatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            }
+        }
+
+        function loadUserStats() {
+            const user = Auth.getCurrentUser();
+            const journalEntries = Journal.getEntries().length;
+            const moodData = MoodTracker.getMoodData();
+            const enrolledPrograms = JSON.parse(localStorage.getItem('healNestEnrolledPrograms') || '[]');
+            
+            // Calculate days active (days since registration)
+            const registrationDate = new Date(user.createdAt || user.loginTime || Date.now());
+            const today = new Date();
+            const daysActive = Math.floor((today - registrationDate) / (1000 * 60 * 60 * 24)) + 1;
+            
+            document.getElementById('daysActive').textContent = daysActive;
+            document.getElementById('journalEntries').textContent = journalEntries;
+            document.getElementById('programsEnrolled').textContent = enrolledPrograms.length;
+        }
+
+        function loadAchievements() {
+            const achievementsGrid = document.getElementById('achievementsGrid');
+            const userStats = getUserStats();
+            
+            achievementsGrid.innerHTML = achievements.map(achievement => {
+                const isEarned = checkAchievementCondition(achievement.condition, userStats);
+                
+                return `
+                    <div class="achievement-item ${isEarned ? 'earned' : 'locked'}" title="${achievement.description}">
+                        <span class="achievement-icon">${achievement.icon}</span>
+                        <div class="achievement-title">${achievement.title}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadProgressTracking() {
+            const progressList = document.getElementById('progressList');
+            const userStats = getUserStats();
+            const programProgress = JSON.parse(localStorage.getItem('healNestProgramProgress') || '{}');
+            
+            const progressItems = [
+                {
+                    title: 'Journal Writing',
+                    subtitle: `${userStats.journal_entries} entries written`,
+                    progress: Math.min((userStats.journal_entries / 25) * 100, 100)
+                },
+                {
+                    title: 'Mood Tracking',
+                    subtitle: `${userStats.mood_days} days tracked`,
+                    progress: Math.min((userStats.mood_days / 30) * 100, 100)
+                },
+                {
+                    title: 'Program Completion',
+                    subtitle: `${Object.keys(programProgress).length} programs in progress`,
+                    progress: Object.values(programProgress).reduce((sum, prog) => sum + prog, 0) / Math.max(Object.keys(programProgress).length, 1)
+                },
+                {
+                    title: 'Wellness Score',
+                    subtitle: `Current score: ${userStats.wellness_score}`,
+                    progress: userStats.wellness_score
+                }
+            ];
+            
+            progressList.innerHTML = progressItems.map(item => `
+                <div class="progress-item">
+                    <div class="progress-info">
+                        <div class="progress-title">${item.title}</div>
+                        <div class="progress-subtitle">${item.subtitle}</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: ${item.progress}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentActivity() {
+            const recentActivity = document.getElementById('recentActivity');
+            const activities = [];
+            
+            // Get recent journal entries
+            const journalEntries = Journal.getEntries().slice(-3);
+            journalEntries.forEach(entry => {
+                activities.push({
+                    type: 'journal',
+                    title: `Wrote "${entry.title}"`,
+                    time: entry.createdAt,
+                    icon: '📝'
+                });
+            });
+            
+            // Get recent mood entries
+            const moodData = MoodTracker.getMoodData();
+            const recentMoods = Object.entries(moodData).slice(-3);
+            recentMoods.forEach(([date, mood]) => {
+                activities.push({
+                    type: 'mood',
+                    title: `Tracked mood: ${mood.mood}`,
+                    time: mood.timestamp,
+                    icon: '😊'
+                });
+            });
+            
+            // Get assessment data
+            const assessment = Assessment.getLastAssessment();
+            if (assessment) {
+                activities.push({
+                    type: 'assessment',
+                    title: 'Completed wellness assessment',
+                    time: assessment.completedAt,
+                    icon: '📊'
+                });
+            }
+            
+            // Sort by time and take most recent
+            activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+            const recentActivities = activities.slice(0, 5);
+            
+            if (recentActivities.length === 0) {
+                recentActivity.innerHTML = '<p class="text-muted text-center">No recent activity</p>';
+                return;
+            }
+            
+            recentActivity.innerHTML = recentActivities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon activity-${activity.type}">
+                        ${activity.icon}
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-time">${formatRelativeTime(activity.time)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadWellnessScore() {
+            const assessment = Assessment.getLastAssessment();
+            const wellnessScore = assessment ? Assessment.calculateWellnessScore() : 75;
+            document.getElementById('wellnessScore').textContent = wellnessScore;
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            
+            const profileData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                birthDate: document.getElementById('birthDate').value,
+                bio: document.getElementById('bio').value
+            };
+            
+            localStorage.setItem('healNestProfileData', JSON.stringify(profileData));
+            
+            // Update user data
+            const user = Auth.getCurrentUser();
+            user.fullName = profileData.fullName;
+            user.email = profileData.email;
+            localStorage.setItem('healNestUser', JSON.stringify(user));
+            
+            // Update display
+            document.getElementById('profileName').textContent = profileData.fullName;
+            document.getElementById('profileEmail').textContent = profileData.email;
+            
+            alert('Profile updated successfully!');
+        }
+
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                alert('File size must be less than 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const avatarDisplay = document.getElementById('avatarDisplay');
+                avatarDisplay.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                localStorage.setItem('healNestUserAvatar', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function getUserStats() {
+            const journalEntries = Journal.getEntries().length;
+            const moodData = MoodTracker.getMoodData();
+            const moodDays = Object.keys(moodData).length;
+            const enrolledPrograms = JSON.parse(localStorage.getItem('healNestEnrolledPrograms') || '[]');
+            const programProgress = JSON.parse(localStorage.getItem('healNestProgramProgress') || '{}');
+            const completedPrograms = Object.values(programProgress).filter(progress => progress === 100).length;
+            const assessment = Assessment.getLastAssessment();
+            const wellnessScore = assessment ? Assessment.calculateWellnessScore() : 75;
+            
+            return {
+                journal_entries: journalEntries,
+                mood_days: moodDays,
+                programs: enrolledPrograms.length,
+                completed_programs: completedPrograms,
+                assessments: assessment ? 1 : 0,
+                wellness_score: wellnessScore
+            };
+        }
+
+        function checkAchievementCondition(condition, stats) {
+            // Simple condition parser
+            const conditionParts = condition.split(' ');
+            const statName = conditionParts[0];
+            const operator = conditionParts[1];
+            const value = parseInt(conditionParts[2]);
+            
+            const statValue = stats[statName] || 0;
+            
+            switch (operator) {
+                case '>=':
+                    return statValue >= value;
+                case '>':
+                    return statValue > value;
+                case '<=':
+                    return statValue <= value;
+                case '<':
+                    return statValue < value;
+                case '==':
+                    return statValue == value;
+                default:
+                    return false;
+            }
+        }
+
+        function formatRelativeTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) return 'Just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+            if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+            
+            return date.toLocaleDateString();
         }
     </script>
 </body>

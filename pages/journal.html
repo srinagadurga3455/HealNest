@@ -3,323 +3,484 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HealNest - Journal</title>
+    <title>HealNest - Digital Journal</title>
     <link rel="shortcut icon" type="image/png" href="../calm_clarity/assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="../calm_clarity/assets/css/styles.min.css" />
     <link rel="stylesheet" href="../css/main.css" />
     <style>
-        .journal-entry-card {
-            transition: all 0.3s ease;
-            border-left: 4px solid #5D87FF;
+        .journal-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
-        .journal-entry-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .mood-indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
-        .mood-excellent { background: #28a745; }
-        .mood-good { background: #20c997; }
-        .mood-neutral { background: #ffc107; }
-        .mood-challenging { background: #dc3545; }
-        .journal-prompt {
+        
+        .journal-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
             border-radius: 15px;
-            margin-bottom: 2rem;
         }
-        .entry-form {
+        
+        .journal-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+        
+        .journal-main {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .journal-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .sidebar-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .new-entry-form {
+            display: none;
+        }
+        
+        .new-entry-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .journal-textarea {
+            min-height: 200px;
+            resize: vertical;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+        }
+        
+        .mood-selector-inline {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .mood-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .mood-btn.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .entries-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .entry-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .entry-item:hover {
             background: #f8f9fa;
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
         }
-        .character-count {
+        
+        .entry-item.active {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .entry-item:last-child {
+            border-bottom: none;
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .entry-title {
+            font-weight: 600;
+            color: #2A3547;
+            margin-bottom: 0.25rem;
+        }
+        
+        .entry-date {
             font-size: 0.8rem;
             color: #6c757d;
+        }
+        
+        .entry-preview {
+            font-size: 0.9rem;
+            color: #5A6A85;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+        
+        .entry-tags {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .entry-mood {
+            font-size: 1.2rem;
+            margin-left: auto;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #e9ecef;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .entry-view {
+            display: none;
+        }
+        
+        .entry-view.active {
+            display: block;
+        }
+        
+        .entry-content {
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #2A3547;
+            margin: 2rem 0;
+        }
+        
+        .entry-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+            margin: 1rem 0;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .back-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .journal-container {
+                padding: 1rem;
+            }
+            
+            .journal-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .journal-sidebar {
+                order: -1;
+            }
+            
+            .back-btn {
+                top: 1rem;
+                left: 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!--  Body Wrapper -->
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-        data-sidebar-position="fixed" data-header-position="fixed">
-        <!-- Sidebar Start -->
-        <aside class="left-sidebar">
-            <!-- Sidebar scroll-->
-            <div>
-                <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a href="./dashboard.html" class="text-nowrap logo-img d-flex align-items-center gap-2">
-                        <h1 class="mb-0 fw-900 text-primary" style="font-size: 1.8rem; letter-spacing: 1px;">HealNest</h1>
-                    </a>
-                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                        <i class="ti ti-x fs-8"></i>
+    <button class="back-btn" onclick="window.location.href='./dashboard.html'">
+        <i class="ti ti-arrow-left"></i>
+    </button>
+
+    <div class="journal-container">
+        <!-- Journal Header -->
+        <div class="journal-header">
+            <h1 class="mb-3">Digital Journal</h1>
+            <p class="mb-0">Express your thoughts, track your emotions, and reflect on your journey.</p>
+        </div>
+
+        <div class="journal-layout">
+            <!-- Main Content Area -->
+            <div class="journal-main">
+                <!-- Default View -->
+                <div id="defaultView">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>My Journal Entries</h3>
+                        <button class="btn-primary" onclick="showNewEntryForm()">
+                            <i class="ti ti-plus me-2"></i>New Entry
+                        </button>
                     </div>
-                </div>
-                <!-- Sidebar navigation-->
-                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-                    <ul id="sidebarnav">
-                        <li class="nav-small-cap">
-                            <span class="hide-menu">HOME</span>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./dashboard.html">
-                                <i class="ti ti-layout-dashboard"></i>
-                                <span class="hide-menu">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./assessment.html">
-                                <i class="ti ti-clipboard-check"></i>
-                                <span class="hide-menu">Assessment</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./program.html">
-                                <i class="ti ti-target"></i>
-                                <span class="hide-menu">Programs</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link active" href="./journal.html">
-                                <i class="ti ti-edit"></i>
-                                <span class="hide-menu">Journal</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./mood.html">
-                                <i class="ti ti-mood-happy"></i>
-                                <span class="hide-menu">Mood Tracker</span>
-                            </a>
-                        </li>
-                        <li class="nav-small-cap">
-                            <span class="hide-menu">ACCOUNT</span>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./profile.html">
-                                <i class="ti ti-user"></i>
-                                <span class="hide-menu">Profile</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./landing.html">
-                                <i class="ti ti-home"></i>
-                                <span class="hide-menu">Home</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
-        <!--  Main wrapper -->
-        <div class="body-wrapper">
-            <!--  Header Start -->
-            <header class="app-header">
-                <nav class="navbar navbar-expand-lg navbar-light">
-                    <ul class="navbar-nav">
-                        <li class="nav-item d-block d-xl-none">
-                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
-                                <i class="ti ti-menu-2"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                            <li class="nav-item">
-                                <span class="text-muted me-3">Welcome back, Alex!</span>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown">
-                                    <img src="calm_clarity/assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
-                                    <div class="message-body">
-                                        <a href="./profile.html" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-user fs-6"></i>
-                                            <p class="mb-0 fs-3">My Profile</p>
-                                        </a>
-                                        <a href="./dashboard.html" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-layout-dashboard fs-6"></i>
-                                            <p class="mb-0 fs-3">Dashboard</p>
-                                        </a>
-                                        <a href="./landing.html" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-home fs-6"></i>
-                                            <p class="mb-0 fs-3">Home</p>
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </header>
-            <!--  Header End -->
-            <div class="container-fluid">
-                <!-- Journal Header -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="journal-prompt">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <h2 class="mb-2">Daily Journal 📝</h2>
-                                    <p class="mb-0 fs-5">Reflect on your day, express your thoughts, and track your emotional journey.</p>
-                                </div>
-                                <div class="col-md-4 text-center">
-                                    <div class="fs-1 mb-2">✨</div>
-                                    <p class="mb-0">Today's Prompt:</p>
-                                    <p class="fw-bold">"What made you smile today?"</p>
-                                </div>
-                            </div>
-                        </div>
+                    
+                    <div class="entries-list" id="entriesList">
+                        <!-- Entries will be loaded here -->
                     </div>
                 </div>
 
                 <!-- New Entry Form -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="entry-form">
-                            <h5 class="mb-3">Write New Entry</h5>
-                            <form id="journal-form">
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">How are you feeling today?</label>
-                                        <select class="form-select" id="entry-mood" required>
-                                            <option value="">Select your mood...</option>
-                                            <option value="excellent">😊 Excellent</option>
-                                            <option value="good">🙂 Good</option>
-                                            <option value="neutral">😐 Neutral</option>
-                                            <option value="challenging">😔 Challenging</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Entry Title</label>
-                                        <input type="text" class="form-control" id="entry-title" placeholder="Give your entry a title..." required>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Your Thoughts</label>
-                                    <textarea class="form-control" id="entry-content" rows="6" placeholder="What's on your mind today? Share your experiences, feelings, or reflections..." required></textarea>
-                                    <div class="character-count mt-1">
-                                        <span id="char-count">0</span> characters
-                                    </div>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="ti ti-device-floppy me-1"></i>Save Entry
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">
-                                        <i class="ti ti-x me-1"></i>Clear
-                                    </button>
-                                </div>
-                            </form>
+                <div id="newEntryForm" class="new-entry-form">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>New Journal Entry</h3>
+                        <button class="btn-secondary" onclick="hideNewEntryForm()">Cancel</button>
+                    </div>
+                    
+                    <form onsubmit="saveEntry(event)">
+                        <div class="form-group">
+                            <label for="entryTitle" class="form-label">Title</label>
+                            <input type="text" id="entryTitle" class="form-control" placeholder="Give your entry a title..." required>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="entryContent" class="form-label">Content</label>
+                            <textarea id="entryContent" class="form-control journal-textarea" placeholder="What's on your mind today? Share your thoughts, feelings, experiences..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">How are you feeling?</label>
+                            <div class="mood-selector-inline">
+                                <button type="button" class="mood-btn" data-mood="excellent">😄 Excellent</button>
+                                <button type="button" class="mood-btn" data-mood="good">😊 Good</button>
+                                <button type="button" class="mood-btn" data-mood="neutral">😐 Neutral</button>
+                                <button type="button" class="mood-btn" data-mood="challenging">😔 Challenging</button>
+                                <button type="button" class="mood-btn" data-mood="difficult">😢 Difficult</button>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="ti ti-device-floppy me-2"></i>Save Entry
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Entry View -->
+                <div id="entryView" class="entry-view">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <button class="btn-secondary" onclick="showDefaultView()">
+                            <i class="ti ti-arrow-left me-2"></i>Back to Entries
+                        </button>
+                        <div>
+                            <button class="btn-secondary me-2" onclick="editEntry()">
+                                <i class="ti ti-edit"></i> Edit
+                            </button>
+                            <button class="btn-secondary" onclick="deleteEntry()" style="background: #dc3545;">
+                                <i class="ti ti-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="entryViewContent">
+                        <!-- Entry content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="journal-sidebar">
+                <!-- Search & Filter -->
+                <div class="sidebar-card">
+                    <h5 class="mb-3">Search & Filter</h5>
+                    
+                    <div class="search-box">
+                        <i class="ti ti-search search-icon"></i>
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search entries..." onkeyup="searchEntries()">
+                    </div>
+                    
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all" onclick="filterEntries('all')">All</button>
+                        <button class="filter-btn" data-filter="excellent" onclick="filterEntries('excellent')">😄</button>
+                        <button class="filter-btn" data-filter="good" onclick="filterEntries('good')">😊</button>
+                        <button class="filter-btn" data-filter="neutral" onclick="filterEntries('neutral')">😐</button>
+                        <button class="filter-btn" data-filter="challenging" onclick="filterEntries('challenging')">😔</button>
+                        <button class="filter-btn" data-filter="difficult" onclick="filterEntries('difficult')">😢</button>
                     </div>
                 </div>
 
-                <!-- Journal Entries -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title d-flex align-items-center justify-content-between">
-                                    <span><i class="ti ti-book me-2 text-primary"></i>Your Journal Entries</span>
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-sm btn-outline-primary active" onclick="filterEntries('all')">All</button>
-                                        <button type="button" class="btn btn-sm btn-outline-success" onclick="filterEntries('excellent')">Excellent</button>
-                                        <button type="button" class="btn btn-sm btn-outline-info" onclick="filterEntries('good')">Good</button>
-                                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="filterEntries('neutral')">Neutral</button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="filterEntries('challenging')">Challenging</button>
-                                    </div>
-                                </h5>
+                <!-- Journal Stats -->
+                <div class="sidebar-card">
+                    <h5 class="mb-3">Journal Statistics</h5>
+                    <div class="stats-grid" id="journalStats">
+                        <!-- Stats will be loaded here -->
+                    </div>
+                </div>
 
-                                <div id="entries-container">
-                                    <!-- Sample entries will be loaded here -->
-                                    <div class="journal-entry-card card mb-3" data-mood="excellent">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="card-title mb-0">A Beautiful Morning Walk</h6>
-                                                <div class="d-flex align-items-center">
-                                                    <span class="mood-indicator mood-excellent"></span>
-                                                    <small class="text-muted">Today, 2:30 PM</small>
-                                                </div>
-                                            </div>
-                                            <p class="card-text">Today I took a long walk in the park and it was absolutely refreshing. The sun was shining, birds were singing, and I felt completely at peace. I noticed how the simple act of being present in nature can change your entire outlook on the day.</p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <small class="text-muted">Mood: Excellent</small>
-                                                <div>
-                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
-                                                        <i class="ti ti-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <!-- Popular Tags -->
+                <div class="sidebar-card">
+                    <h5 class="mb-3">Popular Tags</h5>
+                    <div id="popularTags">
+                        <!-- Tags will be loaded here -->
+                    </div>
+                </div>
 
-                                    <div class="journal-entry-card card mb-3" data-mood="good">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="card-title mb-0">Productive Work Session</h6>
-                                                <div class="d-flex align-items-center">
-                                                    <span class="mood-indicator mood-good"></span>
-                                                    <small class="text-muted">Yesterday, 6:45 PM</small>
-                                                </div>
-                                            </div>
-                                            <p class="card-text">Had a really productive afternoon at work. Managed to complete all my tasks ahead of schedule and even helped a colleague with their project. It's amazing how helping others can boost your own motivation and sense of accomplishment.</p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <small class="text-muted">Mood: Good</small>
-                                                <div>
-                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
-                                                        <i class="ti ti-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="journal-entry-card card mb-3" data-mood="neutral">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="card-title mb-0">A Quiet Day</h6>
-                                                <div class="d-flex align-items-center">
-                                                    <span class="mood-indicator mood-neutral"></span>
-                                                    <small class="text-muted">2 days ago, 8:20 PM</small>
-                                                </div>
-                                            </div>
-                                            <p class="card-text">Today was pretty uneventful. Got through my routine tasks but didn't feel particularly excited or down about anything. Sometimes these neutral days are important too - they give us a chance to recharge and prepare for more challenging or exciting times ahead.</p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <small class="text-muted">Mood: Neutral</small>
-                                                <div>
-                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
-                                                        <i class="ti ti-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-center mt-4">
-                                    <button class="btn btn-outline-primary" onclick="loadMoreEntries()">
-                                        <i class="ti ti-chevron-down me-1"></i>Load More Entries
-                                    </button>
-                                </div>
-                            </div>
+                <!-- Writing Prompts -->
+                <div class="sidebar-card">
+                    <h5 class="mb-3">Writing Prompts</h5>
+                    <div id="writingPrompts">
+                        <p class="text-muted mb-2">Need inspiration? Try these prompts:</p>
+                        <div id="promptsList">
+                            <!-- Prompts will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -329,113 +490,406 @@
 
     <script src="../calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../calm_clarity/assets/js/sidebarmenu.js"></script>
-    <script src="../calm_clarity/assets/js/app.min.js"></script>
     <script src="../js/main.js"></script>
-
+    
     <script>
-        // Character count for textarea
-        document.getElementById('entry-content').addEventListener('input', function() {
-            const count = this.value.length;
-            document.getElementById('char-count').textContent = count;
-        });
+        let selectedMood = 'neutral';
+        let currentEntryId = null;
+        let currentFilter = 'all';
 
-        // Form submission
-        document.getElementById('journal-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Mood emojis
+        const moodEmojis = {
+            excellent: '😄',
+            good: '😊',
+            neutral: '😐',
+            challenging: '😔',
+            difficult: '😢'
+        };
 
-            const mood = document.getElementById('entry-mood').value;
-            const title = document.getElementById('entry-title').value;
-            const content = document.getElementById('entry-content').value;
+        // Writing prompts
+        const writingPrompts = [
+            "What made you smile today?",
+            "Describe a moment when you felt proud of yourself.",
+            "What are three things you're grateful for right now?",
+            "How did you overcome a challenge recently?",
+            "What would you tell your younger self?",
+            "Describe your ideal day from start to finish.",
+            "What's something new you learned this week?",
+            "How do you want to grow in the next month?",
+            "What's a goal you're working towards?",
+            "Describe a person who inspires you and why."
+        ];
 
-            // Create new entry card
-            const entryCard = document.createElement('div');
-            entryCard.className = 'journal-entry-card card mb-3';
-            entryCard.setAttribute('data-mood', mood);
-
-            const now = new Date();
-            const timeString = now.toLocaleDateString() + ', ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-            entryCard.innerHTML = `
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="card-title mb-0">${title}</h6>
-                        <div class="d-flex align-items-center">
-                            <span class="mood-indicator mood-${mood}"></span>
-                            <small class="text-muted">${timeString}</small>
-                        </div>
-                    </div>
-                    <p class="card-text">${content}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Mood: ${mood.charAt(0).toUpperCase() + mood.slice(1)}</small>
-                        <div>
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editEntry(this)">
-                                <i class="ti ti-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteEntry(this)">
-                                <i class="ti ti-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Add to entries container at the top
-            const container = document.getElementById('entries-container');
-            container.insertBefore(entryCard, container.firstChild);
-
-            // Clear form
-            clearForm();
-
-            // Show success message
-            alert('Journal entry saved successfully!');
-        });
-
-        // Clear form function
-        function clearForm() {
-            document.getElementById('journal-form').reset();
-            document.getElementById('char-count').textContent = '0';
-        }
-
-        // Filter entries by mood
-        function filterEntries(mood) {
-            const entries = document.querySelectorAll('.journal-entry-card');
-            const filterButtons = document.querySelectorAll('.btn-group .btn');
-
-            // Update button states
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            entries.forEach(entry => {
-                if (mood === 'all' || entry.getAttribute('data-mood') === mood) {
-                    entry.style.display = 'block';
-                } else {
-                    entry.style.display = 'none';
-                }
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEntries();
+            updateJournalStats();
+            updatePopularTags();
+            loadWritingPrompts();
+            
+            // Add mood selector handlers
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedMood = this.dataset.mood;
+                });
             });
+        });
+
+        function showNewEntryForm() {
+            document.getElementById('defaultView').style.display = 'none';
+            document.getElementById('entryView').classList.remove('active');
+            document.getElementById('newEntryForm').classList.add('active');
+            
+            // Clear form
+            document.getElementById('entryTitle').value = '';
+            document.getElementById('entryContent').value = '';
+            document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector('[data-mood="neutral"]').classList.add('selected');
+            selectedMood = 'neutral';
         }
 
-        // Edit entry (placeholder)
-        function editEntry(button) {
-            alert('Edit functionality would open the entry in the form above for editing.');
+        function hideNewEntryForm() {
+            document.getElementById('newEntryForm').classList.remove('active');
+            document.getElementById('defaultView').style.display = 'block';
         }
 
-        // Delete entry
-        function deleteEntry(button) {
-            if (confirm('Are you sure you want to delete this journal entry?')) {
-                button.closest('.journal-entry-card').remove();
+        function showDefaultView() {
+            document.getElementById('entryView').classList.remove('active');
+            document.getElementById('newEntryForm').classList.remove('active');
+            document.getElementById('defaultView').style.display = 'block';
+        }
+
+        function saveEntry(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('entryTitle').value.trim();
+            const content = document.getElementById('entryContent').value.trim();
+            
+            if (!title || !content) {
+                alert('Please fill in both title and content.');
+                return;
+            }
+            
+            try {
+                Journal.saveEntry(title, content, selectedMood);
+                
+                // Show success message
+                alert('Entry saved successfully!');
+                
+                // Refresh and go back to list
+                loadEntries();
+                updateJournalStats();
+                updatePopularTags();
+                hideNewEntryForm();
+                
+            } catch (error) {
+                alert('Error saving entry. Please try again.');
             }
         }
 
-        // Load more entries (placeholder)
-        function loadMoreEntries() {
-            alert('In a real application, this would load more entries from the database or local storage.');
+        function loadEntries() {
+            const entries = Journal.getEntries();
+            const entriesList = document.getElementById('entriesList');
+            
+            if (entries.length === 0) {
+                entriesList.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="ti ti-book" style="font-size: 3rem; color: #6c757d;"></i>
+                        <h4 class="mt-3 text-muted">No journal entries yet</h4>
+                        <p class="text-muted">Start your journaling journey by creating your first entry.</p>
+                        <button class="btn-primary mt-3" onclick="showNewEntryForm()">
+                            <i class="ti ti-plus me-2"></i>Write Your First Entry
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Filter entries
+            let filteredEntries = entries;
+            if (currentFilter !== 'all') {
+                filteredEntries = entries.filter(entry => entry.mood === currentFilter);
+            }
+            
+            // Search filter
+            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            if (searchTerm) {
+                filteredEntries = filteredEntries.filter(entry => 
+                    entry.title.toLowerCase().includes(searchTerm) ||
+                    entry.content.toLowerCase().includes(searchTerm) ||
+                    entry.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            // Sort by date (newest first)
+            filteredEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            entriesList.innerHTML = filteredEntries.map(entry => `
+                <div class="entry-item" onclick="viewEntry(${entry.id})">
+                    <div class="entry-header">
+                        <div>
+                            <div class="entry-title">${entry.title}</div>
+                            <div class="entry-date">${formatDate(entry.createdAt)}</div>
+                        </div>
+                        <div class="entry-mood">${moodEmojis[entry.mood]}</div>
+                    </div>
+                    <div class="entry-preview">${truncateText(entry.content, 100)}</div>
+                    ${entry.tags.length > 0 ? `
+                        <div class="entry-tags">
+                            ${entry.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
         }
 
-        // Initialize character count
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('char-count').textContent = '0';
-        });
+        function viewEntry(entryId) {
+            const entry = Journal.getEntry(entryId);
+            if (!entry) return;
+            
+            currentEntryId = entryId;
+            
+            document.getElementById('defaultView').style.display = 'none';
+            document.getElementById('newEntryForm').classList.remove('active');
+            document.getElementById('entryView').classList.add('active');
+            
+            document.getElementById('entryViewContent').innerHTML = `
+                <h2>${entry.title}</h2>
+                <div class="entry-meta">
+                    <div>
+                        <small class="text-muted">
+                            <i class="ti ti-calendar me-1"></i>${formatDateTime(entry.createdAt)}
+                        </small>
+                    </div>
+                    <div>
+                        <span class="entry-mood" style="font-size: 1.5rem;">${moodEmojis[entry.mood]}</span>
+                    </div>
+                </div>
+                <div class="entry-content">${formatContent(entry.content)}</div>
+                ${entry.tags.length > 0 ? `
+                    <div class="entry-tags mt-3">
+                        ${entry.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function editEntry() {
+            const entry = Journal.getEntry(currentEntryId);
+            if (!entry) return;
+            
+            // Populate form with current entry data
+            document.getElementById('entryTitle').value = entry.title;
+            document.getElementById('entryContent').value = entry.content;
+            
+            // Set mood
+            document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector(`[data-mood="${entry.mood}"]`).classList.add('selected');
+            selectedMood = entry.mood;
+            
+            // Show form
+            document.getElementById('entryView').classList.remove('active');
+            document.getElementById('newEntryForm').classList.add('active');
+            
+            // Delete old entry when saving
+            const originalSaveEntry = window.saveEntry;
+            window.saveEntry = function(event) {
+                event.preventDefault();
+                
+                const title = document.getElementById('entryTitle').value.trim();
+                const content = document.getElementById('entryContent').value.trim();
+                
+                if (!title || !content) {
+                    alert('Please fill in both title and content.');
+                    return;
+                }
+                
+                try {
+                    // Delete old entry
+                    Journal.deleteEntry(currentEntryId);
+                    
+                    // Save new entry
+                    Journal.saveEntry(title, content, selectedMood);
+                    
+                    alert('Entry updated successfully!');
+                    
+                    // Refresh and go back to list
+                    loadEntries();
+                    updateJournalStats();
+                    updatePopularTags();
+                    hideNewEntryForm();
+                    
+                    // Restore original save function
+                    window.saveEntry = originalSaveEntry;
+                    
+                } catch (error) {
+                    alert('Error updating entry. Please try again.');
+                }
+            };
+        }
+
+        function deleteEntry() {
+            if (!currentEntryId) return;
+            
+            if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+                try {
+                    Journal.deleteEntry(currentEntryId);
+                    alert('Entry deleted successfully.');
+                    
+                    loadEntries();
+                    updateJournalStats();
+                    updatePopularTags();
+                    showDefaultView();
+                    
+                } catch (error) {
+                    alert('Error deleting entry. Please try again.');
+                }
+            }
+        }
+
+        function searchEntries() {
+            loadEntries();
+        }
+
+        function filterEntries(filter) {
+            currentFilter = filter;
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            
+            loadEntries();
+        }
+
+        function updateJournalStats() {
+            const entries = Journal.getEntries();
+            const statsContainer = document.getElementById('journalStats');
+            
+            // Calculate stats
+            const totalEntries = entries.length;
+            const thisWeek = entries.filter(entry => {
+                const entryDate = new Date(entry.createdAt);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return entryDate >= weekAgo;
+            }).length;
+            
+            const totalWords = entries.reduce((sum, entry) => sum + entry.content.split(' ').length, 0);
+            const avgWords = totalEntries > 0 ? Math.round(totalWords / totalEntries) : 0;
+            
+            statsContainer.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${totalEntries}</div>
+                    <div class="stat-label">Total Entries</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${thisWeek}</div>
+                    <div class="stat-label">This Week</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${avgWords}</div>
+                    <div class="stat-label">Avg Words</div>
+                </div>
+            `;
+        }
+
+        function updatePopularTags() {
+            const entries = Journal.getEntries();
+            const tagCounts = {};
+            
+            entries.forEach(entry => {
+                entry.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            });
+            
+            const sortedTags = Object.entries(tagCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10);
+            
+            const tagsContainer = document.getElementById('popularTags');
+            
+            if (sortedTags.length === 0) {
+                tagsContainer.innerHTML = '<p class="text-muted">No tags yet. Use #hashtags in your entries!</p>';
+                return;
+            }
+            
+            tagsContainer.innerHTML = sortedTags.map(([tag, count]) => `
+                <span class="tag me-1 mb-1" style="cursor: pointer;" onclick="searchByTag('${tag}')">
+                    #${tag} (${count})
+                </span>
+            `).join('');
+        }
+
+        function loadWritingPrompts() {
+            const promptsList = document.getElementById('promptsList');
+            const randomPrompts = writingPrompts.sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            promptsList.innerHTML = randomPrompts.map(prompt => `
+                <div class="mb-2">
+                    <small class="text-muted" style="cursor: pointer;" onclick="usePrompt('${prompt}')">
+                        "${prompt}"
+                    </small>
+                </div>
+            `).join('');
+        }
+
+        function usePrompt(prompt) {
+            showNewEntryForm();
+            document.getElementById('entryContent').value = prompt + '\n\n';
+            document.getElementById('entryContent').focus();
+        }
+
+        function searchByTag(tag) {
+            document.getElementById('searchInput').value = '#' + tag;
+            searchEntries();
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+                });
+            }
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatContent(content) {
+            // Convert line breaks to paragraphs
+            return content.split('\n\n').map(paragraph => 
+                `<p>${paragraph.replace(/\n/g, '<br>')}</p>`
+            ).join('');
+        }
+
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substr(0, maxLength) + '...';
+        }
     </script>
 </body>
 </html>

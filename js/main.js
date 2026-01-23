@@ -18,11 +18,20 @@ const Auth = {
 
   // Login user
   login(email, password) {
+    // Mock user data with program assignment
     const user = {
       email: email,
       name: email.split('@')[0],
+      fullName: email.split('@')[0],
       loggedIn: true,
-      loginTime: new Date().toISOString()
+      loginTime: new Date().toISOString(),
+      // Mock program assignment (in real app, this would come from database)
+      assigned_program_id: Math.random() > 0.5 ? Math.floor(Math.random() * 5) + 1 : null,
+      current_streak: Math.floor(Math.random() * 10) + 1,
+      highest_streak: Math.floor(Math.random() * 20) + 5,
+      total_program_days: Math.floor(Math.random() * 30) + 1,
+      assessment_taken: localStorage.getItem('healNestAssessmentCompleted') === 'true',
+      wellness_score: Math.floor(Math.random() * 40) + 60
     };
     localStorage.setItem('healNestUser', JSON.stringify(user));
     return user;
@@ -186,6 +195,7 @@ const Assessment = {
     };
     
     localStorage.setItem('healNestAssessment', JSON.stringify(assessment));
+    localStorage.setItem('healNestAssessmentCompleted', 'true');
     return assessment;
   },
 
@@ -198,10 +208,31 @@ const Assessment = {
   // Calculate wellness score
   calculateWellnessScore() {
     const assessment = this.getLastAssessment();
-    if (!assessment) return 0;
+    if (!assessment) return 75;
     
-    const maxScore = 100;
-    return Math.round((assessment.score / 30) * maxScore);
+    // Convert raw score to wellness percentage (higher is better)
+    const maxPossibleScore = 60; // 20 questions * 3 max points each
+    const wellnessScore = Math.round(((maxPossibleScore - assessment.score) / maxPossibleScore) * 100);
+    return Math.max(0, Math.min(100, wellnessScore));
+  },
+
+  // Get assessment history
+  getAssessmentHistory() {
+    const history = localStorage.getItem('healNestAssessmentHistory');
+    return history ? JSON.parse(history) : [];
+  },
+
+  // Save assessment to history
+  saveToHistory(assessment) {
+    const history = this.getAssessmentHistory();
+    history.push(assessment);
+    
+    // Keep only last 10 assessments
+    if (history.length > 10) {
+      history.shift();
+    }
+    
+    localStorage.setItem('healNestAssessmentHistory', JSON.stringify(history));
   }
 };
 

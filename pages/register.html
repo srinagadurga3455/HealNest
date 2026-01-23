@@ -1,197 +1,705 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HealNest - Sign Up</title>
-    <link rel="shortcut icon" type="image/png" href="../calm_clarity/assets/images/logos/favicon.png" />
-    <link rel="stylesheet" href="../calm_clarity/assets/css/styles.min.css" />
-    <link rel="stylesheet" href="../css/main.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - HealNest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .auth-container {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            position: relative;
         }
-        .auth-card {
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+
+        .auth-container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            max-width: 400px;
+            border-radius: 20px;
+            padding: 3rem;
             width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
-        .auth-header {
-            background: linear-gradient(135deg, #5D87FF 0%, #3B7BFF 100%);
-            color: white;
-            padding: 2rem;
+
+        .logo {
             text-align: center;
+            margin-bottom: 2rem;
         }
-        .auth-body {
-            padding: 2rem;
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #5D87FF;
+            margin-bottom: 0.5rem;
         }
-        .form-control:focus {
-            border-color: #5D87FF;
-            box-shadow: 0 0 0 0.2rem rgba(93, 135, 255, 0.25);
+
+        .logo p {
+            color: #6c757d;
+            font-size: 0.9rem;
         }
-        .btn-auth {
-            background: linear-gradient(135deg, #5D87FF 0%, #3B7BFF 100%);
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2A3547;
+        }
+
+        .form-control {
             width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
             transition: all 0.3s ease;
+            background: #f8f9fa;
         }
-        .btn-auth:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(93, 135, 255, 0.3);
+
+        .form-control:focus {
+            outline: none;
+            border-color: #5D87FF;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
             color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
         }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(93, 135, 255, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .auth-footer p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #5D87FF;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
         .password-strength {
             margin-top: 0.5rem;
-            height: 4px;
-            border-radius: 2px;
-            background: #e9ecef;
-            overflow: hidden;
+            font-size: 0.8rem;
         }
-        .strength-bar {
-            height: 100%;
-            width: 0%;
+
+        .strength-weak { color: #dc3545; }
+        .strength-fair { color: #ffc107; }
+        .strength-good { color: #28a745; }
+        .strength-strong { color: #20c997; }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: all 0.3s ease;
         }
-        .strength-weak { background: #FA5252; }
-        .strength-fair { background: #FFD666; }
-        .strength-good { background: #49BEFF; }
-        .strength-strong { background: #20c997; }
-        .strength-text {
-            font-size: 12px;
-            margin-top: 0.25rem;
-            display: block;
+
+        .back-link:hover {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .back-link {
+                position: relative;
+                top: 0;
+                left: 0;
+                color: #6c757d;
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
-
 <body>
+    <a href="./landing.html" class="back-link">← Back to Home</a>
+    
     <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h2 class="mb-2">Join HealNest</h2>
-                <p class="mb-0">Create your account to start your wellness journey</p>
-            </div>
-            <div class="auth-body">
-                <form id="registerForm">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Create a password" required>
-                        <div class="password-strength">
-                            <div class="strength-bar" id="strengthBar"></div>
-                        </div>
-                        <span class="strength-text" id="strengthText">Password strength: Weak</span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="terms" required>
-                        <label class="form-check-label" for="terms">
-                            I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-auth">Create Account</button>
-                </form>
+        <div class="logo">
+            <h1>🌟 HealNest</h1>
+            <p>Create your account to start your wellness journey</p>
+        </div>
 
-                <div class="text-center mt-3">
-                    <p class="mb-2">Already have an account?</p>
-                    <a href="./login.html" class="text-decoration-none">Sign In</a>
-                </div>
+        <div id="alertDiv" class="alert hidden"></div>
 
-                <div class="text-center mt-3">
-                    <a href="./landing.html" class="text-decoration-none text-muted">
-                        <i class="ti ti-arrow-left me-1"></i>Back to Home
-                    </a>
-                </div>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
             </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Create a strong password" required>
+                <div id="passwordStrength" class="password-strength"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password" required>
+            </div>
+
+            <button type="submit" id="registerBtn" class="btn">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="./login.html">Sign in here</a></p>
         </div>
     </div>
 
-    <script src="../calm_clarity/assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="../calm_clarity/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/main.js"></script>
-
     <script>
-        // Password strength indicator
-        document.getElementById('password').addEventListener('input', function() {
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const alertDiv = document.getElementById('alertDiv');
+        const passwordInput = document.getElementById('password');
+        const passwordStrength = document.getElementById('passwordStrength');
+
+        // Password strength checker
+        passwordInput.addEventListener('input', function() {
             const password = this.value;
-            const strengthBar = document.getElementById('strengthBar');
-            const strengthText = document.getElementById('strengthText');
-            let strength = 0;
-
-            if (password.length >= 8) strength++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^a-zA-Z0-9]/.test(password)) strength++;
-
-            const widths = ['25%', '50%', '75%', '100%'];
-            const levels = ['Weak', 'Fair', 'Good', 'Strong'];
-            const classes = ['strength-weak', 'strength-fair', 'strength-good', 'strength-strong'];
-
-            if (strength > 0) {
-                strengthBar.style.width = widths[strength - 1];
-                strengthBar.className = 'strength-bar ' + classes[strength - 1];
-                strengthText.textContent = 'Password strength: ' + levels[strength - 1];
-                strengthText.className = 'strength-text text-' + classes[strength - 1];
-            }
+            const strength = checkPasswordStrength(password);
+            
+            passwordStrength.textContent = strength.text;
+            passwordStrength.className = `password-strength strength-${strength.level}`;
         });
 
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function checkPasswordStrength(password) {
+            let score = 0;
+            
+            if (password.length >= 8) score++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^a-zA-Z0-9]/.test(password)) score++;
+            
+            const levels = ['weak', 'fair', 'good', 'strong'];
+            const texts = ['Weak', 'Fair', 'Good', 'Strong'];
+            
+            return {
+                level: levels[Math.max(0, score - 1)] || 'weak',
+                text: `Password strength: ${texts[Math.max(0, score - 1)] || 'Weak'}`
+            };
+        }
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const termsAccepted = document.getElementById('terms').checked;
+
+            // Validation
+            if (!fullName || !email || !password || !confirmPassword) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
 
             if (password !== confirmPassword) {
-                alert('Passwords do not match');
+                showAlert('Passwords do not match', 'error');
                 return;
             }
 
-            if (!termsAccepted) {
-                alert('Please accept the terms and conditions');
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters long', 'error');
                 return;
             }
 
-            if (name && email && password) {
-                // Store user data (in a real app, this would be saved to a database)
-                const userData = {
-                    name: name,
-                    email: email,
-                    registered: true,
-                    registrationDate: new Date().toISOString()
-                };
+            if (!isValidEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
 
-                localStorage.setItem('healNestUser', JSON.stringify(userData));
+            // Disable button and show loading
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Creating Account...';
 
-                alert('Account created successfully! You can now sign in.');
-                window.location.href = './login.html';
-            } else {
-                alert('Please fill in all fields');
+            // Simulate registration process
+            setTimeout(() => {
+                try {
+                    // Create user account (in real app, this would be an API call)
+                    const user = {
+                        fullName: fullName,
+                        email: email,
+                        createdAt: new Date().toISOString(),
+                        assigned_program_id: null,
+                        current_streak: 0,
+                        highest_streak: 0,
+                        total_program_days: 0,
+                        assessment_taken: false,
+                        wellness_score: 0
+                    };
+                    
+                    localStorage.setItem('healNestUser', JSON.stringify(user));
+                    
+                    showAlert('Account created successfully!', 'success');
+                    
+                    setTimeout(() => {
+                        // Redirect to assessment since new users need to take it
+                        window.location.href = './assessment.html';
+                    }, 1500);
+                    
+                } catch (error) {
+                    showAlert('Registration failed. Please try again.', 'error');
+                    resetButton();
+                }
+            }, 1500);
+        });
+
+        function showAlert(message, type) {
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.classList.remove('hidden');
+        }
+
+        function resetButton() {
+            registerBtn.disabled = false;
+            registerBtn.textContent = 'Create Account';
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+</body>
+</html>
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: width 0.3s, background-color 0.3s;
+            width: 0%;
+        }
+
+        .strength-weak { background: #dc2626; width: 25%; }
+        .strength-fair { background: #f59e0b; width: 50%; }
+        .strength-good { background: #10b981; width: 75%; }
+        .strength-strong { background: #059669; width: 100%; }
+
+        .strength-text {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #1a1a1a;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .auth-footer {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .auth-footer p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .auth-footer a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.7;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 2px;
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .checkbox-group a {
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <h1>HealNest</h1>
+            <p>Create your account</p>
+        </div>
+
+        <div id="alert" class="alert hidden"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input type="text" id="fullName" class="form-input" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Create a password" required>
+                <div class="password-strength">
+                    <div class="strength-bar">
+                        <div id="strengthFill" class="strength-fill"></div>
+                    </div>
+                    <div id="strengthText" class="strength-text">Password strength will appear here</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeTerms" required>
+                <label for="agreeTerms">
+                    I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary" id="registerBtn">
+                <span id="btnText">Create Account</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="./login.html">Sign in</a></p>
+            <a href="./landing.html" class="back-link">← Back to home</a>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            
+            const strength = getPasswordStrength(password);
+            
+            // Remove all strength classes
+            strengthFill.className = 'strength-fill';
+            
+            if (password.length === 0) {
+                strengthText.textContent = 'Password strength will appear here';
+                return;
+            }
+            
+            // Add appropriate strength class
+            strengthFill.classList.add(`strength-${strength.level}`);
+            strengthText.textContent = `Password strength: ${strength.text}`;
+        });
+
+        // Form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const alertDiv = document.getElementById('alert');
+            const registerBtn = document.getElementById('registerBtn');
+            const btnText = document.getElementById('btnText');
+            
+            // Clear previous alerts
+            alertDiv.classList.add('hidden');
+            
+            // Validation
+            if (!fullName || !email || !password || !confirmPassword) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showAlert('Password must be at least 8 characters long', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (!agreeTerms) {
+                showAlert('Please agree to the Terms of Service and Privacy Policy', 'error');
+                return;
+            }
+            
+            // Show loading state
+            registerBtn.disabled = true;
+            registerBtn.classList.add('loading');
+            btnText.textContent = 'Creating account...';
+            
+            // Simulate registration process
+            setTimeout(() => {
+                try {
+                    // Register user
+                    const user = Auth.register(fullName, email, password);
+                    
+                    showAlert('Account created successfully!', 'success');
+                    
+                    setTimeout(() => {
+                        // Redirect to assessment for new users
+                        window.location.href = './assessment.html';
+                    }, 1000);
+                    
+                } catch (error) {
+                    showAlert('Registration failed. Please try again.', 'error');
+                    resetButton();
+                }
+            }, 1500);
+            
+            function showAlert(message, type) {
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.textContent = message;
+                alertDiv.classList.remove('hidden');
+            }
+            
+            function resetButton() {
+                registerBtn.disabled = false;
+                registerBtn.classList.remove('loading');
+                btnText.textContent = 'Create Account';
             }
         });
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function getPasswordStrength(password) {
+            let score = 0;
+            
+            if (password.length >= 8) score++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^a-zA-Z0-9]/.test(password)) score++;
+            
+            const levels = ['weak', 'fair', 'good', 'strong'];
+            const texts = ['Weak', 'Fair', 'Good', 'Strong'];
+            
+            return {
+                level: levels[Math.max(0, score - 1)] || 'weak',
+                text: texts[Math.max(0, score - 1)] || 'Weak'
+            };
+        }
     </script>
 </body>
 </html>
