@@ -39,10 +39,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                 <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
             </div>
 
-            <div class="forgot-password">
-                <a href="#">Forgot your password?</a>
-            </div>
-
             <button type="submit" id="loginBtn" class="btn">Sign In</button>
         </form>
 
