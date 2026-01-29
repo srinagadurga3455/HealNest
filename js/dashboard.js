@@ -524,10 +524,10 @@ function logout() {
             method: 'POST',
             credentials: 'same-origin'
         }).then(() => {
-            window.location.href = '../pages/landing.html';
+            window.location.href = 'index.html';
         }).catch(() => {
             // Fallback - redirect anyway
-            window.location.href = '../pages/landing.html';
+            window.location.href = 'index.html';
         });
     }
 }

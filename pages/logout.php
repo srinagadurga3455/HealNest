@@ -24,7 +24,7 @@ echo '<!DOCTYPE html>
         
         // Redirect to landing page
         setTimeout(() => {
-            window.location.href = "pages/landing.html";
+            window.location.href = "index.html";
         }, 1000);
     </script>
 </body>

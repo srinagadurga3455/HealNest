@@ -211,7 +211,7 @@ if (isset($_SESSION['user_id'])) {
 </head>
 <body>
     <div class="auth-page">
-        <a href="./landing.html" class="back-link">← Back to Home</a>
+        <a href="index.html" class="back-link">← Back to Home</a>
         
         <div class="auth-container">
             <div class="auth-logo">

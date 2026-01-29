@@ -40,7 +40,7 @@ if ($isAjax || $_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['success' => true, 'message' => 'Logged out successfully']);
 } else {
     // Redirect to landing page for direct access
-    header('Location: pages/landing.html');
+    header('Location: index.html');
     exit;
 }
 ?>

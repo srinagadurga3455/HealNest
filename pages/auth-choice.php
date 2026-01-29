@@ -220,7 +220,7 @@
 </head>
 <body>
     <div class="auth-choice-page">
-        <a href="../pages/landing.html" class="back-link">← Back to Home</a>
+        <a href="index.html" class="back-link">← Back to Home</a>
         
         <div class="auth-choice-container">
             <div class="auth-logo">

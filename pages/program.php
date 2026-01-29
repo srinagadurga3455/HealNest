@@ -91,7 +91,7 @@ if (!isset($_SESSION['user_id'])) {
                                         <i class="ti ti-edit"></i>
                                         <span>Journal</span>
                                     </a>
-                                    <a href="./landing.html" class="dropdown-item" onclick="logout()">
+                                    <a href="index.html" class="dropdown-item" onclick="logout()">
                                         <i class="ti ti-logout"></i>
                                         <span>Logout</span>
                                     </a>
