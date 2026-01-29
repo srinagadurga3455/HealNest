@@ -76,7 +76,7 @@ echo json_encode([
         'assessment_taken' => (bool)$user['assessment_taken']
     ],
     'session_token' => $session_token,
-    'redirect' => ($user['assigned_program_id'] || $user['assessment_taken']) ? './dashboard.html' : './assessment.html'
+    'redirect' => $user['assigned_program_id'] ? 'dashboard.php' : ($user['assessment_taken'] ? 'dashboard.php' : 'assessment.php')
 ]);
 
 $stmt->close();

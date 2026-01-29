@@ -188,7 +188,9 @@ CREATE TABLE `program_tasks` (
 --
 
 INSERT INTO `program_tasks` (`id`, `program_id`, `task_id`, `day_number`, `is_required`, `order_sequence`) VALUES
-(1, 1, 1, 1, 1, 1);
+(1, 1, 1, 1, 1, 1),
+(2, 1, 2, 1, 1, 2),
+(3, 1, 3, 1, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -213,7 +215,9 @@ CREATE TABLE `tasks` (
 --
 
 INSERT INTO `tasks` (`id`, `task_name`, `task_description`, `task_type`, `category`, `estimated_duration`, `difficulty_level`, `is_active`, `created_at`) VALUES
-(1, 'Morning Meditation', '10 min meditation', 'daily', 'Mindfulness', 10, 'easy', 1, '2026-01-23 13:19:37');
+(1, 'Morning Meditation', '10 minutes of guided mindfulness meditation', 'daily', 'Mindfulness', 10, 'easy', 1, '2026-01-23 13:19:37'),
+(2, 'Breathing Exercise', '5-minute deep breathing for stress relief', 'daily', 'Mindfulness', 5, 'easy', 1, '2026-01-23 13:19:37'),
+(3, 'Stress Level Check', 'Rate and reflect on your stress level (1-10)', 'daily', 'Reflection', 3, 'easy', 1, '2026-01-23 13:19:37');
 
 -- --------------------------------------------------------
 
@@ -247,7 +251,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `password_hash`, `phone`, `birth_date`, `bio`, `avatar_path`, `assigned_program_id`, `program_start_date`, `current_streak`, `highest_streak`, `last_activity_date`, `assessment_taken`, `assessment_date`, `wellness_score`, `created_at`, `updated_at`) VALUES
-(1, 'Swapanth Vakapalli', 'demo@healnest.com', 'hashed_password', '9999999999', '2002-01-01', 'Testing user', '/avatars/demo.png', 1, '2026-01-01', 3, 5, '2026-01-23', 1, '2026-01-23 13:21:12', 72, '2026-01-23 13:19:37', '2026-01-23 13:21:12');
+(1, 'Demo User', 'demo@healnest.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '9999999999', '2002-01-01', 'Demo user for testing', '/avatars/demo.png', 1, '2026-01-20', 0, 0, '2026-01-29', 1, '2026-01-23 13:21:12', 75, '2026-01-23 13:19:37', '2026-01-29 13:21:12');
 
 -- --------------------------------------------------------
 
@@ -448,13 +452,13 @@ ALTER TABLE `programs`
 -- AUTO_INCREMENT for table `program_tasks`
 --
 ALTER TABLE `program_tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`

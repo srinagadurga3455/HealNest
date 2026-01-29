@@ -13,7 +13,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - HealNest</title>
+    <title>Sign Up - HealNest</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -216,12 +216,17 @@ if (isset($_SESSION['user_id'])) {
         <div class="auth-container">
             <div class="auth-logo">
                 <h1>🌟 HealNest</h1>
-                <p>Welcome back! Sign in to continue your wellness journey</p>
+                <p>Create your account to start your wellness journey</p>
             </div>
 
             <div id="alertDiv" class="alert hidden"></div>
 
-            <form id="loginForm">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+                </div>
+
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
@@ -229,31 +234,37 @@ if (isset($_SESSION['user_id'])) {
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                    <input type="password" id="password" class="form-control" placeholder="Create a strong password" required minlength="6">
                 </div>
 
-                <button type="submit" id="loginBtn" class="btn">
-                    <span id="btnText">Sign In</span>
+                <button type="submit" id="registerBtn" class="btn">
+                    <span id="btnText">Create Account</span>
                     <span id="btnLoading" class="loading hidden"></span>
                 </button>
             </form>
 
             <div class="auth-footer">
-                <p>Don't have an account? <a href="register.php">Sign up here</a></p>
+                <p>Already have an account? <a href="login.php">Sign in here</a></p>
             </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             
             // Basic validation
-            if (!email || !password) {
+            if (!fullName || !email || !password) {
                 showAlert('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters long', 'error');
                 return;
             }
             
@@ -261,13 +272,15 @@ if (isset($_SESSION['user_id'])) {
             setLoading(true);
             
             try {
-                const response = await fetch('../api/login.php', {
+                const response = await fetch('../api/register.php', {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        action: 'register',
+                        full_name: fullName,
                         email: email,
                         password: password
                     })
@@ -288,20 +301,15 @@ if (isset($_SESSION['user_id'])) {
                         localStorage.setItem('healNestUser', JSON.stringify(userData));
                     }
                     
-                    showAlert('Login successful! Redirecting...', 'success');
+                    showAlert('Account created successfully! Redirecting...', 'success');
                     setTimeout(() => {
-                        // Check if user has taken assessment
-                        if (data.user && data.user.assessment_taken) {
-                            window.location.href = 'dashboard.php';
-                        } else {
-                            window.location.href = 'assessment.php';
-                        }
+                        window.location.href = 'assessment.php';
                     }, 1500);
                 } else {
-                    showAlert(data.message || 'Login failed. Please check your credentials.', 'error');
+                    showAlert(data.message || 'Registration failed. Please try again.', 'error');
                 }
             } catch (error) {
-                console.error('Login error:', error);
+                console.error('Registration error:', error);
                 showAlert('Network error. Please check your connection and try again.', 'error');
             } finally {
                 setLoading(false);
@@ -323,7 +331,7 @@ if (isset($_SESSION['user_id'])) {
         }
         
         function setLoading(loading) {
-            const btn = document.getElementById('loginBtn');
+            const btn = document.getElementById('registerBtn');
             const btnText = document.getElementById('btnText');
             const btnLoading = document.getElementById('btnLoading');
             
