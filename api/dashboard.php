@@ -376,7 +376,7 @@ function completeTask() {
                 
                 // Insert completion record
                 $stmt = $conn->prepare("INSERT INTO user_task_completions (user_id, task_id, program_id, completion_date, completed_at, notes) VALUES (?, ?, ?, ?, NOW(), ?)");
-                $stmt->bind_param("iiiis", $user_id, $task_id, $program_id, $today, $notes);
+                $stmt->bind_param("iiiss", $user_id, $task_id, $program_id, $today, $notes);
                 
                 if (!$stmt->execute()) {
                     throw new Exception("Failed to record task completion");
