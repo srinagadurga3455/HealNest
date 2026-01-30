@@ -14,7 +14,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - HealNest</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -23,132 +23,182 @@ if (isset($_SESSION['user_id'])) {
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            overflow-x: hidden;
+            font-family: 'Lato', sans-serif;
+            line-height: 1.8;
+            color: #2c2c2c;
+            background: #ffffff;
         }
 
         /* Auth Pages */
         .auth-page {
             min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #ffffff;
+        }
+
+        .auth-visual {
+            background: #fafafa;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            align-items: center;
+            padding: 4rem;
             position: relative;
         }
 
-        .auth-page::before {
+        .auth-visual::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
-            pointer-events: none;
+            background-image: url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .visual-content h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: #2c2c2c;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .visual-content p {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .auth-form-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+            background: #ffffff;
         }
 
         .auth-container {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
             width: 100%;
             max-width: 450px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 2;
-            margin: 2rem;
         }
 
         .auth-logo {
-            text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
         .auth-logo h1 {
+            font-family: 'Cormorant Garamond', serif;
             font-size: 2rem;
-            font-weight: 700;
-            color: #5D87FF;
+            font-weight: 500;
+            color: #2c2c2c;
             margin-bottom: 0.5rem;
+            letter-spacing: 1px;
         }
 
         .auth-logo p {
-            color: #6c757d;
-            font-size: 0.9rem;
+            color: #666;
+            font-size: 0.95rem;
+            font-weight: 300;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #2A3547;
+            margin-bottom: 0.75rem;
+            font-weight: 400;
+            color: #2c2c2c;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 1rem 1.25rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 0;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
-            background: #f8f9fa;
+            background: #ffffff;
+            font-family: 'Lato', sans-serif;
+            color: #2c2c2c;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #5D87FF;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.1);
+            border-color: #2c2c2c;
+            background: #fafafa;
+        }
+
+        .form-control::placeholder {
+            color: #999;
+            font-weight: 300;
         }
 
         .btn {
             width: 100%;
-            padding: 0.875rem 1rem;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            padding: 1rem 1.5rem;
+            border-radius: 0;
+            font-weight: 400;
+            transition: all 0.4s ease;
             border: none;
             cursor: pointer;
-            font-size: 1rem;
-            background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
-            color: white;
+            font-size: 0.95rem;
+            background: #2c2c2c;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            margin-top: 1rem;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(93, 135, 255, 0.4);
+            background: #8b7355;
         }
 
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
+        }
+
+        .btn:disabled:hover {
+            background: #2c2c2c;
         }
 
         .alert {
-            padding: 0.875rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            padding: 1rem 1.25rem;
+            border-radius: 0;
+            margin-bottom: 1.5rem;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 400;
+            border-left: 3px solid;
         }
 
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #f8fdf8;
+            color: #2d5016;
+            border-left-color: #8b7355;
         }
 
         .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fef8f8;
+            color: #5d1a1a;
+            border-left-color: #d32f2f;
         }
 
         .hidden {
@@ -157,94 +207,178 @@ if (isset($_SESSION['user_id'])) {
 
         .auth-footer {
             text-align: center;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e9ecef;
+            margin-top: 2.5rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid #f0f0f0;
         }
 
         .auth-footer p {
-            color: #6c757d;
-            font-size: 0.9rem;
+            color: #666;
+            font-size: 0.95rem;
+            font-weight: 300;
         }
 
         .auth-footer a {
-            color: #5D87FF;
+            color: #2c2c2c;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 400;
+            border-bottom: 1px solid #2c2c2c;
+            transition: all 0.3s ease;
         }
 
         .auth-footer a:hover {
-            text-decoration: underline;
+            color: #8b7355;
+            border-bottom-color: #8b7355;
         }
 
         .back-link {
             position: absolute;
             top: 2rem;
             left: 2rem;
-            color: white;
+            color: #2c2c2c;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 300;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            z-index: 10;
         }
 
         .back-link:hover {
-            color: rgba(255, 255, 255, 0.8);
+            color: #8b7355;
         }
 
         .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,.3);
             border-radius: 50%;
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
         }
 
+        .loading:not(.hidden) {
+            display: inline-block;
+        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-container {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .auth-page {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-visual {
+                display: none;
+            }
+
+            .auth-form-section {
+                padding: 3rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-form-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .visual-content h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Form field focus animation */
+        .form-control {
+            position: relative;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #8b7355;
+            transition: width 0.3s ease;
+        }
+
+        .form-group:focus-within::after {
+            width: 100%;
         }
     </style>
 </head>
 <body>
     <div class="auth-page">
-        <a href="index.html" class="back-link">← Back to Home</a>
+        <a href="../index.html" class="back-link">← Back to Home</a>
         
-        <div class="auth-container">
-            <div class="auth-logo">
-                <h1>🌟 HealNest</h1>
-                <p>Create your account to start your wellness journey</p>
+        <div class="auth-visual">
+            <div class="visual-content">
+                <h2>Begin Your Journey to Inner Peace</h2>
+                <p>Join our community and discover a mindful path to lasting wellness and emotional balance.</p>
             </div>
+        </div>
 
-            <div id="alertDiv" class="alert hidden"></div>
-
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+        <div class="auth-form-section">
+            <div class="auth-container">
+                <div class="auth-logo">
+                    <h1>HealNest</h1>
+                    <p>Create your account</p>
                 </div>
 
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                <div id="alertDiv" class="alert hidden"></div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Minimum 6 characters" required minlength="6">
+                    </div>
+
+                    <button type="submit" id="registerBtn" class="btn">
+                        <span id="btnText">Create Account</span>
+                        <span id="btnLoading" class="loading hidden"></span>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.php">Sign in here</a></p>
                 </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Create a strong password" required minlength="6">
-                </div>
-
-                <button type="submit" id="registerBtn" class="btn">
-                    <span id="btnText">Create Account</span>
-                    <span id="btnLoading" class="loading hidden"></span>
-                </button>
-            </form>
-
-            <div class="auth-footer">
-                <p>Already have an account? <a href="login.php">Sign in here</a></p>
             </div>
         </div>
     </div>
@@ -286,6 +420,11 @@ if (isset($_SESSION['user_id'])) {
                     })
                 });
                 
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 
                 if (data.success) {
@@ -302,17 +441,18 @@ if (isset($_SESSION['user_id'])) {
                     }
                     
                     showAlert('Account created successfully! Redirecting...', 'success');
+                    // Keep loading state during redirect
                     setTimeout(() => {
                         window.location.href = 'assessment.php';
                     }, 1500);
                 } else {
+                    setLoading(false);
                     showAlert(data.message || 'Registration failed. Please try again.', 'error');
                 }
             } catch (error) {
                 console.error('Registration error:', error);
-                showAlert('Network error. Please check your connection and try again.', 'error');
-            } finally {
                 setLoading(false);
+                showAlert('Network error. Please check your connection and try again.', 'error');
             }
         });
         

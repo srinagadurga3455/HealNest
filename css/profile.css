@@ -1,385 +1,312 @@
-.profile-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+/* Profile Page - Minimal & Peaceful Theme */
+:root {
+    --primary: #2c2c2c;
+    --accent: #8b7355;
+    --text-primary: #2c2c2c;
+    --text-secondary: #666;
+    --text-muted: #999;
+    --bg-primary: #ffffff;
+    --bg-secondary: #fafafa;
+    --border: #f0f0f0;
+    --border-dark: #e0e0e0;
 }
 
-.profile-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 15px;
-    padding: 3rem 2rem;
-    margin-bottom: 3rem;
+/* Profile Header Card */
+.profile-header-card {
+    background: var(--bg-primary);
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border-top: 3px solid var(--primary);
+    border-bottom: 1px solid var(--border);
     text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.profile-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
-    pointer-events: none;
 }
 
 .profile-avatar {
+    margin-bottom: 2rem;
+}
+
+.avatar-circle {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
+    background: var(--bg-secondary);
+    border: 3px solid var(--border);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 3rem;
-    margin: 0 auto 1.5rem;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    position: relative;
-    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-primary);
     transition: all 0.3s ease;
 }
 
-.profile-avatar:hover {
-    transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.5);
+.avatar-circle:hover {
+    border-color: var(--primary);
 }
 
-.avatar-upload {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: #5D87FF;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 3px solid white;
-}
-
-.profile-name {
-    font-size: 2rem;
-    font-weight: 700;
+.profile-info h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
 }
 
-.profile-email {
-    opacity: 0.8;
-    margin-bottom: 1rem;
+.profile-info p {
+    color: var(--text-secondary);
+    font-weight: 300;
+    font-size: 1rem;
+    margin-bottom: 2rem;
 }
 
-.profile-stats {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin-top: 2rem;
+/* Profile Stats Grid */
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
 }
 
-.stat-item {
+.stat-box {
     text-align: center;
 }
 
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    display: block;
+.stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 0.5rem;
 }
 
 .stat-label {
-    opacity: 0.8;
     font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 300;
 }
 
-.profile-content {
+/* Profile Content Grid */
+.profile-content-grid {
     display: grid;
-    grid-template-columns: 1fr 350px;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
 }
 
-.profile-main {
+.profile-section {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+}
+
+.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Profile Form */
+.profile-form {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-}
-
-.profile-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.profile-card {
-    background: white;
-    border-radius: 15px;
-    padding: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.card-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: #2A3547;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    gap: 1.5rem;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
 }
 
-.form-label {
-    font-weight: 600;
-    color: #2A3547;
-    margin-bottom: 0.5rem;
-    display: block;
+.form-group label {
+    margin-bottom: 0.75rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    font-size: 0.95rem;
 }
 
 .form-control {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-family: inherit;
-    transition: border-color 0.3s ease;
+    padding: 1rem;
+    border: 1px solid var(--border-dark);
+    background: var(--bg-primary);
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--primary);
+    background: var(--bg-secondary);
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+.form-control::placeholder {
+    color: var(--text-muted);
+    font-weight: 300;
+}
+
+.textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: 'Lato', sans-serif;
+    line-height: 1.6;
+}
+
+.btn-save {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary);
+    color: #ffffff;
     border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 8px;
-    font-weight: 600;
+    font-weight: 300;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-top: 1rem;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+.btn-save:hover {
+    background: var(--accent);
 }
 
-.achievement-grid {
+/* Achievements Grid */
+.achievements-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
 }
 
-.achievement-item {
+.achievement-card {
+    padding: 2rem 1.5rem;
     text-align: center;
-    padding: 1.5rem 1rem;
-    border-radius: 10px;
+    border: 1px solid var(--border);
     transition: all 0.3s ease;
-    cursor: pointer;
 }
 
-.achievement-item.earned {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
+.achievement-card.earned {
+    background: var(--bg-secondary);
+    border-color: var(--primary);
 }
 
-.achievement-item.locked {
-    background: #f8f9fa;
-    color: #6c757d;
-    opacity: 0.6;
+.achievement-card.locked {
+    background: var(--bg-primary);
+    opacity: 0.5;
 }
 
-.achievement-item:hover {
-    transform: translateY(-3px);
+.achievement-card:hover {
+    border-color: var(--primary);
+}
+
+.achievement-card.earned:hover {
+    background: var(--bg-primary);
 }
 
 .achievement-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    display: block;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1;
 }
 
 .achievement-title {
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
 }
 
-.progress-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 10px;
-    margin-bottom: 1rem;
+.achievement-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.4;
 }
 
-.progress-info {
-    flex: 1;
-}
-
-.progress-title {
-    font-weight: 600;
-    color: #2A3547;
-    margin-bottom: 0.25rem;
-}
-
-.progress-subtitle {
-    font-size: 0.8rem;
-    color: #6c757d;
-}
-
-.progress-bar-container {
-    width: 100px;
-    height: 8px;
-    background: #e9ecef;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-left: 1rem;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
-    transition: width 0.6s ease;
-    border-radius: 10px;
-}
-
-.activity-item {
-    display: flex;
-    align-items: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.activity-item:last-child {
-    border-bottom: none;
-}
-
-.activity-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    font-size: 1.2rem;
-}
-
-.activity-mood {
-    background: rgba(255, 193, 7, 0.2);
-    color: #ffc107;
-}
-
-.activity-journal {
-    background: rgba(102, 126, 234, 0.2);
-    color: #667eea;
-}
-
-.activity-assessment {
-    background: rgba(40, 167, 69, 0.2);
-    color: #28a745;
-}
-
-.activity-program {
-    background: rgba(220, 53, 69, 0.2);
-    color: #dc3545;
-}
-
-.activity-content {
-    flex: 1;
-}
-
-.activity-title {
-    font-weight: 600;
-    color: #2A3547;
-    margin-bottom: 0.25rem;
-}
-
-.activity-time {
-    font-size: 0.8rem;
-    color: #6c757d;
-}
-
-.wellness-score {
-    text-align: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, #5D87FF 0%, #49BEFF 100%);
-    color: white;
-    border-radius: 15px;
-    margin-bottom: 2rem;
-}
-
-.score-circle {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-}
-
-.score-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-}
-
-.score-label {
-    opacity: 0.9;
-}
-
-.back-btn {
-    position: fixed;
-    top: 2rem;
-    left: 2rem;
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.back-btn:hover {
-    background: white;
-    transform: scale(1.1);
-}
-
-@media (max-width: 768px) {
-    .profile-container {
-        padding: 1rem;
-    }
-
-    .profile-content {
+/* Responsive */
+@media (max-width: 1024px) {
+    .profile-content-grid {
         grid-template-columns: 1fr;
     }
 
-    .profile-stats {
+    .profile-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
     }
 
-    .achievement-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-header-card {
+        padding: 2rem 1.5rem;
     }
 
-    .back-btn {
-        top: 1rem;
-        left: 1rem;
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
     }
+
+    .profile-info h1 {
+        font-size: 2rem;
+    }
+
+    .profile-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .profile-section {
+        padding: 2rem 1.5rem;
+    }
+
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-header-card,
+.profile-section,
+.achievement-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.achievement-card:nth-child(1) { animation-delay: 0.1s; }
+.achievement-card:nth-child(2) { animation-delay: 0.2s; }
+.achievement-card:nth-child(3) { animation-delay: 0.3s; }
+.achievement-card:nth-child(4) { animation-delay: 0.4s; }
+.achievement-card:nth-child(5) { animation-delay: 0.5s; }
+.achievement-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Hidden utility */
+.hidden {
+    display: none;
 }
