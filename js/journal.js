@@ -89,7 +89,7 @@ function saveEntry(event) {
         is_private: true
     };
 
-    fetch('../api/journal.php?action=save_entry', {
+    fetch('api/journal.php?action=save_entry', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ function loadEntries() {
     const search = document.getElementById('searchInput')?.value || '';
     const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
     
-    fetch(`../api/journal.php?action=get_entries${filter}${searchParam}`)
+    fetch(`api/journal.php?action=get_entries${filter}${searchParam}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -202,7 +202,7 @@ function displayEntries(entries) {
 }
 
 function viewEntry(entryId) {
-    fetch(`../api/journal.php?action=get_entry&entry_id=${entryId}`)
+    fetch(`api/journal.php?action=get_entry&entry_id=${entryId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -313,7 +313,7 @@ function deleteEntry() {
     if (!currentEntryId) return;
 
     if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
-        fetch('../api/journal.php?action=delete_entry', {
+        fetch('api/journal.php?action=delete_entry', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -378,7 +378,7 @@ function filterEntries(filter) {
 }
 
 function updateJournalStats() {
-    fetch('../api/journal.php?action=get_stats')
+    fetch('api/journal.php?action=get_stats')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -450,7 +450,7 @@ function updateJournalStatsFallback() {
 }
 
 function updatePopularTags() {
-    fetch('../api/journal.php?action=get_stats')
+    fetch('api/journal.php?action=get_stats')
         .then(response => response.json())
         .then(data => {
             if (data.success) {

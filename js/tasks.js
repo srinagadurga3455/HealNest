@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function ensureAuthentication() {
     // Check if user is authenticated on server side
     try {
-        const response = await fetch('../api/check_session.php');
+        const response = await fetch('api/check_session.php');
         const data = await response.json();
         
         if (!data.logged_in) {
@@ -27,7 +27,7 @@ async function ensureAuthentication() {
 
 async function autoLoginDemoUser() {
     try {
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ async function autoLoginDemoUser() {
 
 function loadDailyTasks() {
     // Try to load from API first
-    fetch('../api/dashboard.php?action=get_todays_tasks')
+    fetch('api/dashboard.php?action=get_todays_tasks')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -204,7 +204,7 @@ function toggleDailyTask(taskId) {
     const statusBadge = taskItem.querySelector('.status-badge');
     
     // Try to update via API first
-    fetch('../api/dashboard.php?action=complete_task', {
+    fetch('api/dashboard.php?action=complete_task', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -321,7 +321,7 @@ function logout() {
         Auth.logout();
         
         // Call server-side logout
-        fetch('../logout.php', {
+        fetch('pages/logout.php', {
             method: 'POST',
             credentials: 'same-origin'
         }).then(() => {

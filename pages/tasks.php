@@ -13,9 +13,10 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today's Tasks - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/tasks.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/tasks.css">
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -122,8 +123,8 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
-    <script src="../js/auth.js"></script>
-    <script src="../js/tasks.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/tasks.js"></script>
     <script>
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('open');

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function loadUserProfile() {
     // Try to load from API first
-    fetch('../api/profile.php?action=get_profile')
+    fetch('api/profile.php?action=get_profile')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -110,7 +110,7 @@ function updateProfile(event) {
     };
     
     // Try to update via API first
-    fetch('../api/profile.php', {
+    fetch('api/profile.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ function logout() {
         Auth.logout();
         
         // Call server-side logout
-        fetch('../logout.php', {
+        fetch('pages/logout.php', {
             method: 'POST',
             credentials: 'same-origin'
         }).then(() => {

@@ -14,6 +14,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -353,7 +354,7 @@ if (isset($_SESSION['user_id'])) {
 </head>
 <body>
     <div class="auth-page">
-        <a href="../index.html" class="back-link">← Back to Home</a>
+        <a href="index.html" class="back-link">← Back to Home</a>
         
         <div class="auth-visual">
             <div class="visual-content">
@@ -415,7 +416,7 @@ if (isset($_SESSION['user_id'])) {
             setLoading(true);
             
             try {
-                const response = await fetch('../api/login.php', {
+                const response = await fetch('api/login.php', {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {

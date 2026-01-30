@@ -13,8 +13,9 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 
 <body>
@@ -225,9 +226,9 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
-    <script src="../js/auth.js"></script>
-    <script src="../js/journal-utils.js"></script>
-    <script src="../js/dashboard.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/journal-utils.js"></script>
+    <script src="js/dashboard.js"></script>
     <script>
         // Mobile sidebar toggle
         function toggleSidebar() {
@@ -265,11 +266,12 @@ if (!isset($_SESSION['user_id'])) {
         function logout() {
             if (confirm('Are you sure you want to sign out?')) {
                 // Clear session
-                fetch('../api/logout.php', {
+                fetch('api/logout.php', {
                     method: 'POST',
                     credentials: 'same-origin'
                 }).then(() => {
-                    window.location.href = '../index.html';
+                    window.location.href = 'index.html';
+                });
                 });
             }
         }

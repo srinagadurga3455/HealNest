@@ -8,7 +8,7 @@ async function loadProgramData() {
     console.log('Loading program data...');
     
     try {
-        const response = await fetch('../api/dashboard.php?action=get_dashboard_data', {
+        const response = await fetch('api/dashboard.php?action=get_dashboard_data', {
             method: 'GET',
             credentials: 'same-origin',
             headers: {
@@ -172,7 +172,7 @@ function logout() {
         Auth.logout();
         
         // Call server-side logout
-        fetch('../logout.php', {
+        fetch('pages/logout.php', {
             method: 'POST',
             credentials: 'same-origin'
         }).then(() => {
