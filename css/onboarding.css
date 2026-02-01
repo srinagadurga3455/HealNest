@@ -170,6 +170,150 @@
     background: white !important;
 }
 
+/* Welcome message styles */
+.onboarding-welcome {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10003;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.welcome-content {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: welcomeFadeIn 0.5s ease-out;
+}
+
+@keyframes welcomeFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.welcome-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    color: #2c2c2c;
+    margin: 0 0 15px 0;
+    font-weight: 600;
+}
+
+.welcome-content > p {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+    margin: 0 0 25px 0;
+}
+
+.welcome-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    color: #2c2c2c;
+}
+
+.feature-icon {
+    font-size: 1.2rem;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.btn-skip-tour {
+    background: none;
+    border: 1px solid #e0e0e0;
+    color: #666;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Lato', sans-serif;
+}
+
+.btn-skip-tour:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+.btn-start-tour {
+    background: #8b7355;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+}
+
+.btn-start-tour:hover {
+    background: #6d5a42;
+    transform: translateY(-1px);
+}
+
+/* Mobile responsiveness for welcome */
+@media (max-width: 768px) {
+    .welcome-content {
+        margin: 20px;
+        padding: 30px 25px;
+        max-width: none;
+    }
+    
+    .welcome-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .welcome-features {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .welcome-actions {
+        flex-direction: column;
+    }
+}
+
 /* Completion message */
 .onboarding-completion {
     position: fixed;

@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
         loadProgramData();
     });
     
+    // Also load program data immediately as fallback
+    setTimeout(() => {
+        console.log('Fallback program data load...');
+        loadProgramDataDirect();
+    }, 1000);
+    
     // Also update user info immediately in case Auth is already available
     setTimeout(() => {
         updateUserInfo();
@@ -32,10 +38,80 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Direct program data loading function
+async function loadProgramDataDirect() {
+    console.log('=== DIRECT PROGRAM DATA LOAD ===');
+    
+    try {
+        const response = await fetch('api/dashboard.php?action=get_dashboard_data', {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Direct API response:', data);
+        
+        if (data.success && data.stats) {
+            console.log('Direct loading - updating stats...');
+            
+            // Calculate values directly
+            const totalDays = data.stats.program_duration || 30;
+            const completedDays = data.stats.program_days_completed || 0;
+            const remainingDays = Math.max(0, totalDays - completedDays);
+            const rate = Math.round((completedDays / totalDays) * 100);
+            
+            // Update DOM elements directly
+            const daysCompletedEl = document.getElementById('daysCompleted');
+            const daysRemainingEl = document.getElementById('daysRemaining');
+            const completionRateEl = document.getElementById('completionRate');
+            const progressPercentageEl = document.getElementById('progressPercentage');
+            const programProgressBarEl = document.getElementById('programProgressBar');
+            const currentStreakEl = document.getElementById('currentStreak');
+            
+            if (daysCompletedEl) {
+                daysCompletedEl.textContent = completedDays;
+                console.log('Set daysCompleted to:', completedDays);
+            }
+            if (daysRemainingEl) {
+                daysRemainingEl.textContent = remainingDays;
+                console.log('Set daysRemaining to:', remainingDays);
+            }
+            if (completionRateEl) {
+                completionRateEl.textContent = rate + '%';
+                console.log('Set completionRate to:', rate + '%');
+            }
+            if (progressPercentageEl) {
+                progressPercentageEl.textContent = rate + '%';
+                console.log('Set progressPercentage to:', rate + '%');
+            }
+            if (programProgressBarEl) {
+                programProgressBarEl.style.width = rate + '%';
+                console.log('Set programProgressBar to:', rate + '%');
+            }
+            if (currentStreakEl) {
+                currentStreakEl.textContent = data.stats.current_streak || 0;
+                console.log('Set currentStreak to:', data.stats.current_streak || 0);
+            }
+            
+            console.log('Direct program stats update complete');
+        }
+        
+    } catch (error) {
+        console.error('Direct program data loading error:', error);
+    }
+}
+
 async function ensureAuthentication() {
     // Check if user is authenticated on server side
     try {
-        const response = await fetch('../api/check_session.php');
+        const response = await fetch('api/check_session.php');
         const data = await response.json();
         
         if (!data.logged_in) {
@@ -52,7 +128,7 @@ async function ensureAuthentication() {
 
 async function autoLoginDemoUser() {
     try {
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -108,11 +184,67 @@ window.testProfileUpdate = function() {
     updateUserInfo();
 };
 
-async function loadProgramData() {
-    console.log('Loading program data...');
+async function loadPersonalizedTasks() {
+    console.log('=== LOADING PERSONALIZED TASKS FOR PROGRAM ===');
     
     try {
-        const response = await fetch('../api/dashboard.php?action=get_dashboard_data', {
+        console.log('Making API call to: api/tasks.php');
+        const response = await fetch('api/tasks.php', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'get_personalized_tasks'
+            })
+        });
+        
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const responseText = await response.text();
+        console.log('Raw response text:', responseText);
+        
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            console.error('Response text was:', responseText);
+            throw new Error('Invalid JSON response');
+        }
+        
+        console.log('Parsed personalized tasks response:', data);
+        
+        if (data.success && data.tasks && data.tasks.length > 0) {
+            console.log('Found', data.tasks.length, 'personalized tasks');
+            displayProgramTasks(data.tasks);
+        } else {
+            console.log('No personalized tasks found, using fallback. Message:', data.message);
+            displayDefaultTasks();
+        }
+        
+    } catch (error) {
+        console.error('Error loading personalized tasks:', error);
+        console.log('Using default tasks due to error');
+        displayDefaultTasks();
+    }
+}
+
+async function loadProgramData() {
+    console.log('=== LOADING PROGRAM DATA ===');
+    
+    try {
+        // Load personalized tasks first
+        await loadPersonalizedTasks();
+        
+        console.log('Making API call to dashboard...');
+        const response = await fetch('api/dashboard.php?action=get_dashboard_data', {
             method: 'GET',
             credentials: 'same-origin',
             headers: {
@@ -120,22 +252,51 @@ async function loadProgramData() {
             }
         });
         
+        console.log('Dashboard API response status:', response.status);
+        
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Program API response:', data);
+        console.log('=== FULL DASHBOARD API RESPONSE ===');
+        console.log(data);
         
         if (data.success) {
-            if (data.user.program) {
+            console.log('API call successful, processing data...');
+            
+            if (data.user && data.user.program) {
+                console.log('Loading program info...');
                 loadProgramInfo(data.user.program);
-                loadProgramStats(data.stats);
-                loadProgramTasks(data.tasks);
             } else {
+                console.log('No program data found');
                 showNoProgramMessage();
             }
+            
+            if (data.stats) {
+                console.log('Loading program stats...');
+                console.log('Stats data being passed:', data.stats);
+                loadProgramStats(data.stats);
+                
+                // Also do direct update as backup
+                const totalDays = data.stats.program_duration || 30;
+                const completedDays = data.stats.program_days_completed || 0;
+                const remainingDays = Math.max(0, totalDays - completedDays);
+                const rate = Math.round((completedDays / totalDays) * 100);
+                
+                // Ensure DOM elements are updated
+                setTimeout(() => {
+                    const daysRemainingEl = document.getElementById('daysRemaining');
+                    if (daysRemainingEl && daysRemainingEl.textContent === '0') {
+                        console.log('Backup update - setting daysRemaining to:', remainingDays);
+                        daysRemainingEl.textContent = remainingDays;
+                    }
+                }, 500);
+            } else {
+                console.log('No stats data found');
+            }
         } else {
+            console.error('API returned error:', data.message);
             if (data.message === 'Not authenticated') {
                 window.location.href = './login.php';
                 return;
@@ -146,7 +307,112 @@ async function loadProgramData() {
     } catch (error) {
         console.error('Program data loading error:', error);
         showErrorMessage('Unable to load program data. Please refresh the page.');
+        // Still try to load tasks even if program data fails
+        await loadPersonalizedTasks();
     }
+    
+    console.log('=== PROGRAM DATA LOADING COMPLETE ===');
+}
+
+function displayProgramTasks(tasks) {
+    console.log('=== DISPLAYING PROGRAM TASKS ===');
+    console.log('Tasks to display:', tasks);
+    console.log('Number of tasks:', tasks.length);
+    
+    const tasksList = document.getElementById('programTasksList');
+    console.log('Tasks list element:', tasksList);
+    
+    if (!tasksList) {
+        console.error('Program tasks list element not found');
+        return;
+    }
+    
+    // Clear existing tasks
+    console.log('Clearing existing tasks...');
+    tasksList.innerHTML = '';
+    
+    // Map task categories to appropriate icons
+    const categoryIcons = {
+        'Emotional Wellbeing': '💝',
+        'Anxiety & Stress': '🫁',
+        'Sleep & Rest': '😴',
+        'Social Connection': '🤝',
+        'Self-Care': '🌱',
+        'General Wellness': '🧘',
+        'Mindfulness': '🧘',
+        'Reflection': '🤔'
+    };
+    
+    // Add tasks to the list (limit to first 4 for overview)
+    const displayTasks = tasks.slice(0, 4);
+    console.log('Tasks to display after slice:', displayTasks);
+    
+    displayTasks.forEach((task, index) => {
+        console.log(`Creating task ${index + 1}:`, task);
+        
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item';
+        
+        const icon = categoryIcons[task.category] || '✓';
+        console.log(`Task ${index + 1} icon:`, icon, 'for category:', task.category);
+        
+        taskItem.innerHTML = `
+            <div class="task-icon">${icon}</div>
+            <div class="task-content">
+                <h4>${task.title}</h4>
+                <p>${task.description}</p>
+            </div>
+        `;
+        
+        console.log(`Adding task ${index + 1} to DOM`);
+        tasksList.appendChild(taskItem);
+    });
+    
+    console.log(`Successfully displayed ${displayTasks.length} personalized tasks in program overview`);
+    console.log('Final tasks list HTML:', tasksList.innerHTML);
+}
+
+function displayDefaultTasks() {
+    console.log('Displaying default tasks');
+    
+    const tasksList = document.getElementById('programTasksList');
+    if (!tasksList) return;
+    
+    // Clear existing tasks
+    tasksList.innerHTML = '';
+    
+    const defaultTasks = [
+        {
+            title: 'Morning Meditation',
+            description: '10 minutes of guided mindfulness meditation',
+            icon: '🧘'
+        },
+        {
+            title: 'Breathing Exercise',
+            description: '5-minute deep breathing for stress relief',
+            icon: '🫁'
+        },
+        {
+            title: 'Gratitude Practice',
+            description: 'Write down 3 things you\'re grateful for today',
+            icon: '💝'
+        }
+    ];
+    
+    defaultTasks.forEach(task => {
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item';
+        
+        taskItem.innerHTML = `
+            <div class="task-icon">${task.icon}</div>
+            <div class="task-content">
+                <h4>${task.title}</h4>
+                <p>${task.description}</p>
+            </div>
+        `;
+        
+        tasksList.appendChild(taskItem);
+    });
 }
 
 function loadProgramInfo(programData) {
@@ -173,7 +439,8 @@ function loadProgramInfo(programData) {
 }
 
 function loadProgramStats(statsData) {
-    console.log('Loading program stats:', statsData);
+    console.log('=== LOADING PROGRAM STATS ===');
+    console.log('Raw stats data received:', statsData);
     
     // Update stats
     const daysCompleted = document.getElementById('daysCompleted');
@@ -183,30 +450,54 @@ function loadProgramStats(statsData) {
     const progressPercentage = document.getElementById('progressPercentage');
     const programProgressBar = document.getElementById('programProgressBar');
     
+    // Calculate values
+    const totalDays = statsData.program_duration || 30;
+    const completedDays = statsData.program_days_completed || 0;
+    const remainingDays = Math.max(0, totalDays - completedDays);
+    const rate = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
+    
+    console.log('Calculated values:', {
+        totalDays,
+        completedDays,
+        remainingDays,
+        rate
+    });
+    
+    console.log('DOM elements found:', {
+        daysCompleted: !!daysCompleted,
+        daysRemaining: !!daysRemaining,
+        currentStreak: !!currentStreak,
+        completionRate: !!completionRate,
+        progressPercentage: !!progressPercentage,
+        programProgressBar: !!programProgressBar
+    });
+    
     if (daysCompleted) {
-        daysCompleted.textContent = statsData.program_days_completed || 0;
+        daysCompleted.textContent = completedDays;
+        console.log('Set daysCompleted to:', completedDays);
     }
     if (daysRemaining) {
-        daysRemaining.textContent = statsData.program_days_remaining || 0;
+        daysRemaining.textContent = remainingDays;
+        console.log('Set daysRemaining to:', remainingDays);
     }
     if (currentStreak) {
         currentStreak.textContent = statsData.current_streak || 0;
+        console.log('Set currentStreak to:', statsData.current_streak || 0);
     }
-    
-    // Calculate completion rate
-    const totalDays = statsData.program_duration || 30;
-    const completedDays = statsData.program_days_completed || 0;
-    const rate = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
-    
     if (completionRate) {
         completionRate.textContent = rate + '%';
+        console.log('Set completionRate to:', rate + '%');
     }
     if (progressPercentage) {
         progressPercentage.textContent = rate + '%';
+        console.log('Set progressPercentage to:', rate + '%');
     }
     if (programProgressBar) {
         programProgressBar.style.width = rate + '%';
+        console.log('Set programProgressBar width to:', rate + '%');
     }
+    
+    console.log('=== PROGRAM STATS LOADING COMPLETE ===');
 }
 
 function loadProgramTasks(tasksData) {

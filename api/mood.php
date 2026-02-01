@@ -41,6 +41,7 @@ switch ($action) {
     case 'get_today_mood':
         getTodayMood();
         break;
+    case 'save':
     case 'save_mood':
         saveMood();
         break;
@@ -59,11 +60,14 @@ switch ($action) {
     case 'get_mood_calendar':
         getMoodCalendar();
         break;
+    case 'debug':
+        debugInfo();
+        break;
     case 'test':
         testConnection();
         break;
     default:
-        echo json_encode(['success' => false, 'message' => 'Invalid action: ' . $action]);
+        echo json_encode(['success' => false, 'message' => 'Invalid action: ' . $action, 'received_action' => $action]);
 }
 
 function getTodayMood() {
@@ -367,6 +371,24 @@ function getMoodScore($mood) {
     ];
     
     return $mood_scores[$mood] ?? 3;
+}
+
+function debugInfo() {
+    global $user_id;
+    
+    echo json_encode([
+        'success' => true,
+        'debug' => [
+            'session_id' => session_id(),
+            'session_data' => $_SESSION,
+            'user_id' => $user_id ?? 'not set',
+            'php_version' => phpversion(),
+            'current_time' => date('Y-m-d H:i:s'),
+            'request_method' => $_SERVER['REQUEST_METHOD'],
+            'request_uri' => $_SERVER['REQUEST_URI'],
+            'script_name' => $_SERVER['SCRIPT_NAME']
+        ]
+    ]);
 }
 
 function testConnection() {

@@ -84,13 +84,43 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add click handlers for mood options
         document.querySelectorAll('.mood-option').forEach(option => {
             option.addEventListener('click', function () {
+                console.log('=== MOOD OPTION CLICKED ===');
+                console.log('Clicked mood:', this.dataset.mood);
+                
                 // Remove selected class from all options
                 document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
                 // Add selected class to clicked option
                 this.classList.add('selected');
                 selectedMood = this.dataset.mood;
+                
+                console.log('Selected mood set to:', selectedMood);
+                console.log('Visual selection applied');
             });
         });
+        
+        console.log('✅ Mood option event listeners added to', document.querySelectorAll('.mood-option').length, 'elements');
+
+        // Add click handler for save mood button
+        const saveMoodBtn = document.getElementById('saveMoodBtn');
+        if (saveMoodBtn) {
+            saveMoodBtn.addEventListener('click', function() {
+                console.log('=== SAVE MOOD BUTTON CLICKED ===');
+                console.log('Selected mood:', selectedMood);
+                
+                if (selectedMood) {
+                    const note = document.getElementById('moodNote').value || '';
+                    console.log('Note:', note);
+                    console.log('Calling saveMood...');
+                    saveMood();
+                } else {
+                    console.log('No mood selected!');
+                    alert('Please select a mood first!');
+                }
+            });
+            console.log('✅ Save mood button event listener added');
+        } else {
+            console.error('❌ Save mood button not found!');
+        }
     });
     
     // Listen for profile updates
@@ -108,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
 async function ensureAuthentication() {
     // Check if user is authenticated on server side
     try {
-        const response = await fetch('../api/check_session.php');
+        const response = await fetch('api/check_session.php');
         const data = await response.json();
         
         if (!data.logged_in) {
@@ -125,7 +155,7 @@ async function ensureAuthentication() {
 
 async function autoLoginDemoUser() {
     try {
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -156,7 +186,7 @@ function updateUserInfo() {
 }
 
 function loadTodaysMood() {
-    fetch('../api/mood.php?action=get_today_mood')
+    fetch('api/mood.php?action=get_today_mood')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -185,7 +215,11 @@ function loadTodaysMoodFallback() {
 }
 
 function saveMood() {
+    console.log('=== SAVE MOOD FUNCTION CALLED ===');
+    console.log('Selected mood:', selectedMood);
+    
     if (!selectedMood) {
+        console.log('No mood selected, showing alert');
         alert('Please select a mood first.');
         return;
     }
@@ -206,7 +240,7 @@ function saveMood() {
 
     console.log('Saving mood data:', moodData);
 
-    fetch('../api/mood.php', {
+    fetch('api/mood.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -299,7 +333,7 @@ function generateCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
 
-    fetch(`../api/mood.php?action=get_mood_calendar&year=${year}&month=${month}`)
+    fetch(`api/mood.php?action=get_mood_calendar&year=${year}&month=${month}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -378,7 +412,7 @@ function generateCalendarFallback() {
 }
 
 function updateMoodStats() {
-    fetch('../api/mood.php?action=get_mood_stats&period=month')
+    fetch('api/mood.php?action=get_mood_stats&period=month')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -441,7 +475,7 @@ function updateMoodStatsFallback() {
 }
 
 function updateMoodTrend() {
-    fetch('../api/mood.php?action=get_mood_trend&days=7')
+    fetch('api/mood.php?action=get_mood_trend&days=7')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -549,7 +583,7 @@ function updateMoodTrendFallback() {
 }
 
 function loadRecentEntries() {
-    fetch('../api/mood.php?action=get_recent_entries&limit=10')
+    fetch('api/mood.php?action=get_recent_entries&limit=10')
         .then(response => response.json())
         .then(data => {
             if (data.success) {

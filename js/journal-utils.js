@@ -64,5 +64,17 @@ const Journal = {
         const filteredEntries = entries.filter(entry => entry.id !== parseInt(id));
         localStorage.setItem('healNestJournalEntries', JSON.stringify(filteredEntries));
         return true;
+    },
+
+    // Save new entry (alias for addEntry for compatibility)
+    saveEntry(title, content, mood, tags = []) {
+        const entry = {
+            title: title,
+            content: content,
+            mood: mood,
+            tags: tags,
+            is_private: true
+        };
+        return this.addEntry(entry);
     }
 };

@@ -13,9 +13,10 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/onboarding.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/onboarding.css">
 </head>
 
 <body>
@@ -27,27 +28,27 @@ if (!isset($_SESSION['user_id'])) {
             </div>
             
             <nav class="sidebar-nav">
-                <a href="./dashboard.php" class="nav-item active">
+                <a href="pages/dashboard.php" class="nav-item active">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="./program.php" class="nav-item">
+                <a href="pages/program.php" class="nav-item">
                     <span class="nav-icon">🎯</span>
                     <span class="nav-text">My Program</span>
                 </a>
-                <a href="./mood.php" class="nav-item">
+                <a href="pages/mood.php" class="nav-item">
                     <span class="nav-icon">😊</span>
                     <span class="nav-text">Mood Tracker</span>
                 </a>
-                <a href="./tasks.php" class="nav-item">
+                <a href="pages/tasks.php" class="nav-item">
                     <span class="nav-icon">✓</span>
                     <span class="nav-text">Today's Tasks</span>
                 </a>
-                <a href="./journal.php" class="nav-item">
+                <a href="pages/journal.php" class="nav-item">
                     <span class="nav-icon">📔</span>
                     <span class="nav-text">Journal</span>
                 </a>
-                <a href="./profile.php" class="nav-item">
+                <a href="pages/profile.php" class="nav-item">
                     <span class="nav-icon">👤</span>
                     <span class="nav-text">Profile</span>
                 </a>
@@ -126,7 +127,7 @@ if (!isset($_SESSION['user_id'])) {
                             <p id="programDescription">Loading your personalized program...</p>
                         </div>
                         <div class="program-action">
-                            <a href="./tasks.php" class="btn-primary">Start Today's Tasks</a>
+                            <a href="pages/tasks.php" class="btn-primary">Start Today's Tasks</a>
                         </div>
                     </div>
                 </div>
@@ -167,19 +168,19 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="section-card">
                     <h5 class="section-title">How are you feeling today?</h5>
                     <div class="mood-grid">
-                        <button class="mood-btn" data-mood="excellent" onclick="selectMood('excellent')">
+                        <button class="mood-btn mood-option" data-mood="excellent">
                             <span class="mood-emoji">😊</span>
                             <span class="mood-label">Excellent</span>
                         </button>
-                        <button class="mood-btn" data-mood="good" onclick="selectMood('good')">
+                        <button class="mood-btn mood-option" data-mood="good">
                             <span class="mood-emoji">🙂</span>
                             <span class="mood-label">Good</span>
                         </button>
-                        <button class="mood-btn" data-mood="neutral" onclick="selectMood('neutral')">
+                        <button class="mood-btn mood-option" data-mood="neutral">
                             <span class="mood-emoji">😐</span>
                             <span class="mood-label">Neutral</span>
                         </button>
-                        <button class="mood-btn" data-mood="challenging" onclick="selectMood('challenging')">
+                        <button class="mood-btn mood-option" data-mood="challenging">
                             <span class="mood-emoji">😔</span>
                             <span class="mood-label">Challenging</span>
                         </button>
@@ -193,12 +194,12 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="section-card">
                     <div class="section-header">
                         <h5 class="section-title">Recent Reflections</h5>
-                        <a href="./journal.php" class="section-link">View All</a>
+                        <a href="pages/journal.php" class="section-link">View All</a>
                     </div>
                     <div id="journal-entries" class="journal-entries">
                         <div class="empty-state">
                             <div class="empty-icon">📝</div>
-                            <a href="./journal.php" class="btn-outline">Write Your First Entry</a>
+                            <a href="pages/journal.php" class="btn-outline">Write Your First Entry</a>
                         </div>
                     </div>
                 </div>
@@ -207,15 +208,15 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="section-card">
                     <h5 class="section-title">Quick Actions</h5>
                     <div class="quick-actions">
-                        <a href="./tasks.php" class="action-btn">
+                        <a href="pages/tasks.php" class="action-btn">
                             <span class="action-icon">✓</span>
                             <span class="action-text">Complete Tasks</span>
                         </a>
-                        <a href="./program.php" class="action-btn">
+                        <a href="pages/program.php" class="action-btn">
                             <span class="action-icon">🎯</span>
                             <span class="action-text">View Program</span>
                         </a>
-                        <a href="./profile.php" class="action-btn">
+                        <a href="pages/profile.php" class="action-btn">
                             <span class="action-icon">👤</span>
                             <span class="action-text">Update Profile</span>
                         </a>
@@ -225,57 +226,30 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
-    <!-- Help button for onboarding -->
-    <button class="help-button" onclick="onboardingGuide.forceStart();" title="Show guided tour">
-        ?
-    </button>
-
-    <script src="../js/auth.js"></script>
-    <script src="../js/onboarding.js?v=<?php echo time(); ?>"></script>
-    <script src="../js/journal-utils.js"></script>
-    <script src="../js/dashboard.js?v=<?php echo time(); ?>"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/onboarding.js?v=<?php echo time(); ?>"></script>
+    <script src="js/journal-utils.js"></script>
+    <script src="js/dashboard.js?v=<?php echo time(); ?>"></script>
     <script>
         // Mobile sidebar toggle
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('open');
         }
 
-        // Mood selection
-        let selectedMood = null;
-        function selectMood(mood) {
-            // Remove previous selection
-            document.querySelectorAll('.mood-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            
-            // Add selection to clicked mood
-            event.target.closest('.mood-btn').classList.add('selected');
-            selectedMood = mood;
-            
-            // Save mood (implement API call)
-            saveMood(mood);
-            
-            // Show feedback
-            document.getElementById('mood-feedback').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('mood-feedback').classList.add('hidden');
-            }, 3000);
-        }
-
-        function saveMood(mood) {
-            // Implement mood saving logic
-            console.log('Saving mood:', mood);
-        }
-
         // Logout function
         function logout() {
             if (confirm('Are you sure you want to sign out?')) {
                 // Clear session
-                fetch('../api/logout.php', {
+                fetch('api/logout.php', {
                     method: 'POST',
                     credentials: 'same-origin'
                 }).then(() => {
-                    window.location.href = '../index.html';
+                    localStorage.removeItem('healNestUser');
+                    window.location.href = 'index.html';
+                }).catch(() => {
+                    // Fallback - clear localStorage and redirect anyway
+                    localStorage.removeItem('healNestUser');
+                    window.location.href = 'index.html';
                 });
             }
         }
@@ -297,7 +271,152 @@ if (!isset($_SESSION['user_id'])) {
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             updateGreeting();
+            
+            // Load dashboard data when page loads
+            console.log('Dashboard page loaded, initializing...');
+            
+            // Check if dashboard.js is loaded
+            if (typeof loadDashboardData === 'function') {
+                console.log('Dashboard.js loaded successfully');
+                // Dashboard.js will handle data loading
+            } else {
+                console.log('Dashboard.js not loaded, loading data manually...');
+                loadDashboardDataFallback();
+            }
+            
+            // Listen for task completion updates from other tabs/windows
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'healNestTaskUpdate') {
+                    console.log('Received task update notification from another tab');
+                    // Reload dashboard data to get updated progress
+                    setTimeout(() => {
+                        loadDashboardDataFallback();
+                    }, 500); // Small delay to ensure database is updated
+                }
+            });
         });
+        
+        // Fallback function to load dashboard data if dashboard.js fails
+        function loadDashboardDataFallback() {
+            fetch('api/dashboard.php?action=get_dashboard_data', {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Dashboard data loaded:', data);
+                if (data.success) {
+                    // Update stats
+                    if (data.stats) {
+                        document.getElementById('currentStreak').textContent = data.stats.current_streak || 0;
+                        document.getElementById('maxStreak').textContent = data.stats.highest_streak || 0;
+                        document.getElementById('programDaysCompleted').textContent = data.stats.program_days_completed || 0;
+                        document.getElementById('journalCount').textContent = data.stats.journal_count || 0;
+                        document.getElementById('wellnessScore').textContent = data.stats.wellness_score || 75;
+                        document.getElementById('welcomeStreak').textContent = (data.stats.current_streak || 0) + ' days';
+                        document.getElementById('todayPerformance').textContent = (data.stats.completion_percentage || 0) + '%';
+                    }
+                    
+                    // Update user info
+                    if (data.user) {
+                        document.getElementById('userName').textContent = data.user.full_name || 'Welcome back';
+                        const userAvatar = document.getElementById('userAvatar');
+                        if (userAvatar && data.user.full_name) {
+                            userAvatar.textContent = data.user.full_name.charAt(0).toUpperCase();
+                        }
+                        
+                        // Update program info
+                        if (data.user.program) {
+                            document.getElementById('programName').textContent = data.user.program.icon + ' ' + data.user.program.name;
+                            document.getElementById('programDescription').textContent = data.user.program.description;
+                        }
+                    }
+                    
+                    // Update mood if available
+                    if (data.todays_mood) {
+                        const moodElement = document.querySelector(`[data-mood="${data.todays_mood.mood}"]`);
+                        if (moodElement) {
+                            moodElement.classList.add('selected');
+                        }
+                    }
+                    
+                    // Setup mood selection functionality
+                    setupMoodSelection();
+                } else {
+                    console.error('Failed to load dashboard data:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading dashboard data:', error);
+            });
+        }
+        
+        // Setup mood selection functionality
+        function setupMoodSelection() {
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    const mood = this.dataset.mood;
+                    const moodScore = getMoodScore(mood);
+                    
+                    // Save mood to API
+                    fetch('api/mood.php', {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'save',
+                            mood: mood,
+                            mood_score: moodScore,
+                            note: ''
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show feedback
+                            const feedback = document.getElementById('mood-feedback');
+                            if (feedback) {
+                                feedback.classList.remove('hidden');
+                                setTimeout(() => {
+                                    feedback.classList.add('hidden');
+                                }, 3000);
+                            }
+                            
+                            // Refresh dashboard data
+                            setTimeout(() => {
+                                loadDashboardDataFallback();
+                            }, 500);
+                        } else {
+                            console.error('Failed to save mood:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving mood:', error);
+                    });
+                });
+            });
+        }
+        
+        function getMoodScore(mood) {
+            const moodScores = {
+                'excellent': 5,
+                'good': 4,
+                'neutral': 3,
+                'challenging': 2,
+                'difficult': 1
+            };
+            return moodScores[mood] || 3;
+        }
     </script>
 </body>
 </html>

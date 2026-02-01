@@ -13,9 +13,10 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mood Tracker - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/mood.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/mood.css">
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -26,27 +27,27 @@ if (!isset($_SESSION['user_id'])) {
             </div>
             
             <nav class="sidebar-nav">
-                <a href="dashboard.php" class="nav-item">
+                <a href="pages/dashboard.php" class="nav-item">
                     <span class="nav-icon">🏠</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="program.php" class="nav-item">
+                <a href="pages/program.php" class="nav-item">
                     <span class="nav-icon">🎯</span>
                     <span>My Program</span>
                 </a>
-                <a href="mood.php" class="nav-item active">
+                <a href="pages/mood.php" class="nav-item active">
                     <span class="nav-icon">😊</span>
                     <span>Mood Tracker</span>
                 </a>
-                <a href="tasks.php" class="nav-item">
+                <a href="pages/tasks.php" class="nav-item">
                     <span class="nav-icon">✓</span>
                     <span>Today's Tasks</span>
                 </a>
-                <a href="journal.php" class="nav-item">
+                <a href="pages/journal.php" class="nav-item">
                     <span class="nav-icon">📔</span>
                     <span>Journal</span>
                 </a>
-                <a href="profile.php" class="nav-item">
+                <a href="pages/profile.php" class="nav-item">
                     <span class="nav-icon">👤</span>
                     <span>Profile</span>
                 </a>
@@ -107,7 +108,7 @@ if (!isset($_SESSION['user_id'])) {
                         <textarea id="moodNote" placeholder="What's on your mind? How are you feeling today?"></textarea>
                     </div>
 
-                    <button class="save-mood-btn" onclick="saveMood()">Save Today's Mood</button>
+                    <button class="save-mood-btn" id="saveMoodBtn">Save Today's Mood</button>
                 </div>
 
                 <!-- Mood Analytics Grid -->
@@ -154,8 +155,8 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
-    <script src="../js/auth.js"></script>
-    <script src="../js/mood.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/mood.js"></script>
     <script>
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('open');
@@ -163,34 +164,53 @@ if (!isset($_SESSION['user_id'])) {
 
         function logout() {
             localStorage.removeItem('healNestUser');
-            window.location.href = 'logout.php';
+            window.location.href = 'pages/logout.php';
         }
         
         function testMoodAPI() {
-            fetch('../api/mood.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'test'
+            // Test different URL patterns
+            const testUrls = [
+                'api/mood.php',
+                '/HealNest/api/mood.php',
+                '../api/mood.php',
+                'http://localhost/HealNest/api/mood.php'
+            ];
+            
+            console.log('Current location:', window.location.href);
+            console.log('Base href:', document.querySelector('base')?.href || 'none');
+            
+            testUrls.forEach((testUrl, index) => {
+                console.log(`\n=== Testing URL ${index + 1}: ${testUrl} ===`);
+                
+                fetch(testUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'test'
+                    })
                 })
-            })
-            .then(response => response.text())
-            .then(text => {
-                console.log('Test API raw response:', text);
-                try {
-                    const data = JSON.parse(text);
-                    console.log('Test API parsed response:', data);
-                    alert('API Test Result: ' + JSON.stringify(data, null, 2));
-                } catch (e) {
-                    console.error('JSON parse error:', e);
-                    alert('API Test Error: ' + text);
-                }
-            })
-            .catch(error => {
-                console.error('API Test Network Error:', error);
-                alert('Network Error: ' + error.message);
+                .then(response => {
+                    console.log(`URL ${index + 1} Response status:`, response.status);
+                    console.log(`URL ${index + 1} Response URL:`, response.url);
+                    return response.text();
+                })
+                .then(text => {
+                    console.log(`URL ${index + 1} Raw response:`, text.substring(0, 200));
+                    try {
+                        const data = JSON.parse(text);
+                        console.log(`✅ URL ${index + 1} SUCCESS:`, data);
+                        if (index === 0) { // Only alert for the first successful one
+                            alert(`SUCCESS with URL: ${testUrl}\n` + JSON.stringify(data, null, 2));
+                        }
+                    } catch (e) {
+                        console.log(`❌ URL ${index + 1} JSON parse error:`, e.message);
+                    }
+                })
+                .catch(error => {
+                    console.log(`❌ URL ${index + 1} Network error:`, error.message);
+                });
             });
         }
     </script>

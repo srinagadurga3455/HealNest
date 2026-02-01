@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 async function ensureAuthentication() {
     // Check if user is authenticated on server side
     try {
-        const response = await fetch('../api/check_session.php');
+        const response = await fetch('api/check_session.php');
         const data = await response.json();
         
         if (!data.logged_in) {
@@ -60,7 +60,7 @@ async function ensureAuthentication() {
 
 async function autoLoginDemoUser() {
     try {
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -161,6 +161,8 @@ function saveEntry(event) {
     const title = document.getElementById('entryTitle').value.trim();
     const content = document.getElementById('entryContent').value.trim();
 
+    console.log('Saving entry:', { title, content, mood: selectedMood }); // Debug log
+
     if (!title || !content) {
         alert('Please fill in both title and content.');
         return;
@@ -178,25 +180,50 @@ function saveEntry(event) {
         is_private: true
     };
 
-    fetch('../api/journal.php?action=save_entry', {
+    console.log('Sending entry data:', entryData); // Debug log
+
+    fetch('api/journal.php?action=save_entry', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(entryData)
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Entry saved successfully!');
+    .then(response => {
+        console.log('Response status:', response.status); // Debug log
+        return response.text();
+    })
+    .then(text => {
+        console.log('Raw response:', text); // Debug log
+        try {
+            const data = JSON.parse(text);
+            console.log('Parsed response:', data); // Debug log
             
-            // Refresh and go back to list
-            loadEntries();
-            updateJournalStats();
-            updatePopularTags();
-            hideNewEntryForm();
-        } else {
-            console.error('Failed to save entry:', data.message);
+            if (data.success) {
+                alert('Entry saved successfully!');
+                
+                // Refresh and go back to list
+                loadEntries();
+                updateJournalStats();
+                updatePopularTags();
+                hideNewEntryForm();
+            } else {
+                console.error('Failed to save entry:', data.message);
+                // Fallback to localStorage
+                try {
+                    Journal.saveEntry(title, content, selectedMood);
+                    alert('Entry saved successfully!');
+                    loadEntries();
+                    updateJournalStats();
+                    updatePopularTags();
+                    hideNewEntryForm();
+                } catch (error) {
+                    alert('Error saving entry. Please try again.');
+                }
+            }
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            console.error('Response text:', text);
             // Fallback to localStorage
             try {
                 Journal.saveEntry(title, content, selectedMood);
@@ -231,7 +258,7 @@ function loadEntries() {
     const search = document.getElementById('searchInput')?.value || '';
     const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
     
-    fetch(`../api/journal.php?action=get_entries${filter}${searchParam}`)
+    fetch(`api/journal.php?action=get_entries${filter}${searchParam}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -288,7 +315,7 @@ function displayEntries(entries) {
 }
 
 function viewEntry(entryId) {
-    fetch(`../api/journal.php?action=get_entry&entry_id=${entryId}`)
+    fetch(`api/journal.php?action=get_entry&entry_id=${entryId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -399,7 +426,7 @@ function deleteEntry() {
     if (!currentEntryId) return;
 
     if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
-        fetch('../api/journal.php?action=delete_entry', {
+        fetch('api/journal.php?action=delete_entry', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -464,7 +491,7 @@ function filterEntries(filter) {
 }
 
 function updateJournalStats() {
-    fetch('../api/journal.php?action=get_stats')
+    fetch('api/journal.php?action=get_stats')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -536,7 +563,7 @@ function updateJournalStatsFallback() {
 }
 
 function updatePopularTags() {
-    fetch('../api/journal.php?action=get_stats')
+    fetch('api/journal.php?action=get_stats')
         .then(response => response.json())
         .then(data => {
             if (data.success) {

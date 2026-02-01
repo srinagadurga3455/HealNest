@@ -4,19 +4,29 @@ session_start();
 // Suppress PHP notices and warnings to prevent JSON corruption
 error_reporting(E_ERROR | E_PARSE);
 
+// Enable output buffering to prevent any accidental output
+ob_start();
+
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 // Include database connection
 require_once '../config/connect.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
+    ob_clean();
     echo json_encode(['success' => false, 'message' => 'Not authenticated']);
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
+
+// Debug logging
+error_log("Journal API called with action: $action, user_id: $user_id");
 
 switch ($action) {
     case 'get_entries':
@@ -41,6 +51,7 @@ switch ($action) {
         searchEntries();
         break;
     default:
+        ob_clean();
         echo json_encode(['success' => false, 'message' => 'Invalid action']);
 }
 
@@ -92,6 +103,7 @@ function getEntries() {
         ];
     }
     
+    ob_clean();
     echo json_encode([
         'success' => true,
         'entries' => $entries
@@ -144,6 +156,9 @@ function saveEntry() {
         $data = $_POST;
     }
     
+    // Debug logging
+    error_log("Save entry data: " . json_encode($data));
+    
     $title = trim($data['title'] ?? '');
     $content = trim($data['content'] ?? '');
     $mood = $data['mood'] ?? 'neutral';
@@ -152,6 +167,7 @@ function saveEntry() {
     
     // Validation
     if (empty($title) || empty($content)) {
+        ob_clean();
         echo json_encode(['success' => false, 'message' => 'Title and content are required']);
         return;
     }
@@ -177,13 +193,16 @@ function saveEntry() {
     if ($stmt->execute()) {
         $entry_id = $conn->insert_id;
         
+        ob_clean();
         echo json_encode([
             'success' => true,
             'message' => 'Entry saved successfully',
             'entry_id' => $entry_id
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save entry']);
+        error_log("Database error: " . $conn->error);
+        ob_clean();
+        echo json_encode(['success' => false, 'message' => 'Failed to save entry: ' . $conn->error]);
     }
 }
 
@@ -413,4 +432,5 @@ function searchEntries() {
 }
 
 $conn->close();
+ob_end_flush();
 ?>

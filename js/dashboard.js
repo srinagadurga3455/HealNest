@@ -56,7 +56,7 @@ function loadDashboardData() {
     }
     
     // Try to load from API first
-    fetch('../api/dashboard.php?action=get_dashboard_data', {
+    fetch('api/dashboard.php?action=get_dashboard_data', {
         method: 'GET',
         credentials: 'same-origin', // Include cookies/session
         headers: {
@@ -113,7 +113,7 @@ function loadDashboardData() {
 
 async function autoLoginDemoUser() {
     try {
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -395,13 +395,14 @@ function setupMoodTracker() {
             const moodScore = getMoodScore(mood);
             
             // Save mood to API
-            fetch('../api/dashboard.php?action=save_mood', {
+            fetch('api/mood.php', {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    action: 'save',
                     mood: mood,
                     mood_score: moodScore,
                     note: ''
@@ -510,16 +511,16 @@ function loadTodaysTasksFallback() {
 }
 
 function toggleTask(taskId, completed) {
-    fetch('../api/dashboard.php?action=complete_task', {
+    fetch('api/tasks.php', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+            action: 'complete_task',
             task_id: taskId,
-            completed: completed,
-            notes: ''
+            completed: completed
         })
     })
     .then(response => response.json())
@@ -636,7 +637,7 @@ function loadProgramInfoFallback() {
 
 function updateStreak() {
     // Update progress via API
-    fetch('../api/dashboard.php?action=update_progress', {
+    fetch('api/dashboard.php?action=update_progress', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {

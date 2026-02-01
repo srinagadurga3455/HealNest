@@ -473,9 +473,15 @@ if (isset($_SESSION['user_id'])) {
                             name: data.user.name,
                             email: email,
                             assessment_taken: data.user.assessment_taken,
-                            has_program: data.user.has_program
+                            has_program: data.user.has_program,
+                            created_at: new Date().toISOString(), // Mark as new user
+                            registrationDate: new Date().toISOString() // Alternative field
                         };
                         localStorage.setItem('healNestUser', JSON.stringify(userData));
+                        
+                        // Ensure onboarding will show for this new user
+                        localStorage.removeItem('healNestOnboardingComplete');
+                        localStorage.removeItem('healNestDashboardVisited');
                     }
                     
                     showAlert('Account created successfully! Redirecting...', 'success');

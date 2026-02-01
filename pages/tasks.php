@@ -13,10 +13,11 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today's Tasks - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/tasks.css">
-    <link rel="stylesheet" href="../css/onboarding.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/tasks.css">
+    <link rel="stylesheet" href="css/onboarding.css">
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -27,28 +28,28 @@ if (!isset($_SESSION['user_id'])) {
             </div>
             
             <nav class="sidebar-nav">
-                <a href="dashboard.php" class="nav-item">
+                <a href="pages/dashboard.php" class="nav-item">
                     <span class="nav-icon">🏠</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="program.php" class="nav-item">
+                <a href="pages/program.php" class="nav-item">
                     <span class="nav-icon">🎯</span>
                     <span>My Program</span>
                 </a>
-                <a href="mood.php" class="nav-item">
+                <a href="pages/mood.php" class="nav-item">
                     <span class="nav-icon">😊</span>
                     <span>Mood Tracker</span>
                 </a>
-                <a href="tasks.php" class="nav-item active">
+                <a href="pages/tasks.php" class="nav-item active">
                     <span class="nav-icon">✓</span>
                     <span>Today's Tasks</span>
                 </a>
-                <a href="journal.php" class="nav-item">
+                <a href="pages/journal.php" class="nav-item">
                     <span class="nav-icon">📔</span>
                     <span>Journal</span>
                 </a>
                 
-                <a href="profile.php" class="nav-item">
+                <a href="pages/profile.php" class="nav-item">
                     <span class="nav-icon">👤</span>
                     <span>Profile</span>
                 </a>
@@ -123,14 +124,9 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
-    <!-- Help button for onboarding -->
-    <button class="help-button" onclick="onboardingGuide.forceStart();" title="Show guided tour">
-        ?
-    </button>
-
-    <script src="../js/auth.js"></script>
-    <script src="../js/onboarding.js?v=<?php echo time(); ?>"></script>
-    <script src="../js/tasks.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/onboarding.js?v=<?php echo time(); ?>"></script>
+    <script src="js/tasks.js"></script>
     <script>
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('open');
@@ -138,7 +134,7 @@ if (!isset($_SESSION['user_id'])) {
 
         function logout() {
             localStorage.removeItem('healNestUser');
-            window.location.href = 'logout.php';
+            window.location.href = 'pages/logout.php';
         }
     </script>
 </body>

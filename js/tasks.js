@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Test API connection first
+    testAPIConnection();
+    
     // Ensure user is properly authenticated
     ensureAuthentication().then(() => {
         // Update user info
@@ -20,27 +23,72 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+function testAPIConnection() {
+    console.log('Testing API connection...');
+    fetch('api/tasks.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'test'
+        })
+    })
+    .then(response => {
+        console.log('API test response status:', response.status);
+        return response.text();
+    })
+    .then(text => {
+        console.log('API test raw response:', text);
+        try {
+            const data = JSON.parse(text);
+            console.log('API test parsed response:', data);
+        } catch (e) {
+            console.error('API test - failed to parse JSON:', e);
+        }
+    })
+    .catch(error => {
+        console.error('API test - network error:', error);
+    });
+}
+
 async function ensureAuthentication() {
+    console.log('Checking authentication...');
+    
     // Check if user is authenticated on server side
     try {
-        const response = await fetch('../api/check_session.php');
+        const response = await fetch('api/check_session.php');
         const data = await response.json();
         
+        console.log('Session check result:', data);
+        
         if (!data.logged_in) {
+            console.log('User not authenticated on server, attempting auto-login...');
             // User not authenticated on server, try to auto-login demo user
             const user = Auth.getCurrentUser();
             if (user && user.email === 'demo@healnest.com') {
                 await autoLoginDemoUser();
+            } else {
+                // Try to login demo user anyway
+                console.log('No local user found, trying demo login...');
+                await autoLoginDemoUser();
             }
+        } else {
+            console.log('User is authenticated:', data.user);
         }
     } catch (error) {
-        console.log('Session check failed, continuing with fallback');
+        console.log('Session check failed:', error);
+        console.log('Attempting demo user auto-login...');
+        await autoLoginDemoUser();
     }
 }
 
 async function autoLoginDemoUser() {
+    console.log('Attempting auto-login for demo user...');
+    
     try {
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,34 +99,66 @@ async function autoLoginDemoUser() {
             })
         });
         
-        const data = await response.json();
-        if (data.success) {
-            console.log('Demo user auto-login successful');
+        const text = await response.text();
+        console.log('Auto-login raw response:', text);
+        
+        try {
+            const data = JSON.parse(text);
+            console.log('Auto-login parsed response:', data);
+            
+            if (data.success) {
+                console.log('Demo user auto-login successful');
+                // Store user data locally
+                if (data.user) {
+                    localStorage.setItem('healNestUser', JSON.stringify(data.user));
+                }
+                return true;
+            } else {
+                console.error('Auto-login failed:', data.message);
+                return false;
+            }
+        } catch (e) {
+            console.error('Failed to parse auto-login JSON:', e);
+            return false;
         }
     } catch (error) {
-        console.log('Auto-login failed, using fallback mode');
+        console.log('Auto-login network error:', error);
+        return false;
     }
 }
 
 function loadDailyTasks() {
-    // Load tasks from the new tasks API
-    fetch('../api/tasks.php', {
+    console.log('Loading daily tasks...');
+    
+    // Load personalized tasks based on assessment
+    fetch('api/tasks.php', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            action: 'get_user_tasks'
+            action: 'get_personalized_tasks'
         })
     })
     .then(response => {
+        console.log('Tasks API response status:', response.status);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.json();
+        return response.text();
+    })
+    .then(text => {
+        console.log('Tasks API raw response:', text);
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error('Failed to parse tasks JSON:', e);
+            throw new Error('Invalid JSON response: ' + text);
+        }
     })
     .then(data => {
+        console.log('Personalized tasks response:', data);
         if (data.success) {
             if (data.tasks && data.tasks.length > 0) {
                 displayDailyTasks(data.tasks);
@@ -87,14 +167,52 @@ function loadDailyTasks() {
                 displayNoTasks(data.message || 'No tasks assigned yet. Complete your assessment to get personalized tasks.');
             }
         } else {
-            console.error('Failed to load tasks:', data.message);
+            console.error('Failed to load personalized tasks:', data.message);
+            // Show error message to user
+            displayErrorMessage('Unable to connect to server. Using demo data.');
             loadDailyTasksFallback();
         }
     })
     .catch(error => {
-        console.log('API not available, using demo data:', error);
+        console.log('Personalized tasks API error:', error);
+        // Show error message to user
+        displayErrorMessage('Unable to connect to server. Using demo data.');
         loadDailyTasksFallback();
     });
+}
+
+function displayErrorMessage(message) {
+    // Create or update error message display
+    let errorDiv = document.querySelector('.api-error-message');
+    if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.className = 'api-error-message';
+        errorDiv.style.cssText = `
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 20px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+        `;
+        
+        // Insert at the top of content area
+        const contentArea = document.querySelector('.content-area');
+        if (contentArea) {
+            contentArea.insertBefore(errorDiv, contentArea.firstChild);
+        }
+    }
+    
+    errorDiv.textContent = message;
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        if (errorDiv && errorDiv.parentNode) {
+            errorDiv.parentNode.removeChild(errorDiv);
+        }
+    }, 5000);
 }
 
 function displayNoTasks(message) {
@@ -116,8 +234,10 @@ function displayNoTasks(message) {
 }
 
 function updateTaskProgress() {
+    console.log('=== UPDATING TASK PROGRESS ===');
+    
     // Get current progress from the API
-    fetch('../api/tasks.php', {
+    fetch('api/tasks.php', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -129,8 +249,12 @@ function updateTaskProgress() {
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Task progress API response:', data);
         if (data.success) {
+            console.log(`Updating progress: ${data.completed_tasks} of ${data.total_tasks} tasks completed`);
             updateProgressDisplay(data.completed_tasks, data.total_tasks);
+        } else {
+            console.error('Failed to get task progress:', data.message);
         }
     })
     .catch(error => {
@@ -267,23 +391,30 @@ function displayDailyTasks(tasks) {
 }
 
 function updateProgressDisplay(completedCount, totalCount) {
+    console.log(`=== UPDATING PROGRESS DISPLAY ===`);
+    console.log(`Completed: ${completedCount}, Total: ${totalCount}`);
+    
     const progressElement = document.getElementById('tasksProgress');
     const progressPercent = document.getElementById('progressPercent');
     const progressRing = document.getElementById('progressRing');
     
     if (progressElement) {
-        progressElement.textContent = `${completedCount} of ${totalCount} tasks completed`;
+        const progressText = `${completedCount} of ${totalCount} tasks completed`;
+        progressElement.textContent = progressText;
+        console.log('Updated progress text:', progressText);
     }
     
     if (progressPercent) {
         const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
         progressPercent.textContent = `${percentage}%`;
+        console.log('Updated progress percentage:', percentage + '%');
         
         // Update progress ring
         if (progressRing) {
             const circumference = 339.292; // 2 * π * 54
             const offset = circumference - (percentage / 100) * circumference;
             progressRing.style.strokeDashoffset = offset;
+            console.log('Updated progress ring offset:', offset);
         }
     }
 }
@@ -299,18 +430,73 @@ function updateUserInfo() {
 }
 
 function toggleDailyTask(taskId) {
-    console.log(`Toggling task ${taskId}`);
+    console.log(`=== TOGGLING TASK ${taskId} ===`);
     const checkbox = document.querySelector(`[data-task-id="${taskId}"]`);
     const taskItem = checkbox.closest('.task-item');
     
     console.log(`Checkbox checked state: ${checkbox.checked}`);
+    console.log(`Task item:`, taskItem);
     
     // Update UI immediately for better user experience
     updateTaskUI(taskItem, null, checkbox.checked);
     updateTaskProgress();
     
-    // Update via the new tasks API
-    fetch('../api/tasks.php', {
+    // First check if user is authenticated
+    fetch('api/check_session.php')
+    .then(response => response.json())
+    .then(sessionData => {
+        console.log('Session check:', sessionData);
+        
+        if (!sessionData.logged_in) {
+            console.log('User not logged in, attempting auto-login...');
+            return autoLoginDemoUser().then(() => {
+                // After auto-login, proceed with task completion
+                return completeTaskAPI(taskId, checkbox.checked);
+            });
+        } else {
+            // User is logged in, proceed with task completion
+            return completeTaskAPI(taskId, checkbox.checked);
+        }
+    })
+    .then(data => {
+        console.log('Task completion result:', data);
+        if (data && data.success) {
+            console.log('✅ Task updated successfully via API');
+            updateTaskProgress();
+            
+            // Notify dashboard to update progress if it's open in another tab/window
+            notifyDashboardUpdate();
+            
+            // If we're on the dashboard page, update it directly
+            if (window.location.pathname.includes('dashboard.php')) {
+                updateDashboardProgress();
+            }
+        } else {
+            console.error('❌ Failed to update task via API:', data?.message);
+            // Revert UI changes if API call failed
+            checkbox.checked = !checkbox.checked;
+            updateTaskUI(taskItem, null, checkbox.checked);
+            updateTaskProgress();
+            alert('Failed to save task completion: ' + (data?.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('❌ Error in task completion flow:', error);
+        // Revert UI changes if API call failed
+        checkbox.checked = !checkbox.checked;
+        updateTaskUI(taskItem, null, checkbox.checked);
+        updateTaskProgress();
+        
+        // Use localStorage fallback
+        console.log('Using localStorage fallback...');
+        toggleDailyTaskFallback(taskId, checkbox.checked, taskItem, null);
+    });
+}
+
+async function completeTaskAPI(taskId, completed) {
+    console.log('Making API call to complete task...');
+    
+    const response = await fetch('api/tasks.php', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -319,28 +505,25 @@ function toggleDailyTask(taskId) {
         body: JSON.stringify({
             action: 'complete_task',
             task_id: taskId,
-            completed: checkbox.checked
+            completed: completed
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Task updated successfully via API');
-            // Update progress after successful API call
-            updateTaskProgress();
-        } else {
-            console.error('Failed to update task via API:', data.message);
-            // Revert UI changes if API call failed
-            checkbox.checked = !checkbox.checked;
-            updateTaskUI(taskItem, null, checkbox.checked);
-            updateTaskProgress();
-        }
-    })
-    .catch(error => {
-        console.error('Error updating task via API:', error);
-        // Fallback to localStorage
-        toggleDailyTaskFallback(taskId, checkbox.checked, taskItem, null);
     });
+    
+    console.log('API response status:', response.status);
+    
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const text = await response.text();
+    console.log('Raw API response:', text);
+    
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        console.error('Failed to parse JSON:', e);
+        throw new Error('Invalid JSON response: ' + text);
+    }
 }
 
 function toggleDailyTaskFallback(taskId, completed, taskItem, statusBadge) {
@@ -432,7 +615,7 @@ function logout() {
         Auth.logout();
         
         // Call server-side logout
-        fetch('../logout.php', {
+        fetch('logout.php', {
             method: 'POST',
             credentials: 'same-origin'
         }).then(() => {
@@ -442,4 +625,59 @@ function logout() {
             window.location.href = 'index.html';
         });
     }
+}
+
+// Function to notify dashboard about task completion updates
+function notifyDashboardUpdate() {
+    // Use localStorage to communicate between tabs/windows
+    const updateEvent = {
+        type: 'task_progress_update',
+        timestamp: Date.now()
+    };
+    
+    localStorage.setItem('healNestTaskUpdate', JSON.stringify(updateEvent));
+    
+    // Remove the item immediately to trigger storage event
+    setTimeout(() => {
+        localStorage.removeItem('healNestTaskUpdate');
+    }, 100);
+    
+    console.log('Notified dashboard about task progress update');
+}
+
+// Function to update dashboard progress directly (if on dashboard page)
+function updateDashboardProgress() {
+    console.log('Updating dashboard progress directly...');
+    
+    fetch('api/dashboard.php?action=get_dashboard_data', {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.stats) {
+            // Update dashboard progress elements if they exist
+            const welcomeStreak = document.getElementById('welcomeStreak');
+            const todayPerformance = document.getElementById('todayPerformance');
+            const currentStreak = document.getElementById('currentStreak');
+            
+            if (welcomeStreak) {
+                welcomeStreak.textContent = (data.stats.current_streak || 0) + ' days';
+            }
+            if (todayPerformance) {
+                todayPerformance.textContent = (data.stats.completion_percentage || 0) + '%';
+            }
+            if (currentStreak) {
+                currentStreak.textContent = data.stats.current_streak || 0;
+            }
+            
+            console.log('Dashboard progress updated:', data.stats.completion_percentage + '%');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating dashboard progress:', error);
+    });
 }

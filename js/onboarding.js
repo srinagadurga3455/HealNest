@@ -9,30 +9,42 @@ class OnboardingGuide {
 
     // Check if user needs onboarding
     shouldShowOnboarding() {
-        const user = Auth.getCurrentUser();
-        if (!user) return false;
-        
-        // Check if this is a new user (recently registered)
+        // Check if user has already completed onboarding
         const hasSeenOnboarding = localStorage.getItem('healNestOnboardingComplete');
-        const userRegistrationDate = user.created_at || user.registrationDate;
+        if (hasSeenOnboarding === 'true') {
+            return false; // User has already seen the tour
+        }
         
-        // Show onboarding if:
-        // 1. User hasn't seen onboarding before, OR
-        // 2. User registered recently (within last 24 hours), OR  
-        // 3. Manual trigger (help button)
-        if (!hasSeenOnboarding) {
+        // Check if user is authenticated
+        const user = Auth.getCurrentUser();
+        if (!user) {
+            return false; // No user logged in
+        }
+        
+        // Check if this is a new user session (first time on dashboard)
+        const hasVisitedDashboard = localStorage.getItem('healNestDashboardVisited');
+        if (!hasVisitedDashboard) {
+            // Mark as visited and show onboarding
+            localStorage.setItem('healNestDashboardVisited', 'true');
             return true;
         }
         
-        // Check if user is new (registered within last 24 hours)
+        // Check if user registered recently (within last 24 hours)
+        const userRegistrationDate = user.created_at || user.registrationDate;
         if (userRegistrationDate) {
             const registrationTime = new Date(userRegistrationDate).getTime();
             const now = new Date().getTime();
             const hoursSinceRegistration = (now - registrationTime) / (1000 * 60 * 60);
             
-            if (hoursSinceRegistration < 24) {
+            if (hoursSinceRegistration < 24 && !hasSeenOnboarding) {
                 return true;
             }
+        }
+        
+        // Special case for demo user who hasn't seen onboarding
+        const isDemoUser = user.email === 'demo@healnest.com';
+        if (isDemoUser && !hasSeenOnboarding) {
+            return true;
         }
         
         return false;
@@ -45,6 +57,64 @@ class OnboardingGuide {
             return;
         }
         
+        // Show welcome message first for new users
+        this.showWelcomeMessage();
+    }
+    
+    // Show initial welcome message
+    showWelcomeMessage() {
+        const welcomeMessage = document.createElement('div');
+        welcomeMessage.className = 'onboarding-welcome';
+        welcomeMessage.innerHTML = `
+            <div class="welcome-backdrop"></div>
+            <div class="welcome-content">
+                <h2>🌟 Welcome to HealNest!</h2>
+                <p>Your personal wellness companion designed to support your mental health journey.</p>
+                <div class="welcome-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🎯</span>
+                        <span>Personalized wellness programs</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">😊</span>
+                        <span>Daily mood tracking</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✅</span>
+                        <span>Guided wellness tasks</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📔</span>
+                        <span>Private journaling space</span>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.95rem; color: #666;">
+                    Let's take a quick tour to help you get started!
+                </p>
+                <div class="welcome-actions">
+                    <button class="btn-skip-tour" onclick="onboardingGuide.skipWelcome()">Skip Tour</button>
+                    <button class="btn-start-tour" onclick="onboardingGuide.startTour()">Start Tour</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(welcomeMessage);
+    }
+    
+    // Skip welcome and onboarding
+    skipWelcome() {
+        const welcomeElement = document.querySelector('.onboarding-welcome');
+        if (welcomeElement) {
+            welcomeElement.remove();
+        }
+        this.complete();
+    }
+    
+    // Start the actual tour
+    startTour() {
+        const welcomeElement = document.querySelector('.onboarding-welcome');
+        if (welcomeElement) {
+            welcomeElement.remove();
+        }
         this.isActive = true;
         this.currentStep = 0;
         this.createOverlay();
@@ -97,26 +167,60 @@ class OnboardingGuide {
                     {
                         target: '.sidebar',
                         title: 'Welcome to HealNest! 🌟',
-                        text: 'This is your navigation sidebar. Use it to access different sections of your wellness journey.',
+                        text: 'This is your navigation sidebar. Use it to access different sections of your wellness journey. Each section is designed to support your mental health.',
                         position: 'right'
                     },
                     {
                         target: '.header',
-                        title: 'Your Dashboard',
-                        text: 'This is your main dashboard where you can see your wellness overview and recent activities.',
+                        title: 'Your Personal Dashboard',
+                        text: 'This is your main dashboard where you can see your wellness overview, progress, and recent activities at a glance.',
                         position: 'bottom'
                     },
                     {
                         target: '.content-area',
-                        title: 'Main Content Area',
-                        text: 'Here you\'ll find your wellness information, quick actions, and recent activities.',
+                        title: 'Your Wellness Hub',
+                        text: 'Here you\'ll find your wellness information, quick actions, and recent activities. This is your central hub for tracking progress.',
                         position: 'top'
                     },
                     {
                         target: '.user-profile',
                         title: 'Your Profile',
-                        text: 'Click here to access your profile settings and personal information.',
+                        text: 'Click here to access your profile settings, personal information, and account preferences.',
                         position: 'left'
+                    },
+                    {
+                        target: '.nav-item[href="./program.php"]',
+                        title: 'Your Wellness Program 🎯',
+                        text: 'Visit "My Program" to see your personalized wellness plan based on your assessment results.',
+                        position: 'right'
+                    }
+                ];
+            
+            case 'program.php':
+                return [
+                    {
+                        target: '.program-header-card',
+                        title: 'Your Personalized Program 🎯',
+                        text: 'This program was created specifically for you based on your wellness assessment. It\'s tailored to your needs and goals.',
+                        position: 'bottom'
+                    },
+                    {
+                        target: '.progress-overview-card',
+                        title: 'Track Your Progress 📊',
+                        text: 'Monitor your daily progress, completion rates, and streaks. Consistency is key to building healthy habits.',
+                        position: 'bottom'
+                    },
+                    {
+                        target: '.detail-card',
+                        title: 'Program Details',
+                        text: 'Learn why this program was chosen for you and see an overview of your daily wellness tasks.',
+                        position: 'top'
+                    },
+                    {
+                        target: '.program-action',
+                        title: 'Start Your Daily Tasks',
+                        text: 'Click here to begin your daily wellness activities. Remember, small consistent steps lead to big changes!',
+                        position: 'top'
                     }
                 ];
             
@@ -125,19 +229,25 @@ class OnboardingGuide {
                     {
                         target: '.mood-selector-card',
                         title: 'Track Your Mood 😊',
-                        text: 'Select how you\'re feeling today. This helps us understand your emotional patterns.',
+                        text: 'Select how you\'re feeling today. Regular mood tracking helps you understand your emotional patterns and triggers.',
                         position: 'bottom'
                     },
                     {
                         target: '.mood-note-section',
-                        title: 'Add Context',
-                        text: 'Optionally add notes about your mood. This can help you identify triggers and patterns.',
+                        title: 'Add Context to Your Mood',
+                        text: 'Optionally add notes about your mood. What happened today? What influenced your feelings? This context is valuable for self-reflection.',
+                        position: 'top'
+                    },
+                    {
+                        target: '.save-mood-btn',
+                        title: 'Save Your Mood',
+                        text: 'Don\'t forget to save your mood entry! Your data helps create meaningful insights over time.',
                         position: 'top'
                     },
                     {
                         target: '.mood-analytics-grid',
-                        title: 'Mood Analytics',
-                        text: 'View your mood history, statistics, and trends to understand your emotional patterns.',
+                        title: 'Mood Analytics & Insights 📈',
+                        text: 'View your mood history, statistics, and trends. Look for patterns - they can reveal important insights about your mental health.',
                         position: 'top'
                     }
                 ];
@@ -146,20 +256,20 @@ class OnboardingGuide {
                 return [
                     {
                         target: '.tasks-progress-card',
-                        title: 'Daily Progress 📊',
-                        text: 'Track your daily task completion progress with this visual indicator.',
+                        title: 'Daily Progress Tracker 📊',
+                        text: 'Track your daily task completion progress. This visual indicator helps you stay motivated and see your achievements.',
                         position: 'bottom'
                     },
                     {
                         target: '.tasks-section',
-                        title: 'Your Daily Tasks',
-                        text: 'Complete these wellness activities to improve your overall well-being.',
+                        title: 'Your Personalized Daily Tasks ✅',
+                        text: 'These wellness activities are specifically chosen for you. Complete them to improve your overall well-being and build healthy habits.',
                         position: 'top'
                     },
                     {
                         target: '.wellness-tip-section',
-                        title: 'Daily Wellness Tips',
-                        text: 'Get helpful tips and advice to support your wellness journey.',
+                        title: 'Daily Wellness Tips 💡',
+                        text: 'Get helpful tips and advice to support your wellness journey. These insights can help you throughout your day.',
                         position: 'top'
                     }
                 ];
@@ -167,27 +277,62 @@ class OnboardingGuide {
             case 'journal.php':
                 return [
                     {
-                        target: '.journal-entry-form',
-                        title: 'Express Yourself ✍️',
-                        text: 'Write about your thoughts, feelings, and experiences. Journaling is a powerful tool for self-reflection.',
+                        target: '.journal-header-actions',
+                        title: 'Your Personal Journal ✍️',
+                        text: 'Welcome to your private journal space. Writing about your thoughts and feelings is a powerful tool for self-reflection and growth.',
                         position: 'bottom'
                     },
                     {
-                        target: '.mood-selection',
-                        title: 'Mood with Entry',
-                        text: 'Associate a mood with your journal entry to track emotional patterns.',
-                        position: 'top'
+                        target: '.new-entry-form',
+                        title: 'Create Journal Entries',
+                        text: 'Click "New Entry" to write about your thoughts, experiences, and feelings. There\'s no right or wrong way to journal.',
+                        position: 'bottom'
                     },
                     {
-                        target: '.journal-entries',
+                        target: '.journal-sidebar',
+                        title: 'Journal Tools & Stats',
+                        text: 'Use the search and filter tools to find past entries. View your writing statistics and popular tags.',
+                        position: 'left'
+                    },
+                    {
+                        target: '.entries-list',
                         title: 'Your Journal History',
-                        text: 'View and reflect on your previous journal entries here.',
+                        text: 'View and reflect on your previous journal entries here. Reading past entries can provide valuable insights into your growth.',
+                        position: 'top'
+                    }
+                ];
+            
+            case 'profile.php':
+                return [
+                    {
+                        target: '.profile-header',
+                        title: 'Your Profile Settings 👤',
+                        text: 'Manage your personal information, preferences, and account settings here.',
+                        position: 'bottom'
+                    },
+                    {
+                        target: '.profile-form',
+                        title: 'Update Your Information',
+                        text: 'Keep your profile information up to date. This helps us provide you with the most relevant wellness content.',
                         position: 'top'
                     }
                 ];
             
             default:
-                return [];
+                return [
+                    {
+                        target: '.sidebar',
+                        title: 'Welcome to HealNest! 🌟',
+                        text: 'Use the navigation sidebar to explore different sections of your wellness journey.',
+                        position: 'right'
+                    },
+                    {
+                        target: '.content-area',
+                        title: 'Explore Your Wellness Tools',
+                        text: 'Each page offers different tools to support your mental health and well-being.',
+                        position: 'top'
+                    }
+                ];
         }
     }
 
@@ -349,12 +494,38 @@ class OnboardingGuide {
 
     // Show completion message
     showCompletionMessage() {
+        const currentPage = window.location.pathname.split('/').pop();
+        let nextStepMessage = '';
+        
+        switch (currentPage) {
+            case 'dashboard.php':
+                nextStepMessage = 'Ready to start? Visit "My Program" to see your personalized wellness plan!';
+                break;
+            case 'program.php':
+                nextStepMessage = 'Now head to "Today\'s Tasks" to begin your daily wellness activities!';
+                break;
+            case 'mood.php':
+                nextStepMessage = 'Don\'t forget to track your mood daily for the best insights!';
+                break;
+            case 'tasks.php':
+                nextStepMessage = 'Complete your tasks regularly to build healthy habits!';
+                break;
+            case 'journal.php':
+                nextStepMessage = 'Start journaling today - even a few sentences can make a difference!';
+                break;
+            default:
+                nextStepMessage = 'Explore all the features to get the most out of your wellness journey!';
+        }
+        
         const message = document.createElement('div');
         message.className = 'onboarding-completion';
         message.innerHTML = `
             <div class="completion-content">
                 <h3>🎉 Welcome to HealNest!</h3>
-                <p>You're all set to begin your wellness journey. Remember, you can always access help from the menu.</p>
+                <p>You're all set to begin your wellness journey. ${nextStepMessage}</p>
+                <p style="font-size: 0.9rem; color: #8b7355; margin-top: 10px;">
+                    💡 Tip: You can always restart this tour by clicking the help button (?) in the bottom-right corner.
+                </p>
                 <button onclick="this.parentElement.parentElement.remove()">Get Started</button>
             </div>
         `;
@@ -364,7 +535,7 @@ class OnboardingGuide {
             if (message.parentElement) {
                 message.remove();
             }
-        }, 5000);
+        }, 8000); // Longer display time for more content
     }
 
     // Clean up onboarding elements
@@ -372,6 +543,14 @@ class OnboardingGuide {
         if (this.overlay) {
             this.overlay.remove();
         }
+        
+        // Remove any stuck welcome messages
+        const welcomeElements = document.querySelectorAll('.onboarding-welcome');
+        welcomeElements.forEach(el => el.remove());
+        
+        // Remove any stuck completion messages
+        const completionElements = document.querySelectorAll('.onboarding-completion');
+        completionElements.forEach(el => el.remove());
         
         // Remove highlights
         document.querySelectorAll('.onboarding-highlight').forEach(el => {
@@ -393,14 +572,57 @@ const onboardingGuide = new OnboardingGuide();
 
 // Auto-start onboarding when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    // Wait for page to fully load and user authentication to complete
-    setTimeout(() => {
-        // Only auto-start for new users
-        if (onboardingGuide.shouldShowOnboarding()) {
-            console.log('Starting onboarding for new user');
-            onboardingGuide.start();
+    console.log('Onboarding system loaded');
+    
+    // Wait for Auth system to be ready
+    function checkAndStartOnboarding() {
+        if (typeof Auth !== 'undefined' && Auth.getCurrentUser) {
+            const user = Auth.getCurrentUser();
+            console.log('User found:', user);
+            
+            if (onboardingGuide.shouldShowOnboarding()) {
+                console.log('Starting onboarding for new user');
+                
+                // Start onboarding after a short delay to ensure page is fully loaded
+                setTimeout(() => {
+                    onboardingGuide.start();
+                }, 2000);
+            } else {
+                console.log('Onboarding not needed - user has already seen it');
+            }
         } else {
-            console.log('Onboarding not needed - user has already seen it or is not new');
+            console.log('Auth not ready, retrying...');
+            // Retry after a short delay if Auth is not ready
+            setTimeout(checkAndStartOnboarding, 500);
         }
-    }, 2000); // Increased delay to ensure everything is loaded
+    }
+    
+    // Start checking after initial delay
+    setTimeout(checkAndStartOnboarding, 1000);
 });
+
+// Add method to manually trigger onboarding for testing
+window.startOnboardingTour = function() {
+    console.log('Manual onboarding start');
+    onboardingGuide.forceStart();
+};
+
+// Add method to reset onboarding for testing
+window.resetOnboarding = function() {
+    localStorage.removeItem('healNestOnboardingComplete');
+    localStorage.removeItem('healNestDashboardVisited');
+    console.log('Onboarding reset. Refresh the page to see the tour again.');
+};
+
+// Add method to check onboarding status
+window.checkOnboardingStatus = function() {
+    const hasSeenOnboarding = localStorage.getItem('healNestOnboardingComplete');
+    const hasVisitedDashboard = localStorage.getItem('healNestDashboardVisited');
+    const user = Auth.getCurrentUser();
+    
+    console.log('=== ONBOARDING STATUS ===');
+    console.log('Has seen onboarding:', hasSeenOnboarding);
+    console.log('Has visited dashboard:', hasVisitedDashboard);
+    console.log('Current user:', user);
+    console.log('Should show onboarding:', onboardingGuide.shouldShowOnboarding());
+};
