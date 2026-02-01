@@ -349,6 +349,39 @@ if (isset($_SESSION['user_id'])) {
         .forgot-password a:hover {
             color: #8b7355;
         }
+
+        /* Password toggle styles */
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: #666;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+
+        .password-toggle:hover {
+            color: #2c2c2c;
+        }
+
+        .password-toggle:focus {
+            outline: none;
+            color: #8b7355;
+        }
+
+        .password-input-wrapper .form-control {
+            padding-right: 3rem;
+        }
     </style>
 </head>
 <body>
@@ -379,7 +412,12 @@ if (isset($_SESSION['user_id'])) {
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <span id="eyeIcon">👁</span>
+                            </button>
+                        </div>
                         <div class="forgot-password">
                             <a href="#" onclick="alert('Password reset feature coming soon!'); return false;">Forgot password?</a>
                         </div>
@@ -489,6 +527,19 @@ if (isset($_SESSION['user_id'])) {
                 btn.disabled = false;
                 btnText.classList.remove('hidden');
                 btnLoading.classList.add('hidden');
+            }
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = '👁';
             }
         }
     </script>

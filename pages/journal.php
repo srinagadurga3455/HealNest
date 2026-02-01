@@ -16,6 +16,7 @@ if (!isset($_SESSION['user_id'])) {
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/journal.css">
+    <link rel="stylesheet" href="../css/onboarding.css">
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -111,23 +112,23 @@ if (!isset($_SESSION['user_id'])) {
                                 <div class="form-group">
                                     <label>How are you feeling?</label>
                                     <div class="mood-selector">
-                                        <button type="button" class="mood-option" data-mood="excellent">
+                                        <button type="button" class="mood-option" data-mood="excellent" onclick="selectMood('excellent')">
                                             <span class="mood-emoji">😄</span>
                                             <span class="mood-label">Excellent</span>
                                         </button>
-                                        <button type="button" class="mood-option" data-mood="good">
+                                        <button type="button" class="mood-option" data-mood="good" onclick="selectMood('good')">
                                             <span class="mood-emoji">😊</span>
                                             <span class="mood-label">Good</span>
                                         </button>
-                                        <button type="button" class="mood-option" data-mood="neutral">
+                                        <button type="button" class="mood-option" data-mood="neutral" onclick="selectMood('neutral')">
                                             <span class="mood-emoji">😐</span>
                                             <span class="mood-label">Neutral</span>
                                         </button>
-                                        <button type="button" class="mood-option" data-mood="challenging">
+                                        <button type="button" class="mood-option" data-mood="challenging" onclick="selectMood('challenging')">
                                             <span class="mood-emoji">😔</span>
                                             <span class="mood-label">Challenging</span>
                                         </button>
-                                        <button type="button" class="mood-option" data-mood="difficult">
+                                        <button type="button" class="mood-option" data-mood="difficult" onclick="selectMood('difficult')">
                                             <span class="mood-emoji">😢</span>
                                             <span class="mood-label">Difficult</span>
                                         </button>
@@ -187,7 +188,13 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
+    <!-- Help button for onboarding -->
+    <button class="help-button" onclick="onboardingGuide.forceStart();" title="Show guided tour">
+        ?
+    </button>
+
     <script src="../js/auth.js"></script>
+    <script src="../js/onboarding.js?v=<?php echo time(); ?>"></script>
     <script src="../js/journal-utils.js"></script>
     <script src="../js/journal.js"></script>
     <script>

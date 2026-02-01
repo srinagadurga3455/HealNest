@@ -2,17 +2,40 @@
 session_start();
 header('Content-Type: application/json');
 
+// Add output buffering to prevent any HTML output from corrupting JSON
+ob_start();
+
 // Include database connection
 require_once '../config/connect.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
+    ob_clean();
     echo json_encode(['success' => false, 'message' => 'Not authenticated']);
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
-$action = $_GET['action'] ?? $_POST['action'] ?? '';
+
+// Get action from either GET, POST, or JSON body
+$action = '';
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+} elseif (isset($_POST['action'])) {
+    $action = $_POST['action'];
+} else {
+    // Try to get from JSON body
+    $json_input = file_get_contents("php://input");
+    if ($json_input) {
+        $json_data = json_decode($json_input, true);
+        if ($json_data && isset($json_data['action'])) {
+            $action = $json_data['action'];
+        }
+    }
+}
+
+// Clear any output that might have been generated
+ob_clean();
 
 switch ($action) {
     case 'get_today_mood':
@@ -36,8 +59,11 @@ switch ($action) {
     case 'get_mood_calendar':
         getMoodCalendar();
         break;
+    case 'test':
+        testConnection();
+        break;
     default:
-        echo json_encode(['success' => false, 'message' => 'Invalid action']);
+        echo json_encode(['success' => false, 'message' => 'Invalid action: ' . $action]);
 }
 
 function getTodayMood() {
@@ -71,10 +97,17 @@ function getTodayMood() {
 function saveMood() {
     global $conn, $user_id;
     
-    $data = json_decode(file_get_contents("php://input"), true);
+    // Get data from JSON body or POST
+    $data = null;
+    $json_input = file_get_contents("php://input");
+    if ($json_input) {
+        $data = json_decode($json_input, true);
+    }
     if (!$data) {
         $data = $_POST;
     }
+    
+    error_log("Mood save data received: " . print_r($data, true));
     
     $mood = $data['mood'] ?? '';
     $mood_score = $data['mood_score'] ?? getMoodScore($mood);
@@ -83,6 +116,7 @@ function saveMood() {
     
     // Validation
     if (empty($mood)) {
+        error_log("Mood save failed: mood is empty");
         echo json_encode(['success' => false, 'message' => 'Mood is required']);
         return;
     }
@@ -90,33 +124,45 @@ function saveMood() {
     // Validate mood value
     $valid_moods = ['excellent', 'good', 'neutral', 'challenging', 'difficult'];
     if (!in_array($mood, $valid_moods)) {
+        error_log("Mood save failed: invalid mood value: " . $mood);
         echo json_encode(['success' => false, 'message' => 'Invalid mood value']);
         return;
     }
     
-    // Check if mood already exists for this date
-    $stmt = $conn->prepare("SELECT id FROM mood_entries WHERE user_id = ? AND entry_date = ?");
-    $stmt->bind_param("is", $user_id, $entry_date);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    error_log("Saving mood for user $user_id: mood=$mood, score=$mood_score, date=$entry_date");
     
-    if ($result->num_rows > 0) {
-        // Update existing mood
-        $stmt = $conn->prepare("UPDATE mood_entries SET mood = ?, mood_score = ?, note = ?, created_at = NOW() WHERE user_id = ? AND entry_date = ?");
-        $stmt->bind_param("sisiss", $mood, $mood_score, $note, $user_id, $entry_date);
-    } else {
-        // Insert new mood
-        $stmt = $conn->prepare("INSERT INTO mood_entries (user_id, mood, mood_score, note, entry_date, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("isiss", $user_id, $mood, $mood_score, $note, $entry_date);
-    }
-    
-    if ($stmt->execute()) {
-        echo json_encode([
-            'success' => true,
-            'message' => 'Mood saved successfully'
-        ]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save mood']);
+    try {
+        // Check if mood already exists for this date
+        $stmt = $conn->prepare("SELECT id FROM mood_entries WHERE user_id = ? AND entry_date = ?");
+        $stmt->bind_param("is", $user_id, $entry_date);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            // Update existing mood
+            error_log("Updating existing mood entry");
+            $stmt = $conn->prepare("UPDATE mood_entries SET mood = ?, mood_score = ?, note = ?, created_at = NOW() WHERE user_id = ? AND entry_date = ?");
+            $stmt->bind_param("sisis", $mood, $mood_score, $note, $user_id, $entry_date);
+        } else {
+            // Insert new mood
+            error_log("Creating new mood entry");
+            $stmt = $conn->prepare("INSERT INTO mood_entries (user_id, mood, mood_score, note, entry_date, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+            $stmt->bind_param("isiss", $user_id, $mood, $mood_score, $note, $entry_date);
+        }
+        
+        if ($stmt->execute()) {
+            error_log("Mood saved successfully");
+            echo json_encode([
+                'success' => true,
+                'message' => 'Mood saved successfully'
+            ]);
+        } else {
+            error_log("Database error: " . $stmt->error);
+            echo json_encode(['success' => false, 'message' => 'Database error: ' . $stmt->error]);
+        }
+    } catch (Exception $e) {
+        error_log("Exception in saveMood: " . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
     }
 }
 
@@ -321,6 +367,36 @@ function getMoodScore($mood) {
     ];
     
     return $mood_scores[$mood] ?? 3;
+}
+
+function testConnection() {
+    global $conn, $user_id;
+    
+    try {
+        // Test database connection
+        $result = $conn->query("SELECT 1");
+        if (!$result) {
+            echo json_encode(['success' => false, 'message' => 'Database query failed: ' . $conn->error]);
+            return;
+        }
+        
+        // Test mood_entries table
+        $stmt = $conn->prepare("SELECT COUNT(*) as count FROM mood_entries WHERE user_id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $count = $result->fetch_assoc()['count'];
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Connection test successful',
+            'user_id' => $user_id,
+            'mood_entries_count' => $count,
+            'database' => 'healnest_db'
+        ]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Test failed: ' . $e->getMessage()]);
+    }
 }
 
 $conn->close();

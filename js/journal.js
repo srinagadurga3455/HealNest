@@ -27,19 +27,79 @@ const writingPrompts = [
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function () {
-    loadEntries();
-    updateJournalStats();
-    updatePopularTags();
-    loadWritingPrompts();
+    // Ensure user is properly authenticated and update profile
+    ensureAuthentication().then(() => {
+        updateUserInfo();
+        loadEntries();
+        updateJournalStats();
+        updatePopularTags();
+        loadWritingPrompts();
 
-    // Add mood selector handlers
-    document.querySelectorAll('.mood-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            selectedMood = this.dataset.mood;
-        });
+        // Initial mood selector setup
+        attachMoodListeners();
     });
+});
+
+async function ensureAuthentication() {
+    // Check if user is authenticated on server side
+    try {
+        const response = await fetch('../api/check_session.php');
+        const data = await response.json();
+        
+        if (!data.logged_in) {
+            // User not authenticated on server, try to auto-login demo user
+            const user = Auth.getCurrentUser();
+            if (user && user.email === 'demo@healnest.com') {
+                await autoLoginDemoUser();
+            }
+        }
+    } catch (error) {
+        console.log('Session check failed, continuing with fallback');
+    }
+}
+
+async function autoLoginDemoUser() {
+    try {
+        const response = await fetch('../api/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: 'demo@healnest.com',
+                password: 'demo123'
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            console.log('Demo user auto-login successful');
+        }
+    } catch (error) {
+        console.log('Auto-login failed, using fallback mode');
+    }
+}
+
+function updateUserInfo() {
+    const user = Auth.getCurrentUser();
+    const userAvatar = document.getElementById('userAvatar');
+    
+    if (userAvatar && user) {
+        const userName = user.full_name || user.fullName || user.name || user.email;
+        userAvatar.textContent = userName.charAt(0).toUpperCase();
+    }
+}
+
+// Listen for storage changes to update user info when profile is updated from other tabs/pages
+window.addEventListener('storage', function(e) {
+    if (e.key === 'healNestUser') {
+        updateUserInfo();
+    }
+});
+
+// Also listen for custom events for same-tab updates
+window.addEventListener('userProfileUpdated', function() {
+    updateUserInfo();
 });
 
 function showNewEntryForm() {
@@ -50,9 +110,38 @@ function showNewEntryForm() {
     // Clear form
     document.getElementById('entryTitle').value = '';
     document.getElementById('entryContent').value = '';
-    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
-    document.querySelector('[data-mood="neutral"]').classList.add('selected');
-    selectedMood = 'neutral';
+    
+    // Reset mood selection to neutral
+    selectMood('neutral');
+}
+
+function selectMood(mood) {
+    // Remove selected class from all mood options
+    document.querySelectorAll('.mood-option').forEach(btn => btn.classList.remove('selected'));
+    // Add selected class to the clicked mood option
+    document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+    // Update selected mood variable
+    selectedMood = mood;
+    console.log('Selected mood:', selectedMood); // Debug log
+}
+
+function attachMoodListeners() {
+    document.querySelectorAll('.mood-option').forEach(btn => {
+        // Remove existing listeners to avoid duplicates
+        btn.removeEventListener('click', handleMoodSelection);
+        // Add new listener
+        btn.addEventListener('click', handleMoodSelection);
+    });
+}
+
+function handleMoodSelection(event) {
+    // Remove selected class from all mood options
+    document.querySelectorAll('.mood-option').forEach(b => b.classList.remove('selected'));
+    // Add selected class to clicked option
+    event.currentTarget.classList.add('selected');
+    // Update selected mood
+    selectedMood = event.currentTarget.dataset.mood;
+    console.log('Selected mood:', selectedMood); // Debug log
 }
 
 function hideNewEntryForm() {
@@ -170,12 +259,9 @@ function displayEntries(entries) {
 
     if (entries.length === 0) {
         entriesList.innerHTML = `
-            <div class="text-center py-5">
-                <i class="ti ti-book" style="font-size: 3rem; color: #6c757d;"></i>
-                <h4 class="mt-3 text-muted">No journal entries yet</h4>
-                <p class="text-muted">Start your journaling journey by creating your first entry.</p>
-                <button class="btn-primary mt-3" onclick="showNewEntryForm()">
-                    <i class="ti ti-plus me-2"></i>Write Your First Entry
+            <div class="empty-state">
+                <button class="btn-new-entry" onclick="showNewEntryForm()">
+                    Write Your First Entry
                 </button>
             </div>
         `;
@@ -263,8 +349,8 @@ function editEntry() {
     document.getElementById('entryTitle').value = entry.title;
     document.getElementById('entryContent').value = entry.content;
 
-    // Set mood
-    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+    // Set mood selection
+    document.querySelectorAll('.mood-option').forEach(btn => btn.classList.remove('selected'));
     document.querySelector(`[data-mood="${entry.mood}"]`).classList.add('selected');
     selectedMood = entry.mood;
 

@@ -10,25 +10,150 @@ const moodEmojis = {
     difficult: '😢'
 };
 
+// Simple MoodTracker for localStorage fallback
+const MoodTracker = {
+    saveMood: function(mood, note) {
+        const date = new Date().toISOString().split('T')[0];
+        const moodData = this.getMoodData();
+        moodData[date] = {
+            mood: mood,
+            note: note,
+            mood_score: this.getMoodScore(mood)
+        };
+        localStorage.setItem('healNestMoodData', JSON.stringify(moodData));
+    },
+    
+    getTodayMood: function() {
+        const date = new Date().toISOString().split('T')[0];
+        const moodData = this.getMoodData();
+        return moodData[date] || null;
+    },
+    
+    getMoodData: function() {
+        const data = localStorage.getItem('healNestMoodData');
+        return data ? JSON.parse(data) : {};
+    },
+    
+    getMoodStats: function() {
+        const moodData = this.getMoodData();
+        const stats = {
+            excellent: 0,
+            good: 0,
+            neutral: 0,
+            challenging: 0,
+            difficult: 0
+        };
+        
+        let total = 0;
+        Object.values(moodData).forEach(entry => {
+            if (stats.hasOwnProperty(entry.mood)) {
+                stats[entry.mood]++;
+                total++;
+            }
+        });
+        
+        return {
+            moods: stats,
+            total: total
+        };
+    },
+    
+    getMoodScore: function(mood) {
+        const scores = {
+            excellent: 5,
+            good: 4,
+            neutral: 3,
+            challenging: 2,
+            difficult: 1
+        };
+        return scores[mood] || 3;
+    }
+};
+
 // Initialize page
 document.addEventListener('DOMContentLoaded', function () {
-    loadTodaysMood();
-    generateCalendar();
-    updateMoodStats();
-    updateMoodTrend();
-    loadRecentEntries();
+    // Ensure user is properly authenticated and update profile
+    ensureAuthentication().then(() => {
+        updateUserInfo();
+        loadTodaysMood();
+        generateCalendar();
+        updateMoodStats();
+        updateMoodTrend();
+        loadRecentEntries();
 
-    // Add click handlers for mood options
-    document.querySelectorAll('.mood-option').forEach(option => {
-        option.addEventListener('click', function () {
-            // Remove selected class from all options
-            document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
-            // Add selected class to clicked option
-            this.classList.add('selected');
-            selectedMood = this.dataset.mood;
+        // Add click handlers for mood options
+        document.querySelectorAll('.mood-option').forEach(option => {
+            option.addEventListener('click', function () {
+                // Remove selected class from all options
+                document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                selectedMood = this.dataset.mood;
+            });
         });
     });
+    
+    // Listen for profile updates
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'healNestUser') {
+            updateUserInfo();
+        }
+    });
+    
+    window.addEventListener('userProfileUpdated', function() {
+        updateUserInfo();
+    });
 });
+
+async function ensureAuthentication() {
+    // Check if user is authenticated on server side
+    try {
+        const response = await fetch('../api/check_session.php');
+        const data = await response.json();
+        
+        if (!data.logged_in) {
+            // User not authenticated on server, try to auto-login demo user
+            const user = Auth.getCurrentUser();
+            if (user && user.email === 'demo@healnest.com') {
+                await autoLoginDemoUser();
+            }
+        }
+    } catch (error) {
+        console.log('Session check failed, continuing with fallback');
+    }
+}
+
+async function autoLoginDemoUser() {
+    try {
+        const response = await fetch('../api/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: 'demo@healnest.com',
+                password: 'demo123'
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            console.log('Demo user auto-login successful');
+        }
+    } catch (error) {
+        console.log('Auto-login failed, using fallback mode');
+    }
+}
+
+function updateUserInfo() {
+    const user = Auth.getCurrentUser();
+    const userAvatar = document.getElementById('userAvatar');
+    
+    if (userAvatar && user) {
+        const userName = user.full_name || user.fullName || user.name || user.email;
+        userAvatar.textContent = userName.charAt(0).toUpperCase();
+    }
+}
 
 function loadTodaysMood() {
     fetch('../api/mood.php?action=get_today_mood')
@@ -79,41 +204,63 @@ function saveMood() {
         date: new Date().toISOString().split('T')[0]
     };
 
-    fetch('../api/mood.php?action=save_mood', {
+    console.log('Saving mood data:', moodData);
+
+    fetch('../api/mood.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(moodData)
+        body: JSON.stringify({
+            action: 'save_mood',
+            ...moodData
+        })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Show success message
-            btn.textContent = 'Mood Saved! ✓';
-            btn.style.background = '#28a745';
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.text();
+    })
+    .then(text => {
+        console.log('Raw response:', text);
+        try {
+            const data = JSON.parse(text);
+            console.log('Parsed response:', data);
+            
+            if (data.success) {
+                // Show success message
+                btn.textContent = 'Mood Saved';
+                btn.style.background = '#28a745';
 
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                }, 2000);
+
+                // Refresh analytics
+                generateCalendar();
+                updateMoodStats();
+                updateMoodTrend();
+                loadRecentEntries();
+            } else {
+                console.error('Failed to save mood:', data.message);
                 btn.disabled = false;
-            }, 2000);
-
-            // Refresh analytics
-            generateCalendar();
-            updateMoodStats();
-            updateMoodTrend();
-            loadRecentEntries();
-        } else {
-            console.error('Failed to save mood:', data.message);
-            // Fallback to localStorage
-            saveMoodFallback();
+                btn.textContent = originalText;
+                alert('Failed to save mood: ' + (data.message || 'Unknown error'));
+            }
+        } catch (e) {
+            console.error('JSON parse error:', e);
+            console.error('Response text:', text);
+            btn.disabled = false;
+            btn.textContent = originalText;
+            alert('Error saving mood. Please check the console for details.');
         }
     })
     .catch(error => {
-        console.error('Error saving mood:', error);
-        // Fallback to localStorage
-        saveMoodFallback();
+        console.error('Network error:', error);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        alert('Network error. Please try again.');
     });
 }
 
@@ -126,7 +273,7 @@ function saveMoodFallback() {
         MoodTracker.saveMood(selectedMood, note);
 
         // Show success message
-        btn.textContent = 'Mood Saved! ✓';
+        btn.textContent = 'Mood Saved';
         btn.style.background = '#28a745';
 
         setTimeout(() => {

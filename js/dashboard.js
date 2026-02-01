@@ -26,12 +26,35 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize interactive elements
     setupMoodTracker();
     
+    // Update user info
+    updateUserInfo();
+    
     // Load dashboard data directly - let the API handle authentication
     loadDashboardData();
+    
+    // Listen for profile updates
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'healNestUser') {
+            updateUserInfo();
+        }
+    });
+    
+    window.addEventListener('userProfileUpdated', function() {
+        updateUserInfo();
+    });
 });
 
 function loadDashboardData() {
     console.log('Starting dashboard data load...');
+    
+    // First check if user is authenticated locally
+    const user = Auth.getCurrentUser();
+    if (!user) {
+        console.log('No user found in localStorage, redirecting to login');
+        window.location.href = './login.php';
+        return;
+    }
+    
     // Try to load from API first
     fetch('../api/dashboard.php?action=get_dashboard_data', {
         method: 'GET',
@@ -42,6 +65,9 @@ function loadDashboardData() {
     })
         .then(response => {
             console.log('Dashboard API response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
             return response.json();
         })
         .then(data => {
@@ -50,7 +76,7 @@ function loadDashboardData() {
                 console.log('Dashboard data loaded successfully:', data);
                 console.log('Program data received:', data.user.program);
                 // Load all dashboard components with API data
-                loadUserInfo(data.user);
+                updateUserInfo(data.user);
                 loadStats(data.stats);
                 loadTodaysMood(data.todays_mood);
                 loadJournalEntries(data.journal_entries);
@@ -58,19 +84,57 @@ function loadDashboardData() {
                 loadProgramInfo(data.user.program);
             } else {
                 console.log('API returned error:', data.message);
-                // If not authenticated, redirect to login
+                // If not authenticated, try to auto-login demo user
                 if (data.message === 'Not authenticated') {
-                    window.location.href = './login.php';
+                    if (user.email === 'demo@healnest.com') {
+                        console.log('Attempting auto-login for demo user');
+                        autoLoginDemoUser().then(() => {
+                            // Retry dashboard load after login
+                            setTimeout(() => loadDashboardData(), 1000);
+                        }).catch(() => {
+                            window.location.href = './login.php';
+                        });
+                    } else {
+                        window.location.href = './login.php';
+                    }
                     return;
                 }
-                // For other errors, show error message
-                showErrorMessage('Failed to load dashboard data: ' + data.message);
+                // For other errors, show error message and try fallback
+                showErrorMessage('API error: ' + data.message + '. Using demo data.');
+                loadDashboardFallback();
             }
         })
         .catch(error => {
             console.error('API error:', error);
-            showErrorMessage('Unable to connect to server. Please refresh the page.');
+            showErrorMessage('Unable to connect to server. Using demo data.');
+            loadDashboardFallback();
         });
+}
+
+async function autoLoginDemoUser() {
+    try {
+        const response = await fetch('../api/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: 'demo@healnest.com',
+                password: 'demo123'
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            console.log('Demo user auto-login successful');
+            return true;
+        } else {
+            throw new Error('Auto-login failed: ' + data.message);
+        }
+    } catch (error) {
+        console.log('Auto-login failed:', error);
+        throw error;
+    }
 }
 
 function showErrorMessage(message) {
@@ -104,12 +168,94 @@ function showErrorMessage(message) {
 }
 
 function loadDashboardFallback() {
-    // Remove fallback - force API usage only
-    showErrorMessage('Unable to load dashboard data. Please try logging in again.');
+    console.log('Loading dashboard with demo data...');
+    
+    const user = Auth.getCurrentUser();
+    
+    // Demo user data
+    const demoUser = {
+        id: user.id || 1,
+        full_name: user.full_name || user.fullName || user.name || 'Demo User',
+        email: user.email || 'demo@healnest.com',
+        wellness_score: 75,
+        current_streak: 1,
+        highest_streak: 3,
+        assessment_taken: true,
+        assigned_program_id: 1,
+        program_start_date: '2024-12-01',
+        program: {
+            name: 'Mindfulness & Stress Relief',
+            description: 'Learn evidence-based techniques to manage stress and build mindfulness.',
+            icon: '🧘',
+            color: '#8b7355'
+        }
+    };
+    
+    // Demo stats
+    const demoStats = {
+        program_days_completed: 30,
+        program_days_remaining: 0,
+        current_streak: 1,
+        journal_entries_count: 2,
+        mood_entries_count: 3,
+        tasks_completed_today: 0,
+        total_tasks_today: 3,
+        completion_percentage: 0
+    };
+    
+    // Demo tasks
+    const demoTasks = [
+        {
+            id: 1,
+            title: 'Morning Meditation',
+            description: '10 minutes of guided mindfulness meditation',
+            completed_today: false
+        },
+        {
+            id: 2,
+            title: 'Breathing Exercise',
+            description: '5-minute deep breathing for stress relief',
+            completed_today: false
+        },
+        {
+            id: 3,
+            title: 'Stress Level Check',
+            description: 'Rate and reflect on your stress level (1-10)',
+            completed_today: false
+        }
+    ];
+    
+    // Demo journal entries
+    const demoJournalEntries = [
+        {
+            id: 1,
+            title: 'First Day',
+            content: 'Starting my wellness journey...',
+            mood: 'good',
+            created_at: '2024-12-01'
+        }
+    ];
+    
+    // Demo mood
+    const demoMood = {
+        mood: 'good',
+        note: 'Feeling optimistic about the program',
+        entry_date: '2024-12-01'
+    };
+    
+    // Load components with demo data
+    updateUserInfo(demoUser);
+    loadStats(demoStats);
+    loadTodaysMood(demoMood);
+    loadJournalEntries(demoJournalEntries);
+    loadTodaysTasks(demoTasks);
+    loadProgramInfo(demoUser.program);
 }
 
-function loadUserInfo(userData = null) {
+function updateUserInfo(userData = null) {
     const user = userData || Auth.getCurrentUser();
+    if (!user) return;
+    
     const greeting = getGreeting();
     
     // Update greeting elements
@@ -311,7 +457,6 @@ function loadJournalEntries(entriesData = null) {
         container.innerHTML = `
             <div class="text-center py-4">
                 <i class="ti ti-book" style="font-size: 2rem; color: #6c757d;"></i>
-                <p class="text-muted mt-2 mb-0">No journal entries yet</p>
                 <a href="./journal.php" class="btn btn-sm btn-primary mt-2">Write Your First Entry</a>
             </div>
         `;

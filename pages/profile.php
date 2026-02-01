@@ -117,16 +117,6 @@ if (!isset($_SESSION['user_id'])) {
                                 <input type="email" id="email" class="form-control" placeholder="your@email.com" required>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="age">Age</label>
-                                <input type="number" id="age" class="form-control" placeholder="Your age" min="13" max="120">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="wellnessGoals">Wellness Goals</label>
-                                <textarea id="wellnessGoals" class="form-control textarea" rows="4" placeholder="What are your wellness goals? Share your aspirations..."></textarea>
-                            </div>
-                            
                             <button type="submit" class="btn-save">Update Profile</button>
                         </form>
                     </div>

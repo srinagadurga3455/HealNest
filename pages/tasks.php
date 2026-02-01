@@ -16,6 +16,7 @@ if (!isset($_SESSION['user_id'])) {
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/tasks.css">
+    <link rel="stylesheet" href="../css/onboarding.css">
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -122,7 +123,13 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
+    <!-- Help button for onboarding -->
+    <button class="help-button" onclick="onboardingGuide.forceStart();" title="Show guided tour">
+        ?
+    </button>
+
     <script src="../js/auth.js"></script>
+    <script src="../js/onboarding.js?v=<?php echo time(); ?>"></script>
     <script src="../js/tasks.js"></script>
     <script>
         function toggleSidebar() {

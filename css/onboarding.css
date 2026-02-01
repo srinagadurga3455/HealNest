@@ -1,0 +1,284 @@
+/* Onboarding Guide Styles */
+.onboarding-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.onboarding-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: auto;
+}
+
+.onboarding-tooltip {
+    position: absolute;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 320px;
+    min-width: 280px;
+    pointer-events: auto;
+    z-index: 10001;
+    animation: tooltipFadeIn 0.3s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tooltip-content {
+    padding: 20px;
+}
+
+.tooltip-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin: 0 0 10px 0;
+}
+
+.tooltip-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+}
+
+.tooltip-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-skip {
+    background: none;
+    border: none;
+    color: #8b7355;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 5px 0;
+}
+
+.btn-skip:hover {
+    color: #6d5a42;
+}
+
+.tooltip-navigation {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-prev, .btn-next {
+    background: #8b7355;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-prev:hover, .btn-next:hover {
+    background: #6d5a42;
+}
+
+.btn-prev {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+.btn-prev:hover {
+    background: #dee2e6;
+    color: #495057;
+}
+
+.step-indicator {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #8b7355;
+    font-weight: 500;
+}
+
+/* Tooltip arrows */
+.tooltip-top::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: white;
+}
+
+.tooltip-bottom::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-bottom-color: white;
+}
+
+.tooltip-left::before {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 8px solid transparent;
+    border-left-color: white;
+}
+
+.tooltip-right::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 8px solid transparent;
+    border-right-color: white;
+}
+
+/* Highlighted elements */
+.onboarding-highlight {
+    position: relative;
+    z-index: 9999;
+    box-shadow: 0 0 0 4px rgba(139, 115, 85, 0.8), 0 0 20px rgba(139, 115, 85, 0.4) !important;
+    border-radius: 8px !important;
+    background: white !important;
+}
+
+/* Completion message */
+.onboarding-completion {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 10002;
+    animation: completionFadeIn 0.4s ease-out;
+}
+
+@keyframes completionFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.completion-content {
+    padding: 30px;
+    text-align: center;
+    max-width: 300px;
+}
+
+.completion-content h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: #2c2c2c;
+    margin: 0 0 15px 0;
+}
+
+.completion-content p {
+    font-family: 'Lato', sans-serif;
+    color: #555;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+}
+
+.completion-content button {
+    background: #8b7355;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.completion-content button:hover {
+    background: #6d5a42;
+}
+
+/* Help button for returning users */
+.help-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #8b7355;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.help-button:hover {
+    background: #6d5a42;
+    transform: scale(1.1);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .onboarding-tooltip {
+        max-width: 280px;
+        min-width: 250px;
+        margin: 10px;
+    }
+    
+    .tooltip-content {
+        padding: 15px;
+    }
+    
+    .tooltip-title {
+        font-size: 1.2rem;
+    }
+    
+    .tooltip-text {
+        font-size: 0.9rem;
+    }
+    
+    .tooltip-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .tooltip-navigation {
+        justify-content: center;
+    }
+}

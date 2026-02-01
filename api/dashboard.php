@@ -1,6 +1,17 @@
 <?php
+// Start output buffering to prevent any accidental output
+ob_start();
+
 session_start();
+
+// Clear any previous output and set JSON header
+ob_clean();
 header('Content-Type: application/json');
+header('Cache-Control: no-cache, must-revalidate');
+
+// Disable error display to prevent HTML in JSON response
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 
 // Include database connection
 require_once '../config/connect.php';
@@ -690,5 +701,11 @@ function calculateStreak() {
     return $streak;
 }
 
-$conn->close();
+// Close database connection
+if (isset($conn)) {
+    $conn->close();
+}
+
+// End output buffering and send clean JSON
+ob_end_flush();
 ?>

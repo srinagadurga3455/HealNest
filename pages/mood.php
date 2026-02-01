@@ -165,6 +165,34 @@ if (!isset($_SESSION['user_id'])) {
             localStorage.removeItem('healNestUser');
             window.location.href = 'logout.php';
         }
+        
+        function testMoodAPI() {
+            fetch('../api/mood.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'test'
+                })
+            })
+            .then(response => response.text())
+            .then(text => {
+                console.log('Test API raw response:', text);
+                try {
+                    const data = JSON.parse(text);
+                    console.log('Test API parsed response:', data);
+                    alert('API Test Result: ' + JSON.stringify(data, null, 2));
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    alert('API Test Error: ' + text);
+                }
+            })
+            .catch(error => {
+                console.error('API Test Network Error:', error);
+                alert('Network Error: ' + error.message);
+            });
+        }
     </script>
 </body>
 </html>

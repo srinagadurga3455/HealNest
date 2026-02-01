@@ -503,9 +503,20 @@ $assessment_taken = $user['assessment_taken'];
                         
                         <div class="divider-section">
                             <p>Want to retake the assessment? This will reassign your program based on your current needs.</p>
-                            <button class="btn-nav btn-prev" onclick="retakeAssessment()" style="margin-top: 1rem;">
-                                Retake Assessment
-                            </button>
+                            <div class="action-buttons">
+                                <button class="btn-nav btn-prev" onclick="retakeAssessment()" style="margin-top: 1rem;">
+                                    Retake Assessment
+                                </button>
+                                <button class="btn-nav btn-prev" onclick="showLatestAssessment()" style="margin-top: 1rem;">
+                                    View Latest Assessment
+                                </button>
+                                <button class="btn-nav btn-prev" onclick="checkLiveDatabase()" style="margin-top: 1rem;">
+                                    Check Live Database
+                                </button>
+                                <button class="btn-nav btn-prev" onclick="checkUserSession()" style="margin-top: 1rem;">
+                                    Check User Session
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -844,6 +855,9 @@ $assessment_taken = $user['assessment_taken'];
             document.querySelectorAll('.answer-option').forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
             assessmentAnswers[currentQuestionIndex] = parseInt(element.dataset.value);
+            
+            console.log('Answer selected for question', currentQuestionIndex, ':', assessmentAnswers[currentQuestionIndex]);
+            console.log('Current answers object:', assessmentAnswers);
         }
 
         function nextQuestion() {
@@ -854,6 +868,10 @@ $assessment_taken = $user['assessment_taken'];
                 alert('Please select an answer to continue.');
                 return;
             }
+
+            console.log('Moving to next question. Current answers:', assessmentAnswers);
+            console.log('Current question index:', currentQuestionIndex);
+            console.log('Total questions:', questions.length);
 
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
@@ -887,8 +905,35 @@ $assessment_taken = $user['assessment_taken'];
             setSubmitLoading(true);
 
             try {
-                const answersArray = Object.values(assessmentAnswers);
-                console.log('Submitting answers:', answersArray);
+                // Create a proper answers array by filtering out motivational breaks
+                const answersArray = [];
+                for (let i = 0; i < questions.length; i++) {
+                    // Skip motivational breaks (every 5th question after the first)
+                    if (i > 0 && i % 5 === 0) {
+                        continue;
+                    }
+                    
+                    if (assessmentAnswers[i] !== undefined) {
+                        answersArray.push(assessmentAnswers[i]);
+                    }
+                }
+                
+                console.log('Assessment answers object:', assessmentAnswers);
+                console.log('Filtered answers array:', answersArray);
+                console.log('Total questions answered:', answersArray.length);
+                console.log('Expected answers:', questions.length - Math.floor(questions.length / 5));
+                
+                if (answersArray.length === 0) {
+                    alert('No answers found. Please answer the questions before submitting.');
+                    return;
+                }
+                
+                const requestData = {
+                    action: 'submit_assessment',
+                    answers: answersArray
+                };
+                
+                console.log('Request data:', requestData);
                 
                 const response = await fetch('../api/assessment.php', {
                     method: 'POST',
@@ -896,35 +941,81 @@ $assessment_taken = $user['assessment_taken'];
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        action: 'submit_assessment',
-                        answers: answersArray
-                    })
+                    body: JSON.stringify(requestData)
                 });
 
-                const data = await response.json();
-                console.log('Assessment API response:', data);
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('Raw response:', responseText);
+                console.log('Response length:', responseText.length);
+                console.log('Response first 100 chars:', responseText.substring(0, 100));
+                console.log('Response last 100 chars:', responseText.substring(responseText.length - 100));
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    console.error('Full response text:', responseText);
+                    
+                    // Try to find where the JSON starts
+                    const jsonStart = responseText.indexOf('{');
+                    const jsonEnd = responseText.lastIndexOf('}') + 1;
+                    
+                    if (jsonStart >= 0 && jsonEnd > jsonStart) {
+                        const cleanJson = responseText.substring(jsonStart, jsonEnd);
+                        console.log('Attempting to parse cleaned JSON:', cleanJson);
+                        try {
+                            data = JSON.parse(cleanJson);
+                            console.log('Successfully parsed cleaned JSON');
+                        } catch (cleanParseError) {
+                            console.error('Even cleaned JSON failed to parse:', cleanParseError);
+                            throw new Error('Invalid JSON response from server. Response: ' + responseText.substring(0, 200));
+                        }
+                    } else {
+                        throw new Error('No valid JSON found in response. Response: ' + responseText.substring(0, 200));
+                    }
+                }
+                
+                console.log('Parsed assessment API response:', data);
 
                 if (data.success) {
+                    // Show simple success alert
+                    alert('🎉 Assessment completed successfully!');
+                    
                     document.getElementById('assessmentQuestions').style.display = 'none';
                     document.querySelector('.navigation-buttons').style.display = 'none';
                     document.querySelector('.progress-container').style.display = 'none';
                     
                     const program = data.results.recommended_program;
                     if (program) {
+                        let taskInfo = '';
+                        if (data.results.personalized_tasks_count > 0) {
+                            taskInfo = `<p style="color: #8b7355; font-size: 0.9rem; margin-top: 1rem;">✨ ${data.results.personalized_tasks_count} personalized tasks have been created based on your responses</p>`;
+                        }
+                        
                         document.getElementById('programAssignment').innerHTML = `
                             <div class="program-assignment">
                                 <h3>${program.program_name}</h3>
                                 <p>${program.program_description}</p>
-                                <small>Personalized based on your responses</small>
+                                <small>Wellness Score: ${data.results.wellness_score}%</small>
+                                ${taskInfo}
                             </div>
                         `;
                     } else {
+                        let taskInfo = '';
+                        if (data.results.personalized_tasks_count > 0) {
+                            taskInfo = `<p style="color: #8b7355; font-size: 0.9rem; margin-top: 1rem;">✨ ${data.results.personalized_tasks_count} personalized tasks have been created based on your responses</p>`;
+                        }
+                        
                         document.getElementById('programAssignment').innerHTML = `
                             <div class="program-assignment">
-                                <h3>Your Journey Begins</h3>
-                                <p>Your personalized wellness program has been created based on your responses.</p>
+                                <h3>Your Personalized Journey Begins</h3>
+                                <p>Your wellness program has been customized based on your specific mental health needs and responses.</p>
                                 <small>Wellness Score: ${data.results.wellness_score}%</small>
+                                ${taskInfo}
                             </div>
                         `;
                     }
@@ -936,7 +1027,7 @@ $assessment_taken = $user['assessment_taken'];
                 }
             } catch (error) {
                 console.error('Assessment submission error:', error);
-                alert('Network error. Please check your connection and try again.');
+                alert('Network error: ' + error.message + '. Please check your connection and try again.');
             } finally {
                 isSubmitting = false;
                 setSubmitLoading(false);
@@ -965,12 +1056,15 @@ $assessment_taken = $user['assessment_taken'];
         
         function retakeAssessment() {
             if (confirm('Are you sure you want to retake the assessment? This will reassign your program based on your current needs.')) {
-                fetch('../api/assessment.php?action=reset_assessment', {
+                fetch('../api/assessment.php', {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    body: JSON.stringify({
+                        action: 'reset_assessment'
+                    })
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -985,6 +1079,113 @@ $assessment_taken = $user['assessment_taken'];
                     alert('Error resetting assessment. Please try again.');
                 });
             }
+        }
+        
+        function checkLiveDatabase() {
+            fetch('../api/assessment.php', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'check_live_database'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const info = data.database_info;
+                    let message = '🗄️ LIVE Database Status\n\n';
+                    message += 'Database: ' + info.database_name + '\n';
+                    message += 'Total Assessments in DB: ' + info.total_assessments_in_db + '\n';
+                    message += 'Your Assessments: ' + info.user_assessment_count + '\n\n';
+                    
+                    if (info.user_assessments.length > 0) {
+                        message += 'Your Assessment History:\n';
+                        info.user_assessments.forEach((assessment, index) => {
+                            message += `${index + 1}. ID: ${assessment.id}, Score: ${assessment.wellness_score}%, Date: ${assessment.formatted_date}\n`;
+                        });
+                        message += '\n✅ Your assessments ARE stored in the live database!';
+                        message += '\n\n📝 Note: The SQL file (healnest_db.sql) is just a static backup/template. It doesn\'t update when you add new data. Your real data is in the live MySQL database.';
+                    } else {
+                        message += '❌ No assessments found for your user ID: ' + info.user_id;
+                    }
+                    
+                    alert(message);
+                } else {
+                    alert('❌ ' + (data.message || 'Could not check database'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error checking database: ' + error.message);
+            });
+        }
+        
+        function checkUserSession() {
+            fetch('../api/assessment.php', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'check_user_session'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const info = data.session_check;
+                    let message = '👤 Current User Session\n\n';
+                    message += 'User ID: ' + info.current_user_id + '\n';
+                    message += 'Name: ' + (info.user_info ? info.user_info.full_name : 'Unknown') + '\n';
+                    message += 'Email: ' + (info.user_info ? info.user_info.email : 'Unknown') + '\n';
+                    message += 'Session Active: ' + (info.session_info.php_session_active ? 'Yes' : 'No') + '\n';
+                    message += 'Session ID: ' + info.session_info.session_id + '\n\n';
+                    message += 'This is the user account that will be used for saving assessments.';
+                    
+                    alert(message);
+                } else {
+                    alert('❌ ' + (data.message || 'Could not check session'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error checking session: ' + error.message);
+            });
+        }
+        
+        function showLatestAssessment() {
+            fetch('../api/assessment.php', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'get_latest_assessment'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const assessment = data.assessment;
+                    alert('📊 Latest Assessment Details\n\n' +
+                          'Assessment ID: ' + assessment.id + '\n' +
+                          'Wellness Score: ' + assessment.wellness_score + '%\n' +
+                          'Answers Recorded: ' + assessment.answer_count + ' responses\n' +
+                          'Completed: ' + assessment.formatted_date + '\n\n' +
+                          '✅ Your assessment data is successfully stored in the database!');
+                } else {
+                    alert('❌ ' + (data.message || 'Could not retrieve assessment data'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error retrieving assessment data: ' + error.message);
+            });
         }
     </script>
 </body>
