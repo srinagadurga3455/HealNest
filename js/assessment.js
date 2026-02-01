@@ -355,7 +355,7 @@ function displayResults(results) {
     resultsContainer.style.display = 'block';
 
     // Save results to API
-    fetch('../api/assessment.php', {
+    fetch('api/assessment.php', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {

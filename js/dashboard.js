@@ -56,7 +56,7 @@ function loadDashboardData() {
     }
     
     // Try to load from API first
-    fetch('../api/dashboard.php?action=get_dashboard_data', {
+    fetch('api/dashboard.php?action=get_dashboard_data', {
         method: 'GET',
         credentials: 'same-origin', // Include cookies/session
         headers: {
@@ -395,7 +395,7 @@ function setupMoodTracker() {
             const moodScore = getMoodScore(mood);
             
             // Save mood to API
-            fetch('../api/dashboard.php?action=save_mood', {
+            fetch('api/dashboard.php?action=save_mood', {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
@@ -510,7 +510,7 @@ function loadTodaysTasksFallback() {
 }
 
 function toggleTask(taskId, completed) {
-    fetch('../api/dashboard.php?action=complete_task', {
+    fetch('api/dashboard.php?action=complete_task', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -636,7 +636,7 @@ function loadProgramInfoFallback() {
 
 function updateStreak() {
     // Update progress via API
-    fetch('../api/dashboard.php?action=update_progress', {
+    fetch('api/dashboard.php?action=update_progress', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -665,7 +665,7 @@ function logout() {
         Auth.logout();
         
         // Call server-side logout
-        fetch('../logout.php', {
+        fetch('pages/logout.php', {
             method: 'POST',
             credentials: 'same-origin'
         }).then(() => {

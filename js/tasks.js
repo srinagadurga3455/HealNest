@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function ensureAuthentication() {
     // Check if user is authenticated on server side
     try {
-        const response = await fetch('../api/check_session.php');
+        const response = await fetch('api/check_session.php');
         const data = await response.json();
         
         if (!data.logged_in) {
@@ -40,7 +40,7 @@ async function ensureAuthentication() {
 
 async function autoLoginDemoUser() {
     try {
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,6 +61,7 @@ async function autoLoginDemoUser() {
 }
 
 function loadDailyTasks() {
+<<<<<<< HEAD
     // Load tasks from the new tasks API
     fetch('../api/tasks.php', {
         method: 'POST',
@@ -70,6 +71,15 @@ function loadDailyTasks() {
         },
         body: JSON.stringify({
             action: 'get_user_tasks'
+=======
+    // Try to load from API first
+    fetch('api/dashboard.php?action=get_todays_tasks')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+>>>>>>> 99248c9af45447c50dfe8ddbc28b348bfd821d1f
         })
     })
     .then(response => {
@@ -303,6 +313,7 @@ function toggleDailyTask(taskId) {
     const checkbox = document.querySelector(`[data-task-id="${taskId}"]`);
     const taskItem = checkbox.closest('.task-item');
     
+<<<<<<< HEAD
     console.log(`Checkbox checked state: ${checkbox.checked}`);
     
     // Update UI immediately for better user experience
@@ -311,6 +322,10 @@ function toggleDailyTask(taskId) {
     
     // Update via the new tasks API
     fetch('../api/tasks.php', {
+=======
+    // Try to update via API first
+    fetch('api/dashboard.php?action=complete_task', {
+>>>>>>> 99248c9af45447c50dfe8ddbc28b348bfd821d1f
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -432,7 +447,7 @@ function logout() {
         Auth.logout();
         
         // Call server-side logout
-        fetch('../logout.php', {
+        fetch('pages/logout.php', {
             method: 'POST',
             credentials: 'same-origin'
         }).then(() => {

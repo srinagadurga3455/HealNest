@@ -61,40 +61,79 @@ HealNest is a comprehensive mental health and youth empowerment platform designe
 ## 🛠️ Technology Stack
 
 ### Frontend
+- **PHP**: Hypertext Preprocessor
 - **HTML5**: Semantic markup structure
 - **CSS3**: Modern styling with CSS variables, gradients, and animations
 - **JavaScript (ES6+)**: Dynamic functionality and interactivity
 - **Bootstrap 5**: Responsive grid and components
 - **Calm Clarity UI**: Pre-built component library
 
-### Tools & Libraries
-- **Tabler Icons (ti)**: Icon library for UI elements
-- **LocalStorage API**: Client-side data persistence
-- **Responsive Design**: Mobile-first approach
-
 ## 📁 Project Structure
 
 ```
-HealNest/
-├── index.php                 # Main entry point
-├── landing.html              # Landing/home page
-├── login.html                # Login page
-├── register.html             # Registration page
-├── dashboard.html            # Main dashboard
-├── assessment.html           # Mental health assessment
-├── program.html              # Wellness programs
-├── journal.html              # Digital journal
-├── mood.html                 # Mood tracker
-├── profile.html              # User profile
-├── styles.css                # Custom global styles
-├── app.js                    # Main application logic
-├── connect.php               # Database connection (if needed)
-├── setup.php                 # Initial setup
-└── calm_clarity/             # Theme assets
-    └── assets/
-        ├── css/              # Stylesheets
-        ├── js/               # Theme scripts
-        └── images/           # Icons and images
+# File Tree: HealNest
+
+**Root Path:** `/Applications/XAMPP/xamppfiles/htdocs/HealNest`
+
+```
+├── 📁 api
+│   ├── ⚙️ .htaccess
+│   ├── 🐘 assessment.php
+│   ├── 🐘 check_session.php
+│   ├── 🐘 dashboard.php
+│   ├── 🐘 journal.php
+│   ├── 🐘 login.php
+│   ├── 🐘 logout.php
+│   ├── 🐘 mood.php
+│   ├── 🐘 profile.php
+│   ├── 🐘 program.php
+│   └── 🐘 register.php
+
+├── 📁 config
+│   └── 🐘 connect.php
+├── 📁 css
+│   ├── 🎨 assessment.css
+│   ├── 🎨 dashboard.css
+│   ├── 🎨 journal.css
+│   ├── 🎨 login.css
+│   ├── 🎨 mood.css
+│   ├── 🎨 profile.css
+│   ├── 🎨 program.css
+│   ├── 🎨 register.css
+│   └── 🎨 tasks.css
+├── 📁 db
+│   └── 📄 healnest_db.sql
+├── 📁 docs
+│   └── 📝 README.md
+├── 📁 js
+│   ├── 📄 assessment.js
+│   ├── 📄 auth.js
+│   ├── 📄 dashboard.js
+│   ├── 📄 journal-utils.js
+│   ├── 📄 journal.js
+│   ├── 📄 login.js
+│   ├── 📄 mood.js
+│   ├── 📄 profile.js
+│   ├── 📄 program.js
+│   ├── 📄 register.js
+│   └── 📄 tasks.js
+├── 📁 pages
+│   ├── 🐘 assessment.php
+│   ├── 🐘 auth-choice.php
+│   ├── 🐘 dashboard.php
+│   ├── 🐘 journal.php
+│   ├── 🐘 login.php
+│   ├── 🐘 logout.php
+│   ├── 🐘 mood.php
+│   ├── 🐘 profile.php
+│   ├── 🐘 program.php
+│   ├── 🐘 register.php
+│   └── 🐘 tasks.php
+├── 📁 whatsapp
+├── 🐘 admin_api.php
+├── 🐘 admin_panel.php
+├── 🌐 index.html
+└── 🐘 logout.php
 ```
 
 ## 🚀 Getting Started
@@ -133,15 +172,13 @@ HealNest/
 
 ## 💾 Data Storage
 
-All user data is stored locally in the browser using `localStorage`:
+All sensitive user data (authentication, assessments, moods, journals, profiles) is securely stored on the server in a database via PHP APIs.
 
-- **User Authentication**: `healNestUser`
-- **Assessment Results**: `healNestAssessment`
-- **Mood Data**: `healNestMoodData`
-- **Journal Entries**: `healNestJournalEntries`
+Some non-sensitive preferences may be stored locally in the browser using `localStorage`, such as:
+
 - **Dark Mode Preference**: `darkMode`
 
-**Note**: Data persists in the browser but will be cleared if browser cache is cleared.
+**Note**: Only preferences like dark mode are stored in the browser. All main user data is kept secure on the server and is not affected by browser cache.
 
 ## 🎨 Customization
 
@@ -151,29 +188,17 @@ Edit the CSS variables in [styles.css](styles.css):
 
 ```css
 :root {
-  --primary: #5D87FF;
-  --primary-dark: #3B7BFF;
-  --secondary: #49BEFF;
-  --tertiary: #13DEB9;
-  /* ... more colors ... */
+   --primary: #2c2c2c;         /* Main brand color (dark gray) */
+   --accent: #8b7355;          /* Accent color (brownish) */
+   --text-primary: #2c2c2c;    /* Main text color */
+   --text-secondary: #666;     /* Secondary text */
+   --text-muted: #999;         /* Muted text */
+   --bg-primary: #ffffff;      /* Primary background */
+   --bg-secondary: #fafafa;    /* Secondary background */
+   --border: #f0f0f0;          /* Border color */
+   --border-dark: #e0e0e0;     /* Darker border */
 }
 ```
-
-### Pages & Navigation
-
-Main pages and their purposes:
-
-| Page | Path | Purpose |
-|------|------|---------|
-| Landing | `landing.html` | Welcome & feature showcase |
-| Login | `login.html` | User authentication |
-| Register | `register.html` | Account creation |
-| Dashboard | `dashboard.html` | Main hub after login |
-| Assessment | `assessment.html` | Mental health evaluation |
-| Programs | `program.html` | Wellness program catalog |
-| Journal | `journal.html` | Personal journaling |
-| Mood | `mood.html` | Mood tracking |
-| Profile | `profile.html` | User settings & info |
 
 ## 📱 Responsive Design
 
@@ -227,68 +252,9 @@ The platform is fully responsive and works on:
 4. Enroll to start the program
 5. Track your progress
 
-## 🐛 Troubleshooting
-
-### Issues & Solutions
-
-**Problem**: Data not persisting
-- **Solution**: Check if browser allows localStorage, clear cache and try again
-
-**Problem**: Cannot login
-- **Solution**: Make sure you registered first, check browser console for errors
-
-**Problem**: Styles not loading
-- **Solution**: Clear browser cache (Ctrl+Shift+Del), hard refresh (Ctrl+F5)
-
-**Problem**: Assessment not saving
-- **Solution**: Ensure all questions are answered before submitting
-
-## 📞 Support & Contributing
-
-For issues, feature requests, or contributions:
-1. Document the issue clearly
-2. Include steps to reproduce
-3. Suggest potential solutions
-4. Submit with examples
 
 ## 📄 License
 
 This project is created for educational and mental wellness purposes.
-
-## 🙏 Acknowledgments
-
-- **Bootstrap**: For responsive grid and components
-- **Tabler Icons**: For beautiful icon set
-- **Calm Clarity Theme**: For UI components
-- **Mental Health Organizations**: For assessment methodology
-
-## 🎯 Future Enhancements
-
-Planned features for future releases:
-- [ ] Backend database integration
-- [ ] User authentication with PHP/MySQL
-- [ ] Social features (connect with friends)
-- [ ] AI-powered recommendations
-- [ ] Video program tutorials
-- [ ] Therapist/counselor connection
-- [ ] Mobile app version
-- [ ] Push notifications
-- [ ] Export data functionality
-- [ ] Multi-language support
-
-## 📅 Changelog
-
-### Version 1.0 (Current)
-- ✅ Complete project structure
-- ✅ All core pages implemented
-- ✅ Custom CSS styling
-- ✅ JavaScript functionality
-- ✅ LocalStorage data persistence
-- ✅ Responsive design
-- ✅ Assessment system
-- ✅ Mood tracking
-- ✅ Journal entries
-
----
 
 **HealNest** - Empowering Youth Through Mental Wellness 🌟

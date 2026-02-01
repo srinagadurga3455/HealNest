@@ -156,7 +156,7 @@ function updateUserInfo() {
 }
 
 function loadTodaysMood() {
-    fetch('../api/mood.php?action=get_today_mood')
+    fetch('api/mood.php?action=get_today_mood')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -204,9 +204,13 @@ function saveMood() {
         date: new Date().toISOString().split('T')[0]
     };
 
+<<<<<<< HEAD
     console.log('Saving mood data:', moodData);
 
     fetch('../api/mood.php', {
+=======
+    fetch('api/mood.php?action=save_mood', {
+>>>>>>> 99248c9af45447c50dfe8ddbc28b348bfd821d1f
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -299,7 +303,7 @@ function generateCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
 
-    fetch(`../api/mood.php?action=get_mood_calendar&year=${year}&month=${month}`)
+    fetch(`api/mood.php?action=get_mood_calendar&year=${year}&month=${month}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -378,7 +382,7 @@ function generateCalendarFallback() {
 }
 
 function updateMoodStats() {
-    fetch('../api/mood.php?action=get_mood_stats&period=month')
+    fetch('api/mood.php?action=get_mood_stats&period=month')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -441,7 +445,7 @@ function updateMoodStatsFallback() {
 }
 
 function updateMoodTrend() {
-    fetch('../api/mood.php?action=get_mood_trend&days=7')
+    fetch('api/mood.php?action=get_mood_trend&days=7')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -549,7 +553,7 @@ function updateMoodTrendFallback() {
 }
 
 function loadRecentEntries() {
-    fetch('../api/mood.php?action=get_recent_entries&limit=10')
+    fetch('api/mood.php?action=get_recent_entries&limit=10')
         .then(response => response.json())
         .then(data => {
             if (data.success) {

@@ -64,7 +64,7 @@ registerForm.addEventListener('submit', function (e) {
     registerBtn.textContent = 'Creating Account...';
 
     // Make API call to register user
-    fetch('../api/register.php', {
+    fetch('api/register.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -24,7 +24,7 @@ loginForm.addEventListener('submit', async function(e) {
 
     try {
         // Make API call to PHP backend
-        const response = await fetch('../api/login.php', {
+        const response = await fetch('api/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

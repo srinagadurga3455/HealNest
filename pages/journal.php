@@ -13,10 +13,16 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<<<<<<< HEAD
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/journal.css">
     <link rel="stylesheet" href="../css/onboarding.css">
+=======
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/journal.css">
+>>>>>>> 99248c9af45447c50dfe8ddbc28b348bfd821d1f
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -188,6 +194,7 @@ if (!isset($_SESSION['user_id'])) {
         </main>
     </div>
 
+<<<<<<< HEAD
     <!-- Help button for onboarding -->
     <button class="help-button" onclick="onboardingGuide.forceStart();" title="Show guided tour">
         ?
@@ -197,6 +204,11 @@ if (!isset($_SESSION['user_id'])) {
     <script src="../js/onboarding.js?v=<?php echo time(); ?>"></script>
     <script src="../js/journal-utils.js"></script>
     <script src="../js/journal.js"></script>
+=======
+    <script src="js/auth.js"></script>
+    <script src="js/journal-utils.js"></script>
+    <script src="js/journal.js"></script>
+>>>>>>> 99248c9af45447c50dfe8ddbc28b348bfd821d1f
     <script>
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('open');

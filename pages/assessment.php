@@ -28,6 +28,7 @@ $assessment_taken = $user['assessment_taken'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wellness Assessment - HealNest</title>
+    <base href="/HealNest/">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -935,7 +936,7 @@ $assessment_taken = $user['assessment_taken'];
                 
                 console.log('Request data:', requestData);
                 
-                const response = await fetch('../api/assessment.php', {
+                const response = await fetch('api/assessment.php', {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
@@ -1056,7 +1057,11 @@ $assessment_taken = $user['assessment_taken'];
         
         function retakeAssessment() {
             if (confirm('Are you sure you want to retake the assessment? This will reassign your program based on your current needs.')) {
+<<<<<<< HEAD
                 fetch('../api/assessment.php', {
+=======
+                fetch('api/assessment.php?action=reset_assessment', {
+>>>>>>> 99248c9af45447c50dfe8ddbc28b348bfd821d1f
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
